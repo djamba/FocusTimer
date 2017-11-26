@@ -18,7 +18,7 @@ class FocusTimerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.timerView.startTimer(1)
+        binding.timerView.startTimer(2)
         binding.timerView.resume()
     }
 

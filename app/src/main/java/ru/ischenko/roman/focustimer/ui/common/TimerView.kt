@@ -3,7 +3,6 @@ package ru.ischenko.roman.focustimer.ui.common
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Handler
@@ -31,6 +30,7 @@ class TimerView: View {
     private val activePaint: Paint
 	private val inactivePaint: Paint
 	private val markerPaint: Paint
+	private val textPaint: Paint
 
 	private val lineWidth: Int
 	private val markerDiameter: Int
@@ -38,6 +38,7 @@ class TimerView: View {
     private val drawRect = RectF()
     private val progressHandler = Handler()
 
+	private var timerSecondsLeft: Int = 0
 	private var progressAngle: Float = 0f
     private var stepAngle: Float = 0f
     private var lastTimeStamp: Long = 0L
@@ -45,6 +46,7 @@ class TimerView: View {
     private val progressUpdater = object : Runnable {
         override fun run() {
             if (progressAngle < CIRCLE_ANGLE) {
+                timerSecondsLeft -= 1
                 progressAngle += stepAngle
                 postInvalidate()
 
@@ -64,8 +66,11 @@ class TimerView: View {
 		try {
 			activePaint = createPaint(typedArray.getColor(R.styleable.TimerView_activeColor, 0))
 			inactivePaint = createPaint(typedArray.getColor(R.styleable.TimerView_inactiveColor, 0))
-            markerPaint = createPaint(Color.RED)
+            markerPaint = createPaint(typedArray.getColor(R.styleable.TimerView_markerColor, 0))
             markerPaint.style = Paint.Style.FILL
+
+            textPaint = createPaint(typedArray.getColor(R.styleable.TimerView_textColor, 0))
+            textPaint.textSize = typedArray.getDimension(R.styleable.TimerView_timerFontSize, 0F)
 
 			lineWidth = typedArray.getDimensionPixelSize(R.styleable.TimerView_lineWidth, 0)
             activePaint.strokeWidth = lineWidth.toFloat()
@@ -86,8 +91,9 @@ class TimerView: View {
         }
     }
 
-    fun startTimer(totalMinutes: Int) {
-        stepAngle = 360F / (totalMinutes * 60)
+    fun startTimer(timerMinutesCount: Int) {
+        timerSecondsLeft = timerMinutesCount * 60
+        stepAngle = 360F / timerSecondsLeft
         progressHandler.postDelayed(progressUpdater, TIMEOUT)
     }
 
@@ -149,11 +155,11 @@ class TimerView: View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val height = height + paddingTop + paddingBottom
-        val width = width + paddingLeft + paddingRight
+        val height = height - (paddingTop + paddingBottom)
+        val width = width - (paddingLeft + paddingRight)
 
-        val cx = width / 2F
-        val cy = height / 2F
+        val cx = width / 2F + paddingLeft
+        val cy = height / 2F + paddingTop
 
         var radius = if (height > width) width / 2 else height / 2
         radius -= markerDiameter
@@ -168,6 +174,13 @@ class TimerView: View {
         canvas.drawArc(drawRect, START_ANGLE, progressAngle, false, activePaint)
 
         canvas.drawCircle(markerX.toFloat(), markerY.toFloat(), markerDiameter.toFloat(), markerPaint)
+
+        val min = timerSecondsLeft / 60
+        val sec = timerSecondsLeft % 60
+        val time = (if (min > 9) min.toString() else "0$min") + ":" +
+                   (if (sec > 9) sec.toString() else "0$sec")
+        val textSize = textPaint.measureText(time)
+        canvas.drawText(time, cx - textSize / 2, cy, textPaint)
     }
 
     private class SavedState : View.BaseSavedState {
