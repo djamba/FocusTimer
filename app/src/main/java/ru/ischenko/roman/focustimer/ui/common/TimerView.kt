@@ -38,7 +38,8 @@ class TimerView: View {
     private val drawRect = RectF()
     private val progressHandler = Handler()
 
-	private var timerSecondsLeft: Int = 0
+	private var timerTotalSecondCount: Long = 0L
+	private var timerSecondsPassed: Long = 0
 	private var progressAngle: Float = 0f
     private var stepAngle: Float = 0f
     private var lastTimeStamp: Long = 0L
@@ -46,7 +47,7 @@ class TimerView: View {
     private val progressUpdater = object : Runnable {
         override fun run() {
             if (progressAngle < CIRCLE_ANGLE) {
-                timerSecondsLeft -= 1
+                timerSecondsPassed += 1
                 progressAngle += stepAngle
                 postInvalidate()
 
@@ -92,8 +93,10 @@ class TimerView: View {
     }
 
     fun startTimer(timerMinutesCount: Int) {
-        timerSecondsLeft = timerMinutesCount * 60
-        stepAngle = 360F / timerSecondsLeft
+        reset()
+
+        timerTotalSecondCount = (timerMinutesCount * 60).toLong()
+        stepAngle = 360F / timerTotalSecondCount
         progressHandler.postDelayed(progressUpdater, TIMEOUT)
     }
 
@@ -101,10 +104,20 @@ class TimerView: View {
         progressHandler.removeCallbacks(progressUpdater)
     }
 
+    private fun reset() {
+        timerSecondsPassed = 0L
+        timerTotalSecondCount = 0L
+        progressAngle = 0f
+        stepAngle = 0f
+        lastTimeStamp = 0L
+    }
+
     fun resume() {
         if (lastTimeStamp != 0L) {
 
-            val angle = progressAngle + (System.currentTimeMillis() - lastTimeStamp) / 1000 * stepAngle
+            val secondsPassedInBackground = (System.currentTimeMillis() - lastTimeStamp) / 1000
+            val angle = progressAngle + secondsPassedInBackground * stepAngle
+            timerSecondsPassed += secondsPassedInBackground
 
             if (angle <= CIRCLE_ANGLE) {
                 progressAngle = angle
@@ -130,7 +143,9 @@ class TimerView: View {
         val savedState = SavedState(superState)
         savedState.savedStep = stepAngle
         savedState.progressAngle = progressAngle
-        savedState.currentTimeMillis = System.currentTimeMillis()
+        savedState.currentTimeMillis = lastTimeStamp
+        savedState.timerTotalSecondCount = timerTotalSecondCount
+        savedState.timerSecondsPassed = timerSecondsPassed
 
         return savedState
     }
@@ -146,10 +161,8 @@ class TimerView: View {
         stepAngle = state.savedStep
         progressAngle = state.progressAngle + (System.currentTimeMillis() - state.currentTimeMillis) / 1000 * stepAngle
         lastTimeStamp = state.currentTimeMillis
-
-        if (progressAngle < CIRCLE_ANGLE) {
-            progressHandler.postDelayed(progressUpdater, TIMEOUT)
-        }
+        timerTotalSecondCount = state.timerTotalSecondCount
+        timerSecondsPassed = state.timerSecondsPassed
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -175,8 +188,9 @@ class TimerView: View {
 
         canvas.drawCircle(markerX.toFloat(), markerY.toFloat(), markerDiameter.toFloat(), markerPaint)
 
-        val min = timerSecondsLeft / 60
-        val sec = timerSecondsLeft % 60
+        val secondsLeft = timerTotalSecondCount - timerSecondsPassed
+        val min = secondsLeft / 60
+        val sec = secondsLeft % 60
         val time = (if (min > 9) min.toString() else "0$min") + ":" +
                    (if (sec > 9) sec.toString() else "0$sec")
         val textSize = textPaint.measureText(time)
@@ -188,6 +202,8 @@ class TimerView: View {
         var savedStep: Float = 0f
         var progressAngle: Float = 0f
         var currentTimeMillis: Long = 0L
+        var timerTotalSecondCount: Long = 0L
+        var timerSecondsPassed: Long = 0L
 
         constructor(superState: Parcelable) : super(superState) {}
 
@@ -195,6 +211,8 @@ class TimerView: View {
             savedStep = inParcel.readFloat()
             progressAngle = inParcel.readFloat()
             currentTimeMillis = inParcel.readLong()
+            timerTotalSecondCount = inParcel.readLong()
+            timerSecondsPassed = inParcel.readLong()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -202,6 +220,8 @@ class TimerView: View {
             out.writeFloat(savedStep)
             out.writeFloat(progressAngle)
             out.writeLong(currentTimeMillis)
+            out.writeLong(timerTotalSecondCount)
+            out.writeLong(timerSecondsPassed)
         }
 
         companion object {

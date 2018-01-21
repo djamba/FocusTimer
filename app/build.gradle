@@ -16,8 +16,12 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,24 +35,26 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
+    // Support library
+    implementation "com.android.support:support-v4:$project.supportLibraryVersion"
     implementation "com.android.support:appcompat-v7:$project.supportLibraryVersion"
-    implementation "com.android.support.constraint:constraint-layout:$project.constraintLayoutVersion"
+    implementation "com.android.support:design:$project.supportLibraryVersion"
+    implementation "com.android.support:cardview-v7:$project.supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$project.supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
     // Timber
-    compile "com.jakewharton.timber:timber:$project.timberVersion"
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
 
     // ReactiveX
-    compile "io.reactivex.rxjava2:rxjava:$project.rxJavaVersion"
-    compile "io.reactivex.rxjava2:rxandroid:$project.rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$project.rxKotlin"
+    implementation "io.reactivex.rxjava2:rxjava:$project.rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$project.rxAndroidVersion"
 
     //Room
     implementation "android.arch.persistence.room:runtime:$project.archVersion"
     kapt "android.arch.persistence.room:compiler:$project.archVersion"
-    compile "android.arch.persistence.room:rxjava2:$project.archVersion"
+    implementation "android.arch.persistence.room:rxjava2:$project.archVersion"
 
     //Lifecycle
     implementation "android.arch.lifecycle:runtime:$project.archVersion"
@@ -56,5 +62,10 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$project.archVersion"
 
     // DataBinding: notice that the compiler version must be the same than our gradle version
-    kapt 'com.android.databinding:compiler:3.0.1'
+    kapt "com.android.databinding:compiler:$project.databindingVersion"
+
+    // UnitTest
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "com.android.support.test:runner:1.0.1"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.1"
 }

@@ -14,11 +14,13 @@ class FocusTimerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_focus_timer)
+
+        binding.startButton.setOnClickListener { binding.timerView.startTimer(2) }
+        binding.stopButton.setOnClickListener { binding.timerView.stopTimer() }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.timerView.startTimer(2)
         binding.timerView.resume()
     }
 
