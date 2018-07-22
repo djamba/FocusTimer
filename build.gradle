@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.20'
+    ext.kotlin_version = '1.2.41'
 
     repositories {
         google()
@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -22,19 +22,20 @@ allprojects {
 }
 
 project.ext {
-    supportLibraryVersion = "26.1.0"
-    constraintLayoutVersion = "1.0.2"
+    supportLibraryVersion = "27.1.1"
+    constraintLayoutVersion = "1.1.2"
 
     // DataBinding: notice that the compiler version must be the same than our gradle version
-    databindingVersion = "3.0.1"
-    archVersion = "1.0.0"
+    databindingVersion = "3.1.3"
+    archVersion = "1.1.1"
+    archVersionRoom = "1.1.1"
 
-    daggerVersion = "2.14.1"
-    rxJavaVersion = "2.1.8"
-    rxAndroidVersion = "2.0.1"
+    daggerVersion = "2.15"
+    rxJavaVersion = "2.1.12"
+    rxAndroidVersion = "2.0.2"
     rxKotlin = "2.2.0"
 
-    timberVersion = "4.5.1"
+    timberVersion = "4.7.0"
 }
 
 task clean(type: Delete) {

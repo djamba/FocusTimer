@@ -1,69 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
-
-<android.support.constraint.ConstraintLayout
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/container"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.FocusTimerActivity">
-
-	<TextView
-		android:id="@+id/goal_text"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
-		android:layout_marginLeft="8dp"
-		android:layout_marginRight="8dp"
-		android:gravity="center"
-		android:text="Написать пять абзацев для сатьи про новый компилятор"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
-
-	<ru.ischenko.roman.focustimer.ui.common.TimerView
-		android:id="@+id/timer_view"
-		android:layout_width="wrap_content"
-		android:layout_height="370dp"
-		android:paddingLeft="40dp"
-		android:paddingRight="40dp"
-		app:activeColor="@color/colorAccent"
-		app:inactiveColor="@color/colorPrimary"
-		app:markerColor="@color/colorAccent"
-		app:textColor="@color/colorAccent"
-		app:timerFontSize="64sp"
-		app:lineWidth="8dp"
-		app:markerDiameter="8dp"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/goal_text"/>
-
-	<Button
-		android:id="@+id/start_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Start"
-		app:layout_constraintVertical_bias="0.2"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toLeftOf="@id/stop_button"
-		app:layout_constraintTop_toBottomOf="@+id/timer_view"
-		app:layout_constraintHorizontal_chainStyle="packed"
-		tools:text="Start"/>
-
-	<Button
-		android:id="@+id/stop_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Stop"
-		app:layout_constraintVertical_bias="0.2"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toRightOf="@id/start_button"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/timer_view"
-		tools:text="Stop"/>
-
-</android.support.constraint.ConstraintLayout>
-
-</layout>
+	tools:context=".ui.FocusTimerActivity"/>

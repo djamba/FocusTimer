@@ -6,5 +6,5 @@ package ru.ischenko.roman.focustimer.model
  * Time: 18:29
  */
 data class Task(
-    private val taskName: String? = null
+    val taskName: String? = null
 )
