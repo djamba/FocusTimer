@@ -1,29 +1,38 @@
 package ru.ischenko.roman.focustimer.ui.main
 
-import android.databinding.DataBindingUtil
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 
 class FocusTimerFragment : Fragment() {
 
     private lateinit var binding: FragmentFocusTimerBinding
+    private lateinit var viewModel: FocusTimerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        binding = DataBindingUtil.setContentView(requireActivity(), R.layout.fragment_focus_timer)
+        binding = FragmentFocusTimerBinding.inflate(inflater, container, false)
 
-        binding.viewModel = FocusTimerViewModel()
+        viewModel = ViewModelProviders.of(requireActivity()).get(FocusTimerViewModel::class.java)
+        binding.viewModel = viewModel
+
+        viewModel.goal.observe(this, Observer { binding.invalidateAll() })
 
         binding.startButton.setOnClickListener { binding.timerView.startTimer(2) }
         binding.stopButton.setOnClickListener { binding.timerView.stopTimer() }
 
-        return inflater.inflate(R.layout.fragment_focus_timer, container, false)
+        binding.goalText.setOnClickListener {
+            val addPhotoBottomDialogFragment = SetupPomodoroDialogFragment.newInstance()
+            addPhotoBottomDialogFragment.show(requireActivity().supportFragmentManager, null)
+        }
+
+        return binding.root
     }
 
     override fun onResume() {

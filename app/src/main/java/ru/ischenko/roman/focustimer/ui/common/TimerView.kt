@@ -27,6 +27,10 @@ class TimerView: View {
         const val START_ANGLE: Float = -90f
     }
 
+    enum class State { RESET, STARTED, PAUSED }
+
+    private var state: State = State.RESET
+
     private val activePaint: Paint
 	private val inactivePaint: Paint
 	private val markerPaint: Paint
@@ -95,16 +99,20 @@ class TimerView: View {
     fun startTimer(timerMinutesCount: Int) {
         reset()
 
+        state = State.STARTED
+
         timerTotalSecondCount = (timerMinutesCount * 60).toLong()
         stepAngle = 360F / timerTotalSecondCount
         progressHandler.postDelayed(progressUpdater, TIMEOUT)
     }
 
     fun stopTimer() {
+        reset()
         progressHandler.removeCallbacks(progressUpdater)
     }
 
     private fun reset() {
+        state = State.RESET
         timerSecondsPassed = 0L
         timerTotalSecondCount = 0L
         progressAngle = 0f
@@ -113,7 +121,7 @@ class TimerView: View {
     }
 
     fun resume() {
-        if (lastTimeStamp != 0L) {
+        if (state == State.STARTED) {
 
             val secondsPassedInBackground = (System.currentTimeMillis() - lastTimeStamp) / 1000
             val angle = progressAngle + secondsPassedInBackground * stepAngle
@@ -131,8 +139,10 @@ class TimerView: View {
     }
 
     fun pause() {
-        lastTimeStamp = System.currentTimeMillis()
-        progressHandler.removeCallbacks(progressUpdater)
+        if (state == State.STARTED) {
+            lastTimeStamp = System.currentTimeMillis()
+            progressHandler.removeCallbacks(progressUpdater)
+        }
     }
 
     override fun onSaveInstanceState(): Parcelable? {
@@ -146,23 +156,25 @@ class TimerView: View {
         savedState.currentTimeMillis = lastTimeStamp
         savedState.timerTotalSecondCount = timerTotalSecondCount
         savedState.timerSecondsPassed = timerSecondsPassed
+        savedState.state = state.ordinal
 
         return savedState
     }
 
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state !is SavedState) {
-            super.onRestoreInstanceState(state)
+    override fun onRestoreInstanceState(parcelable: Parcelable) {
+        if (parcelable !is SavedState) {
+            super.onRestoreInstanceState(parcelable)
             return
         }
 
-        super.onRestoreInstanceState(state.superState)
+        super.onRestoreInstanceState(parcelable.superState)
 
-        stepAngle = state.savedStep
-        progressAngle = state.progressAngle + (System.currentTimeMillis() - state.currentTimeMillis) / 1000 * stepAngle
-        lastTimeStamp = state.currentTimeMillis
-        timerTotalSecondCount = state.timerTotalSecondCount
-        timerSecondsPassed = state.timerSecondsPassed
+        stepAngle = parcelable.savedStep
+        progressAngle = parcelable.progressAngle + (System.currentTimeMillis() - parcelable.currentTimeMillis) / 1000 * stepAngle
+        lastTimeStamp = parcelable.currentTimeMillis
+        timerTotalSecondCount = parcelable.timerTotalSecondCount
+        timerSecondsPassed = parcelable.timerSecondsPassed
+        state = State.values()[parcelable.state]
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -204,6 +216,7 @@ class TimerView: View {
         var currentTimeMillis: Long = 0L
         var timerTotalSecondCount: Long = 0L
         var timerSecondsPassed: Long = 0L
+        var state: Int = State.RESET.ordinal
 
         constructor(superState: Parcelable) : super(superState) {}
 
@@ -213,6 +226,7 @@ class TimerView: View {
             currentTimeMillis = inParcel.readLong()
             timerTotalSecondCount = inParcel.readLong()
             timerSecondsPassed = inParcel.readLong()
+            state = inParcel.readInt()
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -222,6 +236,7 @@ class TimerView: View {
             out.writeLong(currentTimeMillis)
             out.writeLong(timerTotalSecondCount)
             out.writeLong(timerSecondsPassed)
+            out.writeInt(state)
         }
 
         companion object {

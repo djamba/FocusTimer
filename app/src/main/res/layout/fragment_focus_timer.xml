@@ -22,6 +22,8 @@
 			android:layout_marginLeft="8dp"
 			android:layout_marginRight="8dp"
 			android:gravity="center"
+			android:clickable="true"
+			android:focusable="true"
 			android:text="@{viewModel.goal}"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
