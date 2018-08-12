@@ -1,10 +1,5 @@
 package ru.ischenko.roman.focustimer.model
 
-/**
- * User: roman
- * Date: 21.11.17
- * Time: 18:27
- */
 data class Pomodoro(
     val task: Task? = null,
     val target: String? = null,

@@ -97,7 +97,9 @@ class TimerView: View {
     }
 
     fun startTimer(timerMinutesCount: Int) {
-        reset()
+        if (state != State.RESET) {
+            stopTimer()
+        }
 
         state = State.STARTED
 
@@ -109,7 +111,21 @@ class TimerView: View {
     fun stopTimer() {
         reset()
         progressHandler.removeCallbacks(progressUpdater)
+        postInvalidate()
     }
+
+    fun resumeTimer() {
+        lastTimeStamp = System.currentTimeMillis()
+        state = State.STARTED
+        progressHandler.postDelayed(progressUpdater, TIMEOUT)
+    }
+
+    fun pauseTimer() {
+        state = State.PAUSED
+        progressHandler.removeCallbacks(progressUpdater)
+    }
+
+    fun isRunning() = state == State.STARTED
 
     private fun reset() {
         state = State.RESET
@@ -120,7 +136,7 @@ class TimerView: View {
         lastTimeStamp = 0L
     }
 
-    fun resume() {
+    fun onForeground() {
         if (state == State.STARTED) {
 
             val secondsPassedInBackground = (System.currentTimeMillis() - lastTimeStamp) / 1000
@@ -138,7 +154,7 @@ class TimerView: View {
         }
     }
 
-    fun pause() {
+    fun onBackground() {
         if (state == State.STARTED) {
             lastTimeStamp = System.currentTimeMillis()
             progressHandler.removeCallbacks(progressUpdater)
@@ -170,11 +186,19 @@ class TimerView: View {
         super.onRestoreInstanceState(parcelable.superState)
 
         stepAngle = parcelable.savedStep
-        progressAngle = parcelable.progressAngle + (System.currentTimeMillis() - parcelable.currentTimeMillis) / 1000 * stepAngle
+        progressAngle = parcelable.progressAngle
         lastTimeStamp = parcelable.currentTimeMillis
         timerTotalSecondCount = parcelable.timerTotalSecondCount
         timerSecondsPassed = parcelable.timerSecondsPassed
         state = State.values()[parcelable.state]
+
+        if (state == State.STARTED) {
+            restoreAngle()
+        }
+    }
+
+    private fun restoreAngle() {
+        progressAngle += (System.currentTimeMillis() - lastTimeStamp) / 1000 * stepAngle
     }
 
     override fun onDraw(canvas: Canvas) {

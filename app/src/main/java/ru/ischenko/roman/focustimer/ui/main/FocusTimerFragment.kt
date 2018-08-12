@@ -26,6 +26,13 @@ class FocusTimerFragment : Fragment() {
 
         binding.startButton.setOnClickListener { binding.timerView.startTimer(2) }
         binding.stopButton.setOnClickListener { binding.timerView.stopTimer() }
+        binding.pauseButton.setOnClickListener {
+            if (binding.timerView.isRunning()) {
+                binding.timerView.pauseTimer()
+            } else {
+                binding.timerView.resumeTimer()
+            }
+        }
 
         binding.goalText.setOnClickListener {
             val addPhotoBottomDialogFragment = SetupPomodoroDialogFragment.newInstance()
@@ -37,12 +44,12 @@ class FocusTimerFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.timerView.resume()
+        binding.timerView.onForeground()
     }
 
     override fun onPause() {
         super.onPause()
-        binding.timerView.pause()
+        binding.timerView.onBackground()
     }
 
     companion object {
