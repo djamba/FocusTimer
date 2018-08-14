@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
+import ru.ischenko.roman.focustimer.ui.common.TimerView
 
 class FocusTimerFragment : Fragment() {
 
@@ -24,7 +26,7 @@ class FocusTimerFragment : Fragment() {
 
         viewModel.goal.observe(this, Observer { binding.invalidateAll() })
 
-        binding.startButton.setOnClickListener { binding.timerView.startTimer(2) }
+        binding.startButton.setOnClickListener { binding.timerView.startTimer(1) }
         binding.stopButton.setOnClickListener { binding.timerView.stopTimer() }
         binding.pauseButton.setOnClickListener {
             if (binding.timerView.isRunning()) {
@@ -37,6 +39,12 @@ class FocusTimerFragment : Fragment() {
         binding.goalText.setOnClickListener {
             val addPhotoBottomDialogFragment = SetupPomodoroDialogFragment.newInstance()
             addPhotoBottomDialogFragment.show(requireActivity().supportFragmentManager, null)
+        }
+
+        binding.timerView.onTimeViewListener = object: TimerView.OnTimeViewListener {
+            override fun onComplete() {
+                Toast.makeText(context, "Complete!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root

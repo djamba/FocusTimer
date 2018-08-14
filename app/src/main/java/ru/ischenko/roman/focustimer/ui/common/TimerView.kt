@@ -27,7 +27,9 @@ class TimerView: View {
         const val START_ANGLE: Float = -90f
     }
 
-    enum class State { RESET, STARTED, PAUSED }
+    var onTimeViewListener: OnTimeViewListener? = null
+
+    enum class State { RESET, STARTED, PAUSED, COMPLETE }
 
     private var state: State = State.RESET
 
@@ -56,6 +58,9 @@ class TimerView: View {
                 postInvalidate()
 
                 progressHandler.postDelayed(this, TIMEOUT)
+            } else {
+                state = State.COMPLETE
+                onTimeViewListener?.onComplete()
             }
         }
     }
@@ -231,6 +236,11 @@ class TimerView: View {
                    (if (sec > 9) sec.toString() else "0$sec")
         val textSize = textPaint.measureText(time)
         canvas.drawText(time, cx - textSize / 2, cy, textPaint)
+    }
+
+    interface OnTimeViewListener {
+
+        fun onComplete();
     }
 
     private class SavedState : View.BaseSavedState {
