@@ -15,6 +15,7 @@ class FocusTimerFragment : Fragment() {
 
     private lateinit var binding: FragmentFocusTimerBinding
     private lateinit var viewModel: FocusTimerViewModel
+    private lateinit var focusTimerNotification: FocusTimerNotification
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -22,12 +23,23 @@ class FocusTimerFragment : Fragment() {
         binding = FragmentFocusTimerBinding.inflate(inflater, container, false)
 
         viewModel = ViewModelProviders.of(requireActivity()).get(FocusTimerViewModel::class.java)
+        binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
         viewModel.goal.observe(this, Observer { binding.invalidateAll() })
 
-        binding.startButton.setOnClickListener { binding.timerView.startTimer(1) }
-        binding.stopButton.setOnClickListener { binding.timerView.stopTimer() }
+        focusTimerNotification = FocusTimerNotification(requireContext())
+
+        binding.startButton.setOnClickListener {
+            binding.timerView.startTimer(1)
+            focusTimerNotification.notifyFocusOnWork(viewModel.goal.value ?: "focus")
+        }
+
+        binding.stopButton.setOnClickListener {
+            binding.timerView.stopTimer()
+            focusTimerNotification.cancel()
+        }
+
         binding.pauseButton.setOnClickListener {
             if (binding.timerView.isRunning()) {
                 binding.timerView.pauseTimer()
@@ -44,6 +56,7 @@ class FocusTimerFragment : Fragment() {
         binding.timerView.onTimeViewListener = object: TimerView.OnTimeViewListener {
             override fun onComplete() {
                 Toast.makeText(context, "Complete!", Toast.LENGTH_SHORT).show()
+                focusTimerNotification.finish()
             }
         }
 

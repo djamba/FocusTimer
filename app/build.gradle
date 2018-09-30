@@ -5,12 +5,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "ru.ischenko.roman.focustimer"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -65,7 +65,7 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$project.archVersion"
 
     // DataBinding: notice that the compiler version must be the same than our gradle version
-    kapt "com.android.databinding:compiler:$project.databindingVersion"
+    kapt "androidx.databinding:databinding-compiler:$project.databindingVersion"
 
     // UnitTest
     testImplementation "junit:junit:4.12"
