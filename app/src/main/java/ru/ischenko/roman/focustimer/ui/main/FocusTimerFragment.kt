@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.ui.common.TimerView
+import ru.ischenko.roman.focustimer.ui.main.notification.FocusTimerNotificationService
 
 class FocusTimerFragment : Fragment() {
 
     private lateinit var binding: FragmentFocusTimerBinding
     private lateinit var viewModel: FocusTimerViewModel
-    private lateinit var focusTimerNotification: FocusTimerNotification
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,16 +28,18 @@ class FocusTimerFragment : Fragment() {
 
         viewModel.goal.observe(this, Observer { binding.invalidateAll() })
 
-        focusTimerNotification = FocusTimerNotification(requireContext())
-
         binding.startButton.setOnClickListener {
-            binding.timerView.startTimer(1)
-            focusTimerNotification.notifyFocusOnWork(viewModel.goal.value ?: "focus")
+            binding.timerView.startTimer(60)
+            FocusTimerNotificationService.showNotification(
+                    requireContext(),
+                    viewModel.goal.value ?: "focus",
+                    System.currentTimeMillis(),
+                    60)
         }
 
         binding.stopButton.setOnClickListener {
             binding.timerView.stopTimer()
-            focusTimerNotification.cancel()
+            FocusTimerNotificationService.cancelNotification(requireContext())
         }
 
         binding.pauseButton.setOnClickListener {
@@ -56,7 +58,6 @@ class FocusTimerFragment : Fragment() {
         binding.timerView.onTimeViewListener = object: TimerView.OnTimeViewListener {
             override fun onComplete() {
                 Toast.makeText(context, "Complete!", Toast.LENGTH_SHORT).show()
-                focusTimerNotification.finish()
             }
         }
 

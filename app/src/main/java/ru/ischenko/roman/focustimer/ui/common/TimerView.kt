@@ -101,14 +101,14 @@ class TimerView: View {
         }
     }
 
-    fun startTimer(timerMinutesCount: Int) {
+    fun startTimer(timerSecondsCount: Long) {
         if (state != State.RESET) {
             stopTimer()
         }
 
         state = State.STARTED
 
-        timerTotalSecondCount = (timerMinutesCount * 60).toLong()
+        timerTotalSecondCount = timerSecondsCount
         stepAngle = 360F / timerTotalSecondCount
         progressHandler.postDelayed(progressUpdater, TIMEOUT)
     }

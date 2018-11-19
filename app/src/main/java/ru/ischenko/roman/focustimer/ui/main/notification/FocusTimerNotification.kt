@@ -1,5 +1,6 @@
-package ru.ischenko.roman.focustimer.ui.main
+package ru.ischenko.roman.focustimer.ui.main.notification
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -19,7 +20,7 @@ import ru.ischenko.roman.focustimer.ui.FocusTimerActivity
 class FocusTimerNotification(val context: Context) {
 
     companion object {
-        private const val FOCUS_TIMER_NOTIFICATION_REQUEST_CODE: Int = 2356
+        const val FOCUS_TIMER_NOTIFICATION_REQUEST_CODE: Int = 2356
         private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_ID: String = "FOCUS_TIMER_NOTIFICATION_CHANNEL"
         private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME: String = "FOCUS_TIMER"
     }
@@ -30,7 +31,7 @@ class FocusTimerNotification(val context: Context) {
     private val intent = Intent(context, FocusTimerActivity::class.java)
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun notifyFocusOnWork(workGoal: String) {
+    fun notifyFocusOnWork(workGoal: String): Notification {
 
         pendingIntent = PendingIntent.getActivity(context, FOCUS_TIMER_NOTIFICATION_REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -40,17 +41,19 @@ class FocusTimerNotification(val context: Context) {
                 .setContentTitle(context.getString(R.string.focus_timer_notification_focus_on_work))
                 .setContentText(workGoal)
                 .setAutoCancel(false)
+                .setOnlyAlertOnce(true)
+                .setOngoing(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(FOCUS_TIMER_NOTIFICATION_CHANNEL_ID,
-                            FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME,
+                    FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME,
                             NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notificationBuilder.build())
+        return notificationBuilder.build()
     }
 
     fun updateProgress(workTime: String) {
@@ -59,6 +62,9 @@ class FocusTimerNotification(val context: Context) {
     }
 
     fun finish() {
+        notificationBuilder
+                .setAutoCancel(true)
+                .setOngoing(false)
         notificationBuilder.setContentTitle(context.getString(R.string.focus_timer_notification_rest))
         notificationManager.notify(FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notificationBuilder.build())
     }
