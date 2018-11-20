@@ -2,7 +2,12 @@ package ru.ischenko.roman.focustimer.ui.main
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +17,10 @@ import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.ui.common.TimerView
 import ru.ischenko.roman.focustimer.ui.main.notification.FocusTimerNotificationService
 
-class FocusTimerFragment : Fragment() {
+class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChangedListener {
+
+    private var serviceBound = false
+    private var focusTimerNotificationService: FocusTimerNotificationService? = null
 
     private lateinit var binding: FragmentFocusTimerBinding
     private lateinit var viewModel: FocusTimerViewModel
@@ -43,11 +51,7 @@ class FocusTimerFragment : Fragment() {
         }
 
         binding.pauseButton.setOnClickListener {
-            if (binding.timerView.isRunning()) {
-                binding.timerView.pauseTimer()
-            } else {
-                binding.timerView.resumeTimer()
-            }
+            FocusTimerNotificationService.pauseResumeWork(requireContext())
         }
 
         binding.goalText.setOnClickListener {
@@ -64,14 +68,37 @@ class FocusTimerFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.timerView.onForeground()
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(requireContext(), FocusTimerNotificationService::class.java)
+        requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onPause() {
-        super.onPause()
-        binding.timerView.onBackground()
+    override fun onStop() {
+        super.onStop()
+        if (serviceBound) {
+            requireActivity().unbindService(serviceConnection)
+            serviceBound = false
+        }
+    }
+
+    override fun onTimeChanged(timerSecondsPassed: Long) {
+        binding.timerView.updateTime(timerSecondsPassed)
+    }
+
+    private val serviceConnection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, binder: IBinder) {
+            val notificationServiceBinder = binder as FocusTimerNotificationService.NotificationServiceBinder
+            focusTimerNotificationService = notificationServiceBinder.service
+            focusTimerNotificationService?.onTimeChangedListener = this@FocusTimerFragment
+            serviceBound = true
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName) {
+            focusTimerNotificationService?.onTimeChangedListener = null
+            serviceBound = false
+        }
     }
 
     companion object {

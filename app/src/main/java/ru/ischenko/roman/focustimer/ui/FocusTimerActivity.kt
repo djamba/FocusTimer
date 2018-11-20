@@ -2,6 +2,7 @@ package ru.ischenko.roman.focustimer.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.ui.main.FocusTimerFragment
 
@@ -18,5 +19,13 @@ class FocusTimerActivity : AppCompatActivity() {
             tasksFragment = FocusTimerFragment.newInstance()
             supportFragmentManager.beginTransaction().add(R.id.container, tasksFragment).commit()
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(true)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
