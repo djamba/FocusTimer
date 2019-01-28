@@ -86,6 +86,10 @@ class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChang
         binding.timerView.updateTime(timerSecondsPassed)
     }
 
+    override fun onTimerCancel() {
+        binding.timerView.stopTimer()
+    }
+
     private val serviceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, binder: IBinder) {

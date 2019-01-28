@@ -55,11 +55,11 @@ class FocusTimerNotificationService : Service() {
 
                 if (secondsPassed < totalSeconds) {
                     val timeLeft = totalSeconds - secondsPassed
-                    focusTimerNotification?.updateProgress(timeLeft.toString())
+                    focusTimerNotification.updateProgress(timeLeft.toString())
                     timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
                 }
                 else {
-                    finish()
+                    finishTimer()
                 }
             }
             return@Callback true
@@ -70,7 +70,7 @@ class FocusTimerNotificationService : Service() {
     private var startTime: Long = 0
     private var secondsPassed: Long = 0
     private var totalSeconds: Int = 0
-    private var focusTimerNotification: FocusTimerNotification? = null
+    private lateinit var focusTimerNotification: FocusTimerNotification
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -83,7 +83,20 @@ class FocusTimerNotificationService : Service() {
             totalSeconds = intent.getIntExtra(EXTRA_TOTAL_TIME, 0)
 
             focusTimerNotification = FocusTimerNotification(this)
-            val notification = focusTimerNotification?.notifyFocusOnWork(goal)
+            val notification = focusTimerNotification.notifyFocusOnWork(goal)
+
+            focusTimerNotification.register()
+            focusTimerNotification.focusTimerNotificationListener = object : FocusTimerNotification.FocusTimerNotificationListener {
+                override fun onPause() {
+                    resumePauseTimer()
+                }
+                override fun onResume() {
+                    resumePauseTimer()
+                }
+                override fun onCancel() {
+                    cancelTimer()
+                }
+            }
 
             startForeground(FocusTimerNotification.FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
 
@@ -91,34 +104,42 @@ class FocusTimerNotificationService : Service() {
             timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
         }
         else if(action == EXTRA_ACTION_CANCEL) {
-            cancel()
+            cancelTimer()
         }
         else if(action == EXTRA_ACTION_PAUSE_RESUME_WORK) {
-            if (timerStarted) {
-                timerStarted = false
-                timerHandler.removeMessages(HANDLER_MESSAGE_ID)
-            } else {
-                startTime = System.currentTimeMillis() - (secondsPassed + 1) * 1000
-                timerStarted = true
-                timerHandler.sendEmptyMessage(HANDLER_MESSAGE_ID)
-            }
+            resumePauseTimer()
         }
 
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun cancel() {
-        timerStarted = false
-        timerHandler.removeMessages(HANDLER_MESSAGE_ID)
-        focusTimerNotification?.cancel()
-        stopSelf()
+    private fun resumePauseTimer() {
+        if (timerStarted) {
+            timerStarted = false
+            timerHandler.removeMessages(HANDLER_MESSAGE_ID)
+            focusTimerNotification.pause()
+        } else {
+            startTime = System.currentTimeMillis() - (secondsPassed + 1) * 1000
+            timerStarted = true
+            timerHandler.sendEmptyMessage(HANDLER_MESSAGE_ID)
+            focusTimerNotification.resume()
+        }
     }
 
-    private fun finish() {
+    private fun cancelTimer() {
         timerStarted = false
-        stopSelf()
         timerHandler.removeMessages(HANDLER_MESSAGE_ID)
-        focusTimerNotification?.finish()
+        stopSelf()
+        focusTimerNotification.cancel()
+        onTimeChangedListener?.onTimerCancel()
+    }
+
+    private fun finishTimer() {
+        timerStarted = false
+        timerHandler.removeMessages(HANDLER_MESSAGE_ID)
+        stopSelf()
+        focusTimerNotification.finish()
+        focusTimerNotification.unregister()
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -131,6 +152,9 @@ class FocusTimerNotificationService : Service() {
     }
 
     interface OnTimeChangedListener {
+
         fun onTimeChanged(timerSecondsPassed: Long)
+
+        fun onTimerCancel()
     }
 }
