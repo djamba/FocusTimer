@@ -11,15 +11,20 @@
 
 	<android.support.constraint.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:paddingLeft="16dp"
+		android:paddingRight="16dp"
+		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 		<TextView
 			android:id="@+id/goal_label"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="32dp"
 			android:layout_marginLeft="8dp"
 			android:layout_marginRight="8dp"
+			android:textSize="18sp"
+			android:textColor="#a000"
 			android:text="Укажите цель помидора"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
@@ -27,14 +32,29 @@
 			tools:text="Укажите цель помидора"/>
 
 		<EditText
+			android:id="@+id/goal_text"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
 			android:text="@={viewModel.goal}"
-			android:inputType="text"
+			android:inputType="textMultiLine"
 			android:hint="Введите что вы будуте делать"
 			app:layout_constraintTop_toBottomOf="@id/goal_label"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"/>
+
+		<Button
+			android:id="@+id/start_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Ok"
+			app:layout_constraintTop_toBottomOf="@+id/goal_text"
+			app:layout_constraintRight_toRightOf="parent"/>
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="360dp"
+			app:layout_constraintTop_toBottomOf="@+id/start_button"/>
 
 	</android.support.constraint.ConstraintLayout>
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
+import java.util.concurrent.TimeUnit
 
 class FocusTimerNotificationService : Service() {
 
@@ -19,7 +20,7 @@ class FocusTimerNotificationService : Service() {
         private const val EXTRA_START_TIME = "EXTRA_START_TIME"
         private const val EXTRA_TOTAL_TIME = "EXTRA_TOTAL_TIME"
 
-        fun showNotification(context: Context, goal: String, startTime: Long, totalSeconds: Int) {
+        fun showNotification(context: Context, goal: String, startTime: Long, totalSeconds: Long) {
             val intent = Intent(context, FocusTimerNotificationService::class.java)
             intent.putExtra(EXTRA_ACTION, EXTRA_ACTION_START)
             intent.putExtra(EXTRA_GOAL, goal)
@@ -55,7 +56,7 @@ class FocusTimerNotificationService : Service() {
 
                 if (secondsPassed < totalSeconds) {
                     val timeLeft = totalSeconds - secondsPassed
-                    focusTimerNotification.updateProgress(timeLeft.toString())
+                    focusTimerNotification.updateProgress(timeToString(timeLeft))
                     timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
                 }
                 else {
@@ -69,7 +70,7 @@ class FocusTimerNotificationService : Service() {
     private var timerStarted = false
     private var startTime: Long = 0
     private var secondsPassed: Long = 0
-    private var totalSeconds: Int = 0
+    private var totalSeconds: Long = 0
     private lateinit var focusTimerNotification: FocusTimerNotification
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -80,7 +81,7 @@ class FocusTimerNotificationService : Service() {
 
             val goal = intent.getStringExtra(EXTRA_GOAL)
             startTime = intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
-            totalSeconds = intent.getIntExtra(EXTRA_TOTAL_TIME, 0)
+            totalSeconds = intent.getLongExtra(EXTRA_TOTAL_TIME, 0)
 
             focusTimerNotification = FocusTimerNotification(this)
             val notification = focusTimerNotification.notifyFocusOnWork(goal)
@@ -118,11 +119,13 @@ class FocusTimerNotificationService : Service() {
             timerStarted = false
             timerHandler.removeMessages(HANDLER_MESSAGE_ID)
             focusTimerNotification.pause()
+            onTimeChangedListener?.onTimerPaused()
         } else {
             startTime = System.currentTimeMillis() - (secondsPassed + 1) * 1000
             timerStarted = true
             timerHandler.sendEmptyMessage(HANDLER_MESSAGE_ID)
             focusTimerNotification.resume()
+            onTimeChangedListener?.onTimerResumed()
         }
     }
 
@@ -142,6 +145,12 @@ class FocusTimerNotificationService : Service() {
         focusTimerNotification.unregister()
     }
 
+    private fun timeToString(timeLeft: Long) : String {
+        val min = TimeUnit.SECONDS.toMinutes(timeLeft)
+        val sec = timeLeft - TimeUnit.MINUTES.toSeconds(min)
+        return "$min:$sec"
+    }
+
     override fun onBind(intent: Intent): IBinder? {
         return binder
     }
@@ -154,6 +163,10 @@ class FocusTimerNotificationService : Service() {
     interface OnTimeChangedListener {
 
         fun onTimeChanged(timerSecondsPassed: Long)
+
+        fun onTimerPaused()
+
+        fun onTimerResumed()
 
         fun onTimerCancel()
     }

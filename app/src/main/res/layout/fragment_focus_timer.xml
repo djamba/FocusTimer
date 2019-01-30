@@ -18,7 +18,7 @@
 			android:id="@+id/goal_text"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="40dp"
 			android:layout_marginLeft="8dp"
 			android:layout_marginRight="8dp"
 			android:gravity="center"
@@ -34,6 +34,7 @@
 			android:id="@+id/timer_view"
 			android:layout_width="wrap_content"
 			android:layout_height="370dp"
+			android:layout_marginTop="24dp"
 			android:paddingLeft="40dp"
 			android:paddingRight="40dp"
 			app:activeColor="@color/colorAccent"
@@ -51,38 +52,41 @@
 			android:id="@+id/start_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
 			android:text="Start"
 			app:layout_constraintVertical_bias="0.2"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@+id/stop_button"
-			app:layout_constraintTop_toBottomOf="@+id/timer_view"
-			tools:text="Start"/>
-
-		<Button
-			android:id="@+id/stop_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Stop"
-			app:layout_constraintVertical_bias="0.2"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintLeft_toRightOf="@+id/start_button"
 			app:layout_constraintRight_toLeftOf="@+id/pause_button"
 			app:layout_constraintTop_toBottomOf="@+id/timer_view"
-			tools:text="Stop"/>
+			tools:text="Start"/>
 
 		<Button
 			android:id="@+id/pause_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
 			android:text="Pause"
 			app:layout_constraintVertical_bias="0.2"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintLeft_toRightOf="@+id/stop_button"
-			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintLeft_toRightOf="@+id/start_button"
+			app:layout_constraintRight_toLeftOf="@+id/stop_button"
 			app:layout_constraintTop_toBottomOf="@+id/timer_view"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:text="Pause"/>
+
+		<Button
+			android:id="@+id/stop_button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:text="Cancel"
+			app:layout_constraintVertical_bias="0.2"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toRightOf="@+id/pause_button"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/timer_view"
+			tools:text="Cancel"/>
 
 	</android.support.constraint.ConstraintLayout>
 

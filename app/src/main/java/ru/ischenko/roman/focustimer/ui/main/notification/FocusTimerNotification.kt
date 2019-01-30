@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
@@ -116,6 +117,7 @@ class FocusTimerNotification(val context: Context) {
         notificationBuilder
                 .setAutoCancel(true)
                 .setOngoing(false)
+                .setLights(Color.parseColor("#ef5350"), 5000, 5000)
         notificationBuilder.setContentTitle(context.getString(R.string.focus_timer_notification_rest))
         showNotification()
     }

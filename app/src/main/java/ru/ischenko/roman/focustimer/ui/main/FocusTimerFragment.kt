@@ -16,8 +16,11 @@ import android.widget.Toast
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.ui.common.TimerView
 import ru.ischenko.roman.focustimer.ui.main.notification.FocusTimerNotificationService
+import java.util.concurrent.TimeUnit
 
 class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChangedListener {
+
+    private val POMODORE_TIME = TimeUnit.MINUTES.toSeconds(25)
 
     private var serviceBound = false
     private var focusTimerNotificationService: FocusTimerNotificationService? = null
@@ -37,12 +40,12 @@ class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChang
         viewModel.goal.observe(this, Observer { binding.invalidateAll() })
 
         binding.startButton.setOnClickListener {
-            binding.timerView.startTimer(60)
+            binding.timerView.startTimer(POMODORE_TIME)
             FocusTimerNotificationService.showNotification(
                     requireContext(),
                     viewModel.goal.value ?: "focus",
                     System.currentTimeMillis(),
-                    60)
+                    POMODORE_TIME)
         }
 
         binding.stopButton.setOnClickListener {
@@ -84,6 +87,14 @@ class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChang
 
     override fun onTimeChanged(timerSecondsPassed: Long) {
         binding.timerView.updateTime(timerSecondsPassed)
+    }
+
+    override fun onTimerPaused() {
+        binding.pauseButton.text = "Resume"
+    }
+
+    override fun onTimerResumed() {
+        binding.pauseButton.text = "Pause"
     }
 
     override fun onTimerCancel() {

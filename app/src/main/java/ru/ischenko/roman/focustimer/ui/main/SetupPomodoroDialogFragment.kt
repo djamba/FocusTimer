@@ -26,6 +26,8 @@ class SetupPomodoroDialogFragment : BottomSheetDialogFragment() {
         viewModel = ViewModelProviders.of(requireActivity()).get(FocusTimerViewModel::class.java)
         binding.viewModel = viewModel
 
+        binding.startButton.setOnClickListener { dismiss() }
+
         return binding.root
     }
 
