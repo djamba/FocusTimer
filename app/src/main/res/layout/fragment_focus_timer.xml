@@ -25,6 +25,8 @@
 			android:clickable="true"
 			android:focusable="true"
 			android:text="@{viewModel.goal}"
+			android:textSize="17sp"
+			android:textColor="@color/colorPrimaryDark"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"

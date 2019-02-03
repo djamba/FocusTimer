@@ -14,6 +14,6 @@ class FocusTimerViewModel : ViewModel() {
         private set
 
     init {
-        goal.value = "Написать семь абзацев для сатьи про новый компилятор"
+        goal.value = "Цель помидора"
     }
 }

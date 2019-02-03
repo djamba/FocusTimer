@@ -97,6 +97,10 @@ class FocusTimerFragment : Fragment(), FocusTimerNotificationService.OnTimeChang
         binding.pauseButton.text = "Pause"
     }
 
+    override fun onTimerFinish() {
+        binding.timerView.stopTimer()
+    }
+
     override fun onTimerCancel() {
         binding.timerView.stopTimer()
     }
