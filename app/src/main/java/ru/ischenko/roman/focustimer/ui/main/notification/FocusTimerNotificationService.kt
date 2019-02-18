@@ -1,6 +1,5 @@
 package ru.ischenko.roman.focustimer.ui.main.notification
 
-import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -15,20 +14,26 @@ class FocusTimerNotificationService : Service() {
         private const val EXTRA_ACTION_START = "EXTRA_ACTION_START"
         private const val EXTRA_ACTION_CANCEL = "EXTRA_ACTION_CANCEL"
         private const val EXTRA_ACTION_PAUSE_RESUME_WORK = "EXTRA_ACTION_PAUSE_RESUME_WORK"
-        private const val EXTRA_GOAL = "EXTRA_GOAL"
         private const val EXTRA_START_TIME = "EXTRA_START_TIME"
         private const val EXTRA_TOTAL_TIME = "EXTRA_TOTAL_TIME"
+        private const val EXTRA_ACTIONS = "EXTRA_ACTIONS"
+        private const val EXTRA_TITLE = "EXTRA_TITLE"
+        private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
 
-        fun showNotification(context: Context, goal: String, startTime: Long, totalSeconds: Long) {
+        fun startTimer(context: Context, title: String, message: String,
+                       startTime: Long, totalSeconds: Long,
+                       actions: Array<NotificationAction>) {
             val intent = Intent(context, FocusTimerNotificationService::class.java)
             intent.putExtra(EXTRA_ACTION, EXTRA_ACTION_START)
-            intent.putExtra(EXTRA_GOAL, goal)
+            intent.putExtra(EXTRA_TITLE, title)
+            intent.putExtra(EXTRA_MESSAGE, message)
             intent.putExtra(EXTRA_START_TIME, startTime)
             intent.putExtra(EXTRA_TOTAL_TIME, totalSeconds)
+            intent.putExtra(EXTRA_ACTIONS, actions)
             context.startService(intent)
         }
 
-        fun pauseResumeWork(context: Context) {
+        fun resumePauseTimer(context: Context) {
             val intent = Intent(context, FocusTimerNotificationService::class.java)
             intent.putExtra(EXTRA_ACTION, EXTRA_ACTION_PAUSE_RESUME_WORK)
             context.startService(intent)
@@ -42,7 +47,7 @@ class FocusTimerNotificationService : Service() {
     }
 
     private val binder = NotificationServiceBinder()
-    private lateinit var focusTimerProgressHandler: FocusTimerProgressHandler
+    private var progressHandler: FocusTimerProgressHandler? = null
 
     var onTimeChangedListener: OnTimeChangedListener? = null
 
@@ -50,48 +55,57 @@ class FocusTimerNotificationService : Service() {
     private var startTime: Long = 0
     private var secondsPassed: Long = 0
     private var totalSeconds: Long = 0
-    private lateinit var focusTimerNotification: FocusTimerNotification
+    private var focusTimerNotification: FocusTimerNotification? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val action = intent?.getStringExtra(EXTRA_ACTION)
 
-        if (action == EXTRA_ACTION_START) {
-
-            val goal = intent.getStringExtra(EXTRA_GOAL)
-            startTime = intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
-            totalSeconds = intent.getLongExtra(EXTRA_TOTAL_TIME, 0)
-
-            initFocusTimerProgressHandler()
-
-            val notification = initFocusTimerNotification(goal)
-            startForeground(FocusTimerNotification.FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
-
-            timerStarted = true
-            focusTimerProgressHandler.startTimer()
+        if (focusTimerNotification == null) {
+            initNotification()
         }
-        else if(action == EXTRA_ACTION_CANCEL) {
-            cancelTimer()
-        }
-        else if(action == EXTRA_ACTION_PAUSE_RESUME_WORK) {
-            resumePauseTimer()
+
+        when (action) {
+            EXTRA_ACTION_START -> {
+
+                val title = intent.getStringExtra(EXTRA_TITLE)
+                val message = intent.getStringExtra(EXTRA_MESSAGE)
+                startTime = intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
+                totalSeconds = intent.getLongExtra(EXTRA_TOTAL_TIME, 0)
+                val actions = getActionsFromIntent(intent)
+
+                initProgressHandler()
+
+                val notification = focusTimerNotification?.createNotification(title, message, true, actions)
+                startForeground(FocusTimerNotification.FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
+
+                timerStarted = true
+                progressHandler?.startTimer()
+            }
+            EXTRA_ACTION_CANCEL -> {
+                cancelTimer()
+            }
+            EXTRA_ACTION_PAUSE_RESUME_WORK -> {
+                resumePauseTimer()
+            }
         }
 
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        focusTimerProgressHandler.unregister()
+    private fun getActionsFromIntent(intent: Intent) : List<NotificationAction> {
+        val parcelableActions = intent.getParcelableArrayExtra(EXTRA_ACTIONS)
+        val actions = mutableListOf<NotificationAction>()
+        for (parcelableAction in parcelableActions) {
+            actions.add(parcelableAction as NotificationAction)
+        }
+        return actions
     }
 
-    private fun initFocusTimerNotification(goal: String) : Notification {
-
+    private fun initNotification() {
         focusTimerNotification = FocusTimerNotification(this)
-        val notification = focusTimerNotification.notifyFocusOnWork(goal)
-
-        focusTimerNotification.register()
-        focusTimerNotification.focusTimerNotificationListener =
+        focusTimerNotification?.register()
+        focusTimerNotification?.focusTimerNotificationListener =
                 object : FocusTimerNotification.FocusTimerNotificationListener {
 
             override fun onPause() {
@@ -105,21 +119,21 @@ class FocusTimerNotificationService : Service() {
             override fun onCancel() {
                 cancelTimer()
             }
-        }
 
-        return notification
+            override fun onCustomAction(action: String) {}
+        }
     }
 
-    private fun  initFocusTimerProgressHandler() {
-        focusTimerProgressHandler = FocusTimerProgressHandler(this, startTime, totalSeconds)
-        focusTimerProgressHandler.focusTimerProgressHandlerListener =
+    private fun  initProgressHandler() {
+        progressHandler = FocusTimerProgressHandler(this, startTime, totalSeconds)
+        progressHandler?.focusTimerProgressHandlerListener =
                 object : FocusTimerProgressHandler.FocusTimerProgressHandlerListener {
 
             override fun onTimeChanged(secondsPassed: Long) {
                 val timeLeft = totalSeconds - secondsPassed
-                focusTimerNotification.updateProgress(timeToString(timeLeft))
+                focusTimerNotification?.updateProgress(timeToString(timeLeft))
                 onTimeChangedListener?.onTimeChanged(secondsPassed)
-                focusTimerProgressHandler.continueTimer()
+                progressHandler?.continueTimer()
             }
 
             override fun onTimeFinish() {
@@ -127,41 +141,50 @@ class FocusTimerNotificationService : Service() {
             }
         }
 
-        focusTimerProgressHandler.register()
+        progressHandler?.register()
     }
 
     private fun resumePauseTimer() {
         if (timerStarted) {
             timerStarted = false
-            focusTimerProgressHandler.stopTimer()
-            focusTimerNotification.pause()
+            progressHandler?.stopTimer()
+            focusTimerNotification?.pause()
             onTimeChangedListener?.onTimerPaused()
         } else {
             startTime = System.currentTimeMillis() - (secondsPassed + 1) * 1000
             timerStarted = true
-            focusTimerProgressHandler.continueTimer()
-            focusTimerNotification.resume()
+            progressHandler?.continueTimer()
+            focusTimerNotification?.resume()
             onTimeChangedListener?.onTimerResumed()
         }
     }
 
     private fun cancelTimer() {
         timerStarted = false
-        focusTimerProgressHandler.cancelTimer()
+        progressHandler?.cancelTimer()
+
+        unregister()
+        stopForeground(false)
         stopSelf()
 
-        focusTimerNotification.cancel()
+        focusTimerNotification?.cancel()
         onTimeChangedListener?.onTimerCancel()
     }
 
     private fun finishTimer() {
         timerStarted = false
-        focusTimerProgressHandler.cancelTimer()
+        progressHandler?.cancelTimer()
+
+        unregister()
+        stopForeground(false)
         stopSelf()
 
-        focusTimerNotification.finish()
-        focusTimerNotification.unregister()
         onTimeChangedListener?.onTimerFinish()
+    }
+
+    private fun unregister() {
+        focusTimerNotification?.unregister()
+        progressHandler?.unregister()
     }
 
     private fun timeToString(timeLeft: Long) : String {

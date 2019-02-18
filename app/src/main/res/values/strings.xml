@@ -3,6 +3,7 @@
 	<string name="app_name">FocusTimer</string>
 
 	<string name="focus_timer_notification_focus_on_work">Сосредаточтесь на работе&#160;&#160;</string>
-	<string name="focus_timer_notification_rest">Подведите итоги и отдахните</string>
+	<string name="focus_timer_notification_rest">Подведите итоги и отдахните&#160;&#160;</string>
+	<string name="focus_timer_notification_rest_content">Важно отвлечся от работы, взглянуть на ретроспективно на потраченное время</string>
 
 </resources>

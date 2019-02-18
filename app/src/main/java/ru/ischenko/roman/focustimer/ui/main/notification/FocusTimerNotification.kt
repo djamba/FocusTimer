@@ -31,13 +31,16 @@ class FocusTimerNotification(val context: Context) {
         private const val ACTION_RESUME: String = "FocusTimerNotification.ACTION_RESUME"
         private const val ACTION_PAUSE: String = "FocusTimerNotification.ACTION_PAUSE"
         private const val ACTION_CANCEL: String = "FocusTimerNotification.ACTION_CANCEL"
+        private const val ACTION_CUSTOM: String = "FocusTimerNotification.ACTION_CUSTOM"
+        private const val EXTRA_ACTION: String = "FocusTimerNotification.EXTRA_ACTION"
     }
 
+    private var title: String? = null
     private lateinit var pendingIntent: PendingIntent
     private lateinit var notificationBuilder: NotificationCompat.Builder
     var focusTimerNotificationListener: FocusTimerNotificationListener? = null
 
-    private val intent = Intent(context, FocusTimerActivity::class.java)
+    private val contentIntent = Intent(context, FocusTimerActivity::class.java)
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     private val pausePendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_PAUSE), 0)
@@ -48,53 +51,64 @@ class FocusTimerNotification(val context: Context) {
     private val resumeAction = NotificationCompat.Action(R.drawable.ic_resume, "Resume", resumePendingIntent)
     private val cancelAction = NotificationCompat.Action(R.drawable.ic_stop, "Cancel", cancelPendingIntent)
 
-    private val pauseReceiver = object : BroadcastReceiver() {
+    private val actionReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            focusTimerNotificationListener?.onPause()
-        }
-    }
-
-    private val resumeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            focusTimerNotificationListener?.onResume()
-        }
-    }
-
-    private val cancelReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            focusTimerNotificationListener?.onCancel()
+            when (intent?.action) {
+                ACTION_PAUSE -> focusTimerNotificationListener?.onPause()
+                ACTION_RESUME -> focusTimerNotificationListener?.onResume()
+                ACTION_CANCEL -> focusTimerNotificationListener?.onCancel()
+                ACTION_CUSTOM -> focusTimerNotificationListener?.onCustomAction(
+                            intent.getStringExtra(EXTRA_ACTION) ?: ACTION_CUSTOM)
+            }
         }
     }
 
     fun register() {
-        context.registerReceiver(pauseReceiver, IntentFilter(ACTION_PAUSE))
-        context.registerReceiver(resumeReceiver, IntentFilter(ACTION_RESUME))
-        context.registerReceiver(cancelReceiver, IntentFilter(ACTION_CANCEL))
+        val intentFilter = IntentFilter().apply {
+            addAction(ACTION_CANCEL)
+            addAction(ACTION_RESUME)
+            addAction(ACTION_PAUSE)
+            addAction(ACTION_CUSTOM)
+        }
+        context.registerReceiver(actionReceiver, intentFilter)
     }
 
     fun unregister() {
-        context.unregisterReceiver(pauseReceiver)
-        context.unregisterReceiver(resumeReceiver)
-        context.unregisterReceiver(cancelReceiver)
+        context.unregisterReceiver(actionReceiver)
     }
 
-    fun notifyFocusOnWork(workGoal: String): Notification {
+    fun createNotification(title: String, message: String, isOngoing: Boolean,
+                           actions: List<NotificationAction>): Notification {
+
+        this.title = title
 
         pendingIntent = PendingIntent.getActivity(context, FOCUS_TIMER_NOTIFICATION_REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         notificationBuilder = NotificationCompat.Builder(context, FOCUS_TIMER_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_focus_notification_icon)
-                .setContentTitle(context.getString(R.string.focus_timer_notification_focus_on_work))
-                .setContentText(workGoal)
-                .setAutoCancel(false)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(!isOngoing)
+                .setOngoing(isOngoing)
                 .setOnlyAlertOnce(true)
-                .setOngoing(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
-                .addAction(cancelAction)
-                .addAction(pauseAction)
                 .setShowWhen(true)
+                .setLights(Color.parseColor("#ef5350"), 500, 500)
+
+        for (action in actions) {
+            when (action) {
+                is ResumePauseAction -> notificationBuilder.addAction(pauseAction)
+                is CancelAction -> notificationBuilder.addAction(cancelAction)
+                is CustomAction -> {
+                    val intent = Intent(ACTION_CUSTOM).apply { putExtra(EXTRA_ACTION, action.action) }
+                    val pendingIntent = PendingIntent.getBroadcast(context, action.action.hashCode(), intent, 0)
+                    val notificationAction = NotificationCompat.Action(R.drawable.ic_pause, action.title, pendingIntent)
+                    notificationBuilder.addAction(notificationAction)
+                }
+            }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(FOCUS_TIMER_NOTIFICATION_CHANNEL_ID,
@@ -107,19 +121,12 @@ class FocusTimerNotification(val context: Context) {
     }
 
     fun updateProgress(workTime: String) {
-        notificationBuilder.setContentTitle(context.getString(R.string.focus_timer_notification_focus_on_work)  + workTime)
+        notificationBuilder.setContentTitle(title + workTime)
         showNotification()
     }
 
-    @SuppressLint("RestrictedApi")
-    fun finish() {
-        notificationBuilder.mActions.clear()
-        notificationBuilder
-                .setAutoCancel(true)
-                .setOngoing(false)
-                .setLights(Color.parseColor("#ef5350"), 5000, 5000)
-        notificationBuilder.setContentTitle(context.getString(R.string.focus_timer_notification_rest))
-        showNotification()
+    fun notify(notification: Notification) {
+        notificationManager.notify(FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
     }
 
     fun cancel() {
@@ -157,5 +164,7 @@ class FocusTimerNotification(val context: Context) {
         fun onResume()
 
         fun onCancel()
+
+        fun onCustomAction(action: String)
     }
 }
