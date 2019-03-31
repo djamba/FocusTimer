@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui.main.notification
+package ru.ischenko.roman.focustimer.ui.notification
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -22,6 +22,8 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
         private const val ACTION_ALARM: String = "FocusTimerProgressHandler.ACTION_ALARM"
     }
 
+    private var isRegistered: Boolean = false
+
     private val timerHandler: Handler
     private val screenStateReceiver: BroadcastReceiver
 
@@ -34,7 +36,7 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
         timerHandler = Handler(Handler.Callback {
             if (it.what == HANDLER_MESSAGE_ID) {
                 val secondsPassed = (System.currentTimeMillis() - startTime) / 1000
-                if (secondsPassed < totalSeconds) {
+                if (secondsPassed <= totalSeconds) {
                     focusTimerProgressHandlerListener?.onTimeChanged(secondsPassed)
                 } else {
                     focusTimerProgressHandlerListener?.onTimeFinish()
@@ -69,11 +71,15 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
         context.registerReceiver(screenStateReceiver, screenStateIntentFilter)
 
         context.registerReceiver(alarmReceiver, IntentFilter(ACTION_ALARM))
+        isRegistered = true
     }
 
     fun unregister() {
-        context.unregisterReceiver(screenStateReceiver)
-        context.unregisterReceiver(alarmReceiver)
+        if (isRegistered) {
+            context.unregisterReceiver(screenStateReceiver)
+            context.unregisterReceiver(alarmReceiver)
+            isRegistered = false
+        }
     }
 
     fun startTimer() {

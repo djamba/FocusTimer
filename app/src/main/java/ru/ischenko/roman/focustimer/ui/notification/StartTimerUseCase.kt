@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui.main.notification
+package ru.ischenko.roman.focustimer.ui.notification
 
 import android.content.Context
 

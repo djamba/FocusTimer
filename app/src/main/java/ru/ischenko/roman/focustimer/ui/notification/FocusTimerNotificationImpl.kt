@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui.main.notification
+package ru.ischenko.roman.focustimer.ui.notification
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -15,6 +15,8 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.ui.FocusTimerActivity
+import ru.ischenko.roman.focustimer.ui.main.FocusTimerNotification
+import ru.ischenko.roman.focustimer.ui.main.FocusTimerNotificationCreator
 import java.util.concurrent.TimeUnit
 
 /**

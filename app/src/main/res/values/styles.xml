@@ -14,7 +14,15 @@
 	</style>
 
 	<style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+
 		<item name="bottomSheetStyle">@style/BottomSheetModalStyle</item>
+
+		<item name="colorControlNormal">@color/colorPrimary</item>
+		<item name="colorControlActivated">@color/colorPrimary</item>
+
+		<item name="colorButtonNormal">@color/colorPrimary</item>
+		<item name="android:buttonStyle">@style/ButtonColorStyle</item>
+
 	</style>
 
 	<style name="BottomSheetModalStyle"	parent="Widget.Design.BottomSheet.Modal">

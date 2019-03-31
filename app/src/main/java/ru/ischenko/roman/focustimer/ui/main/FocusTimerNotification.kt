@@ -1,6 +1,7 @@
-package ru.ischenko.roman.focustimer.ui.main.notification
+package ru.ischenko.roman.focustimer.ui.main
 
 import android.app.Notification
+import ru.ischenko.roman.focustimer.ui.notification.NotificationAction
 
 /**
  * User: roman
@@ -16,9 +17,9 @@ interface FocusTimerNotificationCreator {
 
 interface FocusTimerNotification {
 
-    var focusTimerNotificationListener: FocusTimerNotification.FocusTimerNotificationListener?
+    var focusTimerNotificationListener: FocusTimerNotificationListener?
 
-    var focusTimerActionNotificationListener: FocusTimerNotification.FocusTimerActionNotificationListener?
+    var focusTimerActionNotificationListener: FocusTimerActionNotificationListener?
 
     fun register()
 

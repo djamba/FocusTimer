@@ -3,7 +3,15 @@
 	<string name="app_name">FocusTimer</string>
 
 	<string name="focus_timer_notification_focus_on_work">Сосредаточтесь на работе&#160;&#160;</string>
-	<string name="focus_timer_notification_rest">Подведите итоги и отдахните&#160;&#160;</string>
-	<string name="focus_timer_notification_rest_content">Важно отвлечся от работы, взглянуть на ретроспективно на потраченное время</string>
+	<string name="focus_timer_notification_rest">Ретроспектива и отдых&#160;&#160;</string>
+
+	<string name="focus_timer_notification_no_goal">Цель</string>
+	<string name="focus_timer_goal_hint">Введите что вы будуте делать</string>
+
+	<string name="focus_timer_start">Старт</string>
+	<string name="focus_timer_pause">Пауза</string>
+	<string name="focus_timer_resume">Продолжить</string>
+	<string name="focus_timer_cancel">Отмена</string>
+	<string name="focus_timer_ok_button">OK</string>
 
 </resources>

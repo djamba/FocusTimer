@@ -59,6 +59,7 @@ class TimerView: View {
 
             textPaint = createPaint(typedArray.getColor(R.styleable.TimerView_textColor, 0))
             textPaint.textSize = typedArray.getDimension(R.styleable.TimerView_timerFontSize, 0F)
+            textPaint.style = Paint.Style.FILL
 
 			lineWidth = typedArray.getDimensionPixelSize(R.styleable.TimerView_lineWidth, 0)
             activePaint.strokeWidth = lineWidth.toFloat()

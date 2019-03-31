@@ -68,9 +68,6 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$project.archVersion"
     kapt "android.arch.lifecycle:compiler:$project.archVersion"
 
-    // DataBinding: notice that the compiler version must be the same than our gradle version
-    kapt "androidx.databinding:databinding-compiler:$project.databindingVersion"
-
     // UnitTest
     testImplementation "junit:junit:4.12"
     androidTestImplementation "com.android.support.test:runner:1.0.2"
