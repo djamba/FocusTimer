@@ -100,8 +100,8 @@ class TimerView: View {
 
     fun updateTime(timerSecondsPassed: Long) {
         if (progressAngle < CIRCLE_ANGLE) {
+            progressAngle += stepAngle * (timerSecondsPassed - this.timerSecondsPassed)
             this.timerSecondsPassed = timerSecondsPassed
-            progressAngle += stepAngle
             postInvalidate()
         } else {
             onTimeViewListener?.onComplete()
