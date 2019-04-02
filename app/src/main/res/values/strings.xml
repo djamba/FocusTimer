@@ -8,6 +8,8 @@
 	<string name="focus_timer_notification_no_goal">Цель</string>
 	<string name="focus_timer_goal_hint">Введите что вы будуте делать</string>
 
+	<string name="focus_timer_rest">Отдых</string>
+	<string name="focus_timer_work">Работа</string>
 	<string name="focus_timer_start">Старт</string>
 	<string name="focus_timer_pause">Пауза</string>
 	<string name="focus_timer_resume">Продолжить</string>

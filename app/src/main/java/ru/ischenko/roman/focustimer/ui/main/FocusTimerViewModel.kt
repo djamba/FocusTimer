@@ -54,15 +54,18 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
             override fun onAction(action: String) {
                 Timber.d("onAction($action)")
 
-                // TODO: Привсти UI-таймера в консистентное состояние
                 when (action) {
                     ACTION_REST -> {
+                        uiState.value = UiState.STARTED
+                        timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(REST_TIME)
                         startTimerUseCase(REST_TIME,
                                 resourceProvider.getText(R.string.focus_timer_notification_rest),
                                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
                     }
                     ACTION_WORK -> {
+                        uiState.value = UiState.STARTED
+                        timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(POMODORE_TIME)
                         startTimerUseCase(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
                                  goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
@@ -81,11 +84,11 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
         val actions: List<NotificationAction>
 
         if (isWorkTime) {
-            actions = listOf(CancelAction, CustomAction(ACTION_REST, "Rest"))
+            actions = listOf(CancelAction, CustomAction(ACTION_REST, resourceProvider.getText(R.string.focus_timer_rest)))
             title = resourceProvider.getText(R.string.focus_timer_notification_rest)
             message = goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal)
         } else {
-            actions = listOf(CancelAction, CustomAction(ACTION_WORK, "Work"))
+            actions = listOf(CancelAction, CustomAction(ACTION_WORK, resourceProvider.getText(R.string.focus_timer_work)))
             title = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
             message = goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal)
         }
@@ -99,7 +102,7 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
         uiState.value = UiState.STARTED
         startTimerEvent.value = Event(POMODORE_TIME)
         startTimerUseCase(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
-                goal.value ?: "focus")
+                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
     fun handleStopTimer() {
@@ -133,11 +136,13 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
 
     override fun onTimerFinish() {
         uiState.value = UiState.STOPPED
+        this.timerSecondsPassed.value = 0L
         showNotification()
     }
 
     override fun onTimerCancel() {
         uiState.value = UiState.STOPPED
+        this.timerSecondsPassed.value = 0L
     }
 
     override fun onCleared() {

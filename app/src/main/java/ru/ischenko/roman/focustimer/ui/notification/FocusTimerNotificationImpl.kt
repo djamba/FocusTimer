@@ -52,9 +52,12 @@ class FocusTimerNotificationImpl(private val context: Context) : FocusTimerNotif
     private val resumePendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_RESUME), 0)
     private val cancelPendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_CANCEL), 0)
 
-    private val pauseAction = NotificationCompat.Action(R.drawable.ic_pause, "Pause", pausePendingIntent)
-    private val resumeAction = NotificationCompat.Action(R.drawable.ic_resume, "Resume", resumePendingIntent)
-    private val cancelAction = NotificationCompat.Action(R.drawable.ic_stop, "Cancel", cancelPendingIntent)
+    private val pauseAction =
+            NotificationCompat.Action(R.drawable.ic_pause, context.getText(R.string.focus_timer_pause), pausePendingIntent)
+    private val resumeAction =
+            NotificationCompat.Action(R.drawable.ic_resume, context.getText(R.string.focus_timer_resume), resumePendingIntent)
+    private val cancelAction =
+            NotificationCompat.Action(R.drawable.ic_stop, context.getText(R.string.focus_timer_cancel), cancelPendingIntent)
 
     private val actionReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

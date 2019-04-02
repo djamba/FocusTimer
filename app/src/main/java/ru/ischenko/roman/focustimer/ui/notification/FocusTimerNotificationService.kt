@@ -52,8 +52,6 @@ class FocusTimerNotificationService : Service() {
     var onTimeChangedListener: OnTimeChangedListener? = null
 
     private var timerStarted = false
-    private var startTime: Long = 0
-    private var secondsPassed: Long = 0
     private var totalSeconds: Long = 0
     private var focusTimerNotification: FocusTimerNotificationImpl? = null
 
@@ -72,7 +70,6 @@ class FocusTimerNotificationService : Service() {
 
                 val title = intent.getStringExtra(EXTRA_TITLE)
                 val message = intent.getStringExtra(EXTRA_MESSAGE)
-                startTime = intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
                 totalSeconds = intent.getLongExtra(EXTRA_TOTAL_TIME, 0)
                 val actions = getActionsFromIntent(intent)
 
@@ -124,7 +121,7 @@ class FocusTimerNotificationService : Service() {
     }
 
     private fun  initProgressHandler() {
-        progressHandler = FocusTimerProgressHandler(this, startTime, totalSeconds)
+        progressHandler = FocusTimerProgressHandler(this, totalSeconds)
         progressHandler?.focusTimerProgressHandlerListener =
                 object : FocusTimerProgressHandler.FocusTimerProgressHandlerListener {
 
@@ -150,9 +147,8 @@ class FocusTimerNotificationService : Service() {
             focusTimerNotification?.pause()
             onTimeChangedListener?.onTimerPaused()
         } else {
-            startTime = System.currentTimeMillis() - (secondsPassed + 1) * 1000
             timerStarted = true
-            progressHandler?.continueTimer()
+            progressHandler?.startTimer()
             focusTimerNotification?.resume()
             onTimeChangedListener?.onTimerResumed()
         }
@@ -160,7 +156,7 @@ class FocusTimerNotificationService : Service() {
 
     private fun cancelTimer() {
         timerStarted = false
-        progressHandler?.cancelTimer()
+        progressHandler?.stopTimer()
 
         unregister()
         stopForeground(false)
@@ -172,7 +168,7 @@ class FocusTimerNotificationService : Service() {
 
     private fun finishTimer() {
         timerStarted = false
-        progressHandler?.cancelTimer()
+        progressHandler?.stopTimer()
 
         unregister()
         stopForeground(false)

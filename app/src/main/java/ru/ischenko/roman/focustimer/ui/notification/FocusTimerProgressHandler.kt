@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * Date: 03.02.19
  * Time: 18:38
  */
-class FocusTimerProgressHandler(private val context: Context, startTime: Long, private val totalSeconds: Long) {
+class FocusTimerProgressHandler(private val context: Context, private val totalSeconds: Long) {
 
     companion object {
         private const val HANDLER_MESSAGE_ID = 45678
@@ -23,6 +23,8 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
     }
 
     private var isRegistered: Boolean = false
+    private var totalSecondsPassed: Long = 0L
+    private var startTimeFromLastPause: Long = 0L
 
     private val timerHandler: Handler
     private val screenStateReceiver: BroadcastReceiver
@@ -35,7 +37,7 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
     init {
         timerHandler = Handler(Handler.Callback {
             if (it.what == HANDLER_MESSAGE_ID) {
-                val secondsPassed = (System.currentTimeMillis() - startTime) / 1000
+                val secondsPassed = totalSecondsPassed + (System.currentTimeMillis() - startTimeFromLastPause) / 1000
                 if (secondsPassed <= totalSeconds) {
                     focusTimerProgressHandlerListener?.onTimeChanged(secondsPassed)
                 } else {
@@ -83,6 +85,7 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
     }
 
     fun startTimer() {
+        startTimeFromLastPause = System.currentTimeMillis()
         timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
         alarmManager?.set(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -96,10 +99,7 @@ class FocusTimerProgressHandler(private val context: Context, startTime: Long, p
     }
 
     fun stopTimer() {
-        timerHandler.removeMessages(HANDLER_MESSAGE_ID)
-    }
-
-    fun cancelTimer() {
+        totalSecondsPassed += (System.currentTimeMillis() - startTimeFromLastPause) / 1000
         timerHandler.removeMessages(HANDLER_MESSAGE_ID)
         alarmManager?.cancel(alarmPendingIntent)
     }
