@@ -52,10 +52,6 @@ class FocusTimerFragment : Fragment() {
             binding.timerView.startTimer(it)
         })
 
-        viewModel.stopTimerEvent.observe(this, EventObserver {
-            binding.timerView.stopTimer()
-        })
-
         viewModel.editGoalTextEvent.observe(this, EventObserver {
             val addPhotoBottomDialogFragment = SetupPomodoroDialogFragment.newInstance()
             addPhotoBottomDialogFragment.show(requireActivity().supportFragmentManager, null)

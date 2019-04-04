@@ -37,7 +37,6 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
     val timerSecondsPassed: MutableLiveData<Long> = MutableLiveData()
 
     val startTimerEvent: MutableLiveData<Event<Long>> = MutableLiveData()
-    val stopTimerEvent: MutableLiveData<Event<Unit>> = MutableLiveData()
     val editGoalTextEvent: MutableLiveData<Event<Unit>> = MutableLiveData()
 
     private var isWorkTime = true
@@ -107,7 +106,8 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
 
     fun handleStopTimer() {
         if (uiState.value != UiState.STOPPED) {
-            stopTimerEvent.value = Event(Unit)
+            uiState.value = UiState.STOPPED
+            this.timerSecondsPassed.value = 0L
             stopTimerUseCase()
         }
     }
