@@ -1,11 +1,11 @@
 package ru.ischenko.roman.focustimer.ui.main
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.ui.notification.*
 import ru.ischenko.roman.focustimer.utils.ui.EventObserver

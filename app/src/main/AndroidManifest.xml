@@ -23,7 +23,7 @@
 		</activity>
 
 		<service
-			android:name="ru.ischenko.roman.focustimer.ui.notification.FocusTimerNotificationService"
+			android:name=".ui.notification.FocusTimerNotificationService"
 			android:enabled="true"
 			android:exported="false"/>
 

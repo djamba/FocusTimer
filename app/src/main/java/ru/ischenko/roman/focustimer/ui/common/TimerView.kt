@@ -7,9 +7,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorInt
 import ru.ischenko.roman.focustimer.R
 import java.lang.Math.*
 

@@ -1,7 +1,7 @@
 package ru.ischenko.roman.focustimer.ui.main
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import ru.ischenko.roman.focustimer.ui.notification.ResumePauseTimerUseCase
 import ru.ischenko.roman.focustimer.ui.notification.StartTimerUseCase
 import ru.ischenko.roman.focustimer.ui.notification.StopTimerUseCase

@@ -11,8 +11,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.ui.FocusTimerActivity
 import ru.ischenko.roman.focustimer.ui.main.FocusTimerNotification

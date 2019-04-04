@@ -1,6 +1,6 @@
 package ru.ischenko.roman.focustimer.utils.ui.binding.adapters
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import ru.ischenko.roman.focustimer.ui.common.TimerView
 
 /**

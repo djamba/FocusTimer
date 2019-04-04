@@ -1,10 +1,10 @@
 <resources>
 
-	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
 
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
+		<item name="colorAccent">@color/colorPrimary</item>
 
 		<item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
 
@@ -15,6 +15,7 @@
 
 	<style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
 
+		<item name="colorAccent">@color/colorPrimary</item>
 		<item name="bottomSheetStyle">@style/BottomSheetModalStyle</item>
 
 		<item name="colorControlNormal">@color/colorPrimary</item>
@@ -25,11 +26,11 @@
 
 	</style>
 
-	<style name="BottomSheetModalStyle"	parent="Widget.Design.BottomSheet.Modal">
+	<style name="BottomSheetModalStyle"	parent="Widget.MaterialComponents.BottomSheet.Modal">
 		<item name="android:background">@drawable/rounded_dialog</item>
 	</style>
 
-	<style name="ButtonColorStyle" parent="Widget.AppCompat.Button">
+	<style name="ButtonColorStyle" parent="Widget.MaterialComponents.Button">
 		<item name="android:textColor">@color/colorControlText</item>
 	</style>
 

@@ -1,7 +1,7 @@
 package ru.ischenko.roman.focustimer.ui.main
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.ui.notification.*
 import ru.ischenko.roman.focustimer.utils.ui.Event

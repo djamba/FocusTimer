@@ -22,11 +22,16 @@ allprojects {
 }
 
 project.ext {
-    supportLibraryVersion = "28.0.0"
+
+    ktxVersion = "1.0.1"
+    appCompatVersion = "1.0.2"
+    cardViewVersion = "1.0.0"
+    recyclerViewVersion = "1.0.0"
+    androidMaterialVersion = "1.0.0"
     constraintLayoutVersion = "1.1.3"
 
-    archVersion = "1.1.1"
-    archVersionRoom = "1.1.1"
+    archVersion = "2.0.0"
+    archVersionRoom = "2.0.0"
 
     daggerVersion = "2.15"
     rxJavaVersion = "2.1.12"
