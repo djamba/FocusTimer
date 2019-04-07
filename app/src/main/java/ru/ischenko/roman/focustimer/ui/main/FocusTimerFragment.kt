@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
-import ru.ischenko.roman.focustimer.ui.notification.*
+import ru.ischenko.roman.focustimer.ui.BaseFragment
 import ru.ischenko.roman.focustimer.utils.ui.EventObserver
-import ru.ischenko.roman.focustimer.utils.ui.ResourceProvider
+import ru.ischenko.roman.focustimer.utils.ui.ViewModelFactory
+import javax.inject.Inject
 
-class FocusTimerFragment : Fragment() {
+class FocusTimerFragment : BaseFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory<FocusTimerViewModel>
 
     private lateinit var binding: FragmentFocusTimerBinding
     private lateinit var viewModel: FocusTimerViewModel
@@ -23,18 +25,7 @@ class FocusTimerFragment : Fragment() {
             it.lifecycleOwner = this
         }
 
-        // TODO: Убрать инициализацию в DI
-        val focusTimerNotification = FocusTimerNotificationImpl(requireContext().applicationContext)
-        val resourceProvider = ResourceProvider(requireContext().applicationContext)
-        val startTimerUseCase = StartTimerUseCase(requireContext().applicationContext)
-        val stopTimerUseCase = StopTimerUseCase(requireContext().applicationContext)
-        val resumePauseTimerUseCase = ResumePauseTimerUseCase(requireContext().applicationContext)
-        val notificationServiceDelegate = NotificationServiceDelegateImpl(requireContext().applicationContext)
-
-        val viewModelFactory = FocusTimerViewModelFactory(startTimerUseCase, stopTimerUseCase, resumePauseTimerUseCase,
-                focusTimerNotification, notificationServiceDelegate, resourceProvider)
-
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(FocusTimerViewModel::class.java)
+        viewModel = getViewModel(viewModelFactory)
         binding.viewModel = viewModel
 
         initHandlers()

@@ -48,6 +48,12 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$project.constraintLayoutVersion"
     implementation "com.google.android.material:material:$project.androidMaterialVersion"
 
+    // Dagger2
+    implementation "com.google.dagger:dagger:$project.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$project.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$project.daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$project.daggerVersion"
+
     // Timber
     implementation "com.jakewharton.timber:timber:$project.timberVersion"
 

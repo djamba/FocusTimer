@@ -33,7 +33,7 @@ project.ext {
     archVersion = "2.0.0"
     archVersionRoom = "2.0.0"
 
-    daggerVersion = "2.15"
+    daggerVersion = "2.22.1"
     rxJavaVersion = "2.1.12"
     rxAndroidVersion = "2.0.2"
     rxKotlin = "2.2.0"
