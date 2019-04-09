@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation project(":core")
+    implementation project(":data")
 
     // Support library
     implementation "androidx.core:core-ktx:$project.ktxVersion"
@@ -60,11 +61,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxkotlin:$project.rxKotlin"
     implementation "io.reactivex.rxjava2:rxjava:$project.rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$project.rxAndroidVersion"
-
-    //Room
-    implementation "android.arch.persistence.room:runtime:$project.archVersionRoom"
-    implementation "android.arch.persistence.room:rxjava2:$project.archVersionRoom"
-    kapt "android.arch.persistence.room:compiler:$project.archVersionRoom"
 
     //Lifecycle
     implementation "android.arch.lifecycle:runtime:$project.archVersion"

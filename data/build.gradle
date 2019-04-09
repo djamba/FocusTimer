@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+}
+
+dependencies {
+    //Room
+    implementation "android.arch.persistence.room:runtime:$project.archVersionRoom"
+    implementation "android.arch.persistence.room:rxjava2:$project.archVersionRoom"
+    kapt "android.arch.persistence.room:compiler:$project.archVersionRoom"
+}
