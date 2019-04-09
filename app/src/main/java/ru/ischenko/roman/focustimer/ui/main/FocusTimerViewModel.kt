@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.ischenko.roman.focustimer.R
 import ru.ischenko.roman.focustimer.ui.notification.*
-import ru.ischenko.roman.focustimer.utils.ui.Event
-import ru.ischenko.roman.focustimer.utils.ui.ResourceProvider
+import ru.ischenko.roman.focustimer.ui.utils.Event
+import ru.ischenko.roman.focustimer.ui.utils.ResourceProvider
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 

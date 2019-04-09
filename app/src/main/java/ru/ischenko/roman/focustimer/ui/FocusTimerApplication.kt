@@ -2,7 +2,7 @@ package ru.ischenko.roman.focustimer.ui
 
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
-import ru.ischenko.roman.focustimer.ui.di.DaggerAppComponent
+import ru.ischenko.roman.focustimer.di.DaggerAppComponent
 
 /**
  * User: roman

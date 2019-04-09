@@ -10,7 +10,7 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-import ru.ischenko.roman.focustimer.R
+import ru.ischenko.roman.focustimer.core.R
 import java.lang.Math.*
 
 /**

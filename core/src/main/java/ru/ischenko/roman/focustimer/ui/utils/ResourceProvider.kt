@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.utils.ui
+package ru.ischenko.roman.focustimer.ui.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

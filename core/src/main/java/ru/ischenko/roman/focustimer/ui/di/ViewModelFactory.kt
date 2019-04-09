@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.utils.ui
+package ru.ischenko.roman.focustimer.ui.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

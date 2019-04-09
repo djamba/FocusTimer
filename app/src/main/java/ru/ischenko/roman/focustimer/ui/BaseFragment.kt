@@ -3,7 +3,7 @@ package ru.ischenko.roman.focustimer.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerFragment
-import ru.ischenko.roman.focustimer.utils.ui.ViewModelFactory
+import ru.ischenko.roman.focustimer.ui.di.ViewModelFactory
 
 /**
  * User: roman

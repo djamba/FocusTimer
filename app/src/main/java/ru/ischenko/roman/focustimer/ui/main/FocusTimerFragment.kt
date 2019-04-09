@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import ru.ischenko.roman.focustimer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.ui.BaseFragment
-import ru.ischenko.roman.focustimer.utils.ui.EventObserver
-import ru.ischenko.roman.focustimer.utils.ui.ViewModelFactory
+import ru.ischenko.roman.focustimer.ui.utils.EventObserver
+import ru.ischenko.roman.focustimer.ui.di.ViewModelFactory
 import javax.inject.Inject
 
 class FocusTimerFragment : BaseFragment() {

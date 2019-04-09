@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui.di
+package ru.ischenko.roman.focustimer.di
 
 import android.content.Context
 import dagger.Module

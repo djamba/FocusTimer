@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui.di
+package ru.ischenko.roman.focustimer.di
 
 import javax.inject.Qualifier
 
