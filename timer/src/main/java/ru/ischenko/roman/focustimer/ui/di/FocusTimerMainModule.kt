@@ -25,16 +25,8 @@ class FocusTimerMainModule {
             ResourceProviderImpl(context)
 
     @Provides
-    fun provideStartTimerUseCase(@AppContext context: Context) : StartTimerUseCase =
-            StartTimerUseCase(context)
-
-    @Provides
-    fun provideStopTimerUseCase(@AppContext context: Context) : StopTimerUseCase =
-            StopTimerUseCase(context)
-
-    @Provides
-    fun provideResumePauseTimerUseCase(@AppContext context: Context) : ResumePauseTimerUseCase =
-            ResumePauseTimerUseCase(context)
+    fun provideFocusTimerServiceController(@AppContext context: Context) : FocusTimerServiceController =
+            FocusTimerServiceControllerIml(context)
 
     @Provides
     fun provideNotificationServiceDelegate(@AppContext context: Context) : NotificationServiceDelegate =
@@ -42,14 +34,11 @@ class FocusTimerMainModule {
 
     @Provides
     @FragmentScope
-    fun provideFocusTimerViewModel(startTimerUseCase: StartTimerUseCase,
-                                   stopTimerUseCase: StopTimerUseCase,
-                                   resumePauseTimerUseCase: ResumePauseTimerUseCase,
+    fun provideFocusTimerViewModel(focusTimerServiceController: FocusTimerServiceController,
                                    notification: FocusTimerNotification,
                                    notificationServiceDelegate: NotificationServiceDelegate,
                                    resourceProvider: ResourceProvider): FocusTimerViewModel =
-            FocusTimerViewModel(startTimerUseCase, stopTimerUseCase, resumePauseTimerUseCase,
-                    notification, notificationServiceDelegate, resourceProvider)
+            FocusTimerViewModel(focusTimerServiceController, notification, notificationServiceDelegate, resourceProvider)
 
     @Provides
     @FragmentScope

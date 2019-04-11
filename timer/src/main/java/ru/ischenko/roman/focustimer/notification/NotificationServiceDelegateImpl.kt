@@ -6,11 +6,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 
-/**
- * User: roman
- * Date: 31.03.19
- * Time: 18:41
- */
+interface NotificationServiceDelegate {
+
+    fun startService(onTimeChangedListener: OnTimeChangedListener)
+
+    fun stopService()
+}
+
 class NotificationServiceDelegateImpl(private val context: Context) : NotificationServiceDelegate {
 
     private var serviceBound = false

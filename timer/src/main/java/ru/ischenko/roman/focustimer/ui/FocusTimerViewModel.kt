@@ -9,17 +9,9 @@ import ru.ischenko.roman.focustimer.utils.ResourceProvider
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-/**
- * User: roman
- * Date: 22.07.18
- * Time: 21:06
- */
-
 enum class UiState { STARTED, PAUSED, STOPPED }
 
-class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
-                          private val stopTimerUseCase: StopTimerUseCase,
-                          private val resumePauseTimerUseCase: ResumePauseTimerUseCase,
+class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerServiceController,
                           private val notification: FocusTimerNotification,
                           private val notificationServiceDelegate: NotificationServiceDelegate,
                           private val resourceProvider: ResourceProvider) : ViewModel(), OnTimeChangedListener {
@@ -58,7 +50,7 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
                         uiState.value = UiState.STARTED
                         timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(REST_TIME)
-                        startTimerUseCase(REST_TIME,
+                        focusTimerServiceController.startTimer(REST_TIME,
                                 resourceProvider.getText(R.string.focus_timer_notification_rest),
                                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
                     }
@@ -66,7 +58,7 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
                         uiState.value = UiState.STARTED
                         timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(POMODORE_TIME)
-                        startTimerUseCase(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
+                        focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
                                  goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
                     }
                 }
@@ -100,7 +92,7 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
     fun handleStartTimer() {
         uiState.value = UiState.STARTED
         startTimerEvent.value = Event(POMODORE_TIME)
-        startTimerUseCase(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
+        focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
@@ -108,13 +100,13 @@ class FocusTimerViewModel(private val startTimerUseCase: StartTimerUseCase,
         if (uiState.value != UiState.STOPPED) {
             uiState.value = UiState.STOPPED
             this.timerSecondsPassed.value = 0L
-            stopTimerUseCase()
+            focusTimerServiceController.stopTimer()
         }
     }
 
     fun handleResumePauseTimer() {
         if (uiState.value != UiState.STOPPED) {
-            resumePauseTimerUseCase()
+            focusTimerServiceController.resumePauseTimer()
         }
     }
 
