@@ -1,5 +1,4 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -8,23 +7,8 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "ru.ischenko.roman.focustimer"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
-        }
     }
 
     dataBinding {
@@ -38,8 +22,9 @@ android {
 
 dependencies {
     implementation project(":core")
-    implementation project(":data")
-    implementation project(":timer")
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Support library
     implementation "androidx.core:core-ktx:$project.ktxVersion"
@@ -49,17 +34,22 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$project.constraintLayoutVersion"
     implementation "com.google.android.material:material:$project.androidMaterialVersion"
 
+    // Timber
+    implementation "com.jakewharton.timber:timber:$project.timberVersion"
+
     // Dagger2
     implementation "com.google.dagger:dagger:$project.daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$project.daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$project.daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$project.daggerVersion"
 
-    // Timber
-    implementation "com.jakewharton.timber:timber:$project.timberVersion"
-
     //Lifecycle
     implementation "android.arch.lifecycle:runtime:$project.archVersion"
     implementation "android.arch.lifecycle:extensions:$project.archVersion"
     kapt "android.arch.lifecycle:compiler:$project.archVersion"
+
+    // UnitTest
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }

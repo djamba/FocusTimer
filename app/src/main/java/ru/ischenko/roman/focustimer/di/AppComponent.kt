@@ -3,7 +3,7 @@ package ru.ischenko.roman.focustimer.di
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
-import ru.ischenko.roman.focustimer.ui.FocusTimerApplication
+import ru.ischenko.roman.focustimer.FocusTimerApplication
 import javax.inject.Singleton
 
 @Singleton
