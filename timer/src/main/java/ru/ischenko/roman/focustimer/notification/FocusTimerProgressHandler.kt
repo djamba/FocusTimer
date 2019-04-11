@@ -22,7 +22,9 @@ class FocusTimerProgressHandler(private val context: Context, private val totalS
         private const val ACTION_ALARM: String = "FocusTimerProgressHandler.ACTION_ALARM"
     }
 
+    private var isStarted: Boolean = false
     private var isRegistered: Boolean = false
+
     private var totalSecondsPassed: Long = 0L
     private var startTimeFromLastPause: Long = 0L
 
@@ -51,7 +53,7 @@ class FocusTimerProgressHandler(private val context: Context, private val totalS
         screenStateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
-                if (action == Intent.ACTION_SCREEN_ON) {
+                if (action == Intent.ACTION_SCREEN_ON && isStarted) {
                     timerHandler.sendEmptyMessage(HANDLER_MESSAGE_ID)
                 } else if (action == Intent.ACTION_SCREEN_OFF) {
                     timerHandler.removeMessages(HANDLER_MESSAGE_ID)
@@ -85,6 +87,7 @@ class FocusTimerProgressHandler(private val context: Context, private val totalS
     }
 
     fun startTimer() {
+        isStarted = true
         startTimeFromLastPause = System.currentTimeMillis()
         timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
         alarmManager?.set(
@@ -95,10 +98,12 @@ class FocusTimerProgressHandler(private val context: Context, private val totalS
     }
 
     fun continueTimer() {
+        isStarted = true
         timerHandler.sendEmptyMessageDelayed(HANDLER_MESSAGE_ID, 1000)
     }
 
     fun stopTimer() {
+        isStarted = false
         totalSecondsPassed += (System.currentTimeMillis() - startTimeFromLastPause) / 1000
         timerHandler.removeMessages(HANDLER_MESSAGE_ID)
         alarmManager?.cancel(alarmPendingIntent)
