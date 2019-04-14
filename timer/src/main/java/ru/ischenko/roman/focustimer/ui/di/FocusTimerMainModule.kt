@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import dagger.Module
 import dagger.Provides
-import ru.ischenko.roman.focustimer.di.AppContext
-import ru.ischenko.roman.focustimer.di.FragmentScope
 import ru.ischenko.roman.focustimer.di.ViewModelFactory
+import ru.ischenko.roman.focustimer.di.qualifier.AppContext
+import ru.ischenko.roman.focustimer.di.scope.FragmentScope
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.ui.FocusTimerViewModel
 import ru.ischenko.roman.focustimer.utils.ResourceProvider

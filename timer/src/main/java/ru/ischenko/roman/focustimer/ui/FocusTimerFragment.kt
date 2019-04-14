@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import dagger.android.support.DaggerFragment
 import ru.ischenko.roman.focustimer.di.ViewModelFactory
+import ru.ischenko.roman.focustimer.di.injectSharedViewModel
 import ru.ischenko.roman.focustimer.timer.databinding.FragmentFocusTimerBinding
 import ru.ischenko.roman.focustimer.utils.EventObserver
 import javax.inject.Inject
 
-class FocusTimerFragment : BaseFragment() {
+class FocusTimerFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory<FocusTimerViewModel>
+    private val viewModel by lazy { injectSharedViewModel<FocusTimerViewModel>(viewModelFactory) }
 
     private lateinit var binding: FragmentFocusTimerBinding
-    private lateinit var viewModel: FocusTimerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -24,7 +26,6 @@ class FocusTimerFragment : BaseFragment() {
             it.lifecycleOwner = this
         }
 
-        viewModel = getViewModel(viewModelFactory)
         binding.viewModel = viewModel
 
         initHandlers()

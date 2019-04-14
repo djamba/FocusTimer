@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import ru.ischenko.roman.focustimer.FocusTimerActivity
 import ru.ischenko.roman.focustimer.FocusTimerApplication
+import ru.ischenko.roman.focustimer.di.qualifier.AppContext
 
 @Module
 class AppModule {

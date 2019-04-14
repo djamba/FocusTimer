@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.di
+package ru.ischenko.roman.focustimer.di.scope
 
 import javax.inject.Scope
 
