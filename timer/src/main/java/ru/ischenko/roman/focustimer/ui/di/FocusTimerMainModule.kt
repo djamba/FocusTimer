@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import ru.ischenko.roman.focustimer.di.ViewModelFactory
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
+import ru.ischenko.roman.focustimer.di.qualifier.ViewModelForFactoryInject
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.ui.FocusTimerViewModel
@@ -33,7 +34,7 @@ class FocusTimerMainModule {
             NotificationServiceDelegateImpl(context)
 
     @Provides
-    @FragmentScope
+    @ViewModelForFactoryInject
     fun provideFocusTimerViewModel(focusTimerServiceController: FocusTimerServiceController,
                                    notification: FocusTimerNotification,
                                    notificationServiceDelegate: NotificationServiceDelegate,
@@ -43,6 +44,6 @@ class FocusTimerMainModule {
     @Provides
     @FragmentScope
     fun provideFocusTimerViewModelFactory(
-                    focusTimerProvider: Provider<FocusTimerViewModel>): ViewModelFactory<FocusTimerViewModel> =
-            ViewModelFactory(focusTimerProvider)
+            @ViewModelForFactoryInject focusTimerProvider: Provider<FocusTimerViewModel>): ViewModelFactory<FocusTimerViewModel> =
+                ViewModelFactory(focusTimerProvider)
 }
