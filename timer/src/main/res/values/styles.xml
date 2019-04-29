@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<dimen name="fragment_focus_timer_margin_top">40dp</dimen>
+	<dimen name="fragment_focus_timer_padding">40dp</dimen>
+	<dimen name="fragment_focus_timer_size">370dp</dimen>
+
+	<dimen name="fragment_focus_timer_font_size">64sp</dimen>
+
+	<dimen name="fragment_focus_timer_dialog_bottom_padding">370dp</dimen>
+
+</resources>

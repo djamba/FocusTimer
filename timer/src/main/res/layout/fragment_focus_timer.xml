@@ -14,52 +14,71 @@
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:background="@color/backgroundColor"
 		tools:context=".timer.main.FocusTimerFragment">
 
-		<TextView
+		<com.google.android.material.card.MaterialCardView
 			android:id="@+id/goal_text"
-			android:layout_width="0dp"
+			android:layout_marginTop="@dimen/fragment_focus_timer_margin_top"
+			android:layout_marginLeft="@dimen/space_large"
+			android:layout_marginRight="@dimen/space_large"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="40dp"
-			android:layout_marginLeft="8dp"
-			android:layout_marginRight="8dp"
-			android:gravity="center"
 			android:clickable="true"
 			android:focusable="true"
-			android:text="@{viewModel.goal}"
-			android:textSize="17sp"
-			android:textColor="@color/colorPrimaryDark"
 			android:onClick="@{v -> viewModel.handleStartEditGoalText()}"
 			app:layout_constraintTop_toTopOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toRightOf="parent"
-			tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
+			app:layout_constraintRight_toRightOf="parent">
 
-		<ru.ischenko.roman.focustimer.ui.common.TimerView
-			android:id="@+id/timer_view"
-			android:layout_width="wrap_content"
-			android:layout_height="370dp"
-			android:layout_marginTop="24dp"
-			android:paddingLeft="40dp"
-			android:paddingRight="40dp"
-			app:activeColor="@color/colorAccent"
-			app:inactiveColor="@color/colorPrimary"
-			app:markerColor="@color/colorAccent"
-			app:textColor="@color/colorAccent"
-			app:timerFontSize="64sp"
-			app:lineWidth="8dp"
-			app:markerDiameter="8dp"
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="@dimen/space_medium"
+				android:paddingBottom="@dimen/space_medium"
+				android:gravity="center"
+				android:text="@{viewModel.goal}"
+				android:textAppearance="?textAppearanceHeadline5"
+				tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/timer_card_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_large"
+			android:layout_marginLeft="@dimen/space_large"
+			android:layout_marginRight="@dimen/space_large"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/goal_text"
-			bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
-			bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"/>
+			app:layout_constraintTop_toBottomOf="@id/goal_text">
 
-		<Button
+			<ru.ischenko.roman.focustimer.ui.common.TimerView
+				android:id="@+id/timer_view"
+				android:layout_width="wrap_content"
+				android:layout_height="@dimen/fragment_focus_timer_size"
+				android:paddingStart="@dimen/fragment_focus_timer_padding"
+				android:paddingLeft="@dimen/fragment_focus_timer_padding"
+				android:paddingEnd="@dimen/fragment_focus_timer_padding"
+				android:paddingRight="@dimen/fragment_focus_timer_padding"
+				app:activeColor="@color/colorAccent"
+				app:inactiveColor="@color/colorPrimary"
+				app:markerColor="@color/colorAccent"
+				app:textColor="@color/colorAccent"
+				app:timerFontSize="@dimen/fragment_focus_timer_font_size"
+				app:lineWidth="@dimen/space_small"
+				app:markerDiameter="@dimen/space_small"
+				bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
+				bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"/>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/start_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="@dimen/space_medium"
 			android:text="@string/focus_timer_start"
 			android:enabled="@{viewModel.uiState == UiState.STOPPED}"
 			android:onClick="@{v -> viewModel.handleStartTimer()}"
@@ -67,36 +86,37 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toLeftOf="@+id/pause_button"
-			app:layout_constraintTop_toBottomOf="@+id/timer_view"
+			app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
 			tools:text="Start"/>
 
-		<Button
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/pause_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="@dimen/space_medium"
 			android:text="@{viewModel.uiState == UiState.PAUSED ? @string/focus_timer_resume : @string/focus_timer_pause}"
 			android:onClick="@{v -> viewModel.handleResumePauseTimer()}"
+			app:backgroundTint="@color/colorAccent"
 			app:layout_constraintVertical_bias="0.2"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toRightOf="@+id/start_button"
 			app:layout_constraintRight_toLeftOf="@+id/stop_button"
-			app:layout_constraintTop_toBottomOf="@+id/timer_view"
+			app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
 			app:layout_constraintHorizontal_chainStyle="packed"
 			tools:text="Pause"/>
 
-		<Button
+		<com.google.android.material.button.MaterialButton
 			android:id="@+id/stop_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="@dimen/space_medium"
 			android:text="@string/focus_timer_cancel"
 			android:onClick="@{v -> viewModel.handleStopTimer()}"
 			app:layout_constraintVertical_bias="0.2"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toRightOf="@+id/pause_button"
 			app:layout_constraintRight_toRightOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/timer_view"
+			app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
 			tools:text="Cancel"/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

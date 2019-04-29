@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- BottomSheetDialogStyle -->
+	<style name="Theme.BottomSheetDialog.Round" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+		<item name="bottomSheetStyle">@style/Widget.BottomSheet.Modal.Round</item>
+	</style>
+
+	<style name="Widget.BottomSheet.Modal.Round" parent="Widget.MaterialComponents.BottomSheet.Modal">
+		<item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.BottomSheet.Round</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.BottomSheet.Round" parent="">
+		<item name="cornerSize">0dp</item>
+		<item name="cornerFamilyTopRight">rounded</item>
+		<item name="cornerFamilyTopLeft">rounded</item>
+		<item name="cornerSizeTopRight">@dimen/space_large</item>
+		<item name="cornerSizeTopLeft">@dimen/space_large</item>
+	</style>
+
+
+	<!-- MaterialButtonStyle -->
+	<style name="Widget.Button" parent="Widget.MaterialComponents.Button">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">@dimen/space_medium</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.Button</item>
+	</style>
+
+	<style name="ShapeAppearance.Button" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">@dimen/space_medium</item>
+	</style>
+
+
+	<!-- CardView -->
+	<style name="Widget.CardView" parent="Widget.MaterialComponents.CardView">
+		<item name="cardElevation">@dimen/space_tiny</item>
+		<item name="rippleColor">@color/colorPrimary</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.CardView</item>
+	</style>
+
+	<style name="ShapeAppearance.CardView" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">@dimen/space_large</item>
+	</style>
+
+
+	<!-- TextInputLayout -->
+	<style name="Widget.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+		<item name="boxBackgroundColor">@color/backgroundColor</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.TextInputLayout</item>
+	</style>
+
+	<style name="ShapeAppearance.TextInputLayout" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">@dimen/space_small</item>
+	</style>
+
+
+	<!-- TextAppearance -->
+	<style name="TextAppearance.Typography.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+		<item name="android:textColor">@color/colorPrimaryDark</item>
+	</style>
+
+	<style name="TextAppearance.Typography.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+		<item name="android:textColor">@color/colorPrimaryDark</item>
+	</style>
+
+</resources>

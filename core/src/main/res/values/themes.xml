@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="CommonTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorPrimary</item>
+
+		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+		<item name="colorSecondary">@color/colorSecondary</item>
+		<item name="colorSurface">@color/colorSurface</item>
+		<item name="colorError">@color/colorError</item>
+		<item name="colorOnPrimary">@color/colorOnPrimary</item>
+		<item name="colorOnSecondary">@color/colorOnSecondary</item>
+		<item name="colorOnSurface">@color/colorOnSurface</item>
+		<item name="colorOnError">@color/colorOnError</item>
+		<item name="colorOnBackground">@color/colorOnBackground</item>
+
+		<item name="bottomSheetDialogTheme">@style/Theme.BottomSheetDialog.Round</item>
+		<item name="materialButtonStyle">@style/Widget.Button</item>
+		<item name="materialCardViewStyle">@style/Widget.CardView</item>
+		<item name="textInputStyle">@style/Widget.TextInputLayout</item>
+
+		<item name="textAppearanceSubtitle1">@style/TextAppearance.Typography.Subtitle1</item>
+		<item name="textAppearanceHeadline5">@style/TextAppearance.Typography.Headline5</item>
+
+	</style>
+
+	<style name="AppTheme" parent="CommonTheme"/>
+
+</resources>

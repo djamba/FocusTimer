@@ -3,6 +3,7 @@ package ru.ischenko.roman.focustimer.ui.common
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Parcel
@@ -21,9 +22,12 @@ import java.lang.Math.*
 class TimerView: View {
 
     companion object {
-        const val TIMEOUT: Long = 1000
         const val CIRCLE_ANGLE: Float = 360F
         const val START_ANGLE: Float = -90f
+        const val SHADOW_OFFSET: Float = 3f
+        const val SHADOW_RADIUS_SMALL: Float = 3f
+        const val SHADOW_RADIUS_MEDIUM: Float = 5f
+        const val SHADOW_RADIUS_LARGE: Float = 8f
     }
 
     var onTimeViewListener: OnTimeViewListener? = null
@@ -69,6 +73,16 @@ class TimerView: View {
 		} finally {
 			typedArray.recycle()
 		}
+
+        setupShadow()
+    }
+
+    private fun setupShadow() {
+        activePaint.setShadowLayer(SHADOW_RADIUS_MEDIUM, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
+        inactivePaint.setShadowLayer(SHADOW_RADIUS_MEDIUM, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
+        markerPaint.setShadowLayer(SHADOW_RADIUS_LARGE, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
+        textPaint.setShadowLayer(SHADOW_RADIUS_SMALL, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
+        setLayerType(LAYER_TYPE_SOFTWARE, activePaint)
     }
 
     private fun createPaint(@ColorInt clr: Int): Paint {
