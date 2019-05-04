@@ -25,9 +25,8 @@ class TimerView: View {
         const val CIRCLE_ANGLE: Float = 360F
         const val START_ANGLE: Float = -90f
         const val SHADOW_OFFSET: Float = 3f
-        const val SHADOW_RADIUS_SMALL: Float = 3f
-        const val SHADOW_RADIUS_MEDIUM: Float = 5f
-        const val SHADOW_RADIUS_LARGE: Float = 8f
+        const val SHADOW_RADIUS_MEDIUM: Float = 3f
+        const val SHADOW_RADIUS_LARGE: Float = 5f
     }
 
     var onTimeViewListener: OnTimeViewListener? = null
@@ -81,7 +80,6 @@ class TimerView: View {
         activePaint.setShadowLayer(SHADOW_RADIUS_MEDIUM, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
         inactivePaint.setShadowLayer(SHADOW_RADIUS_MEDIUM, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
         markerPaint.setShadowLayer(SHADOW_RADIUS_LARGE, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
-        textPaint.setShadowLayer(SHADOW_RADIUS_SMALL, SHADOW_OFFSET, SHADOW_OFFSET, Color.GRAY)
         setLayerType(LAYER_TYPE_SOFTWARE, activePaint)
     }
 

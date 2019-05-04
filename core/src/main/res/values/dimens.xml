@@ -8,4 +8,6 @@
 	<dimen name="space_small">8dp</dimen>
 	<dimen name="space_tiny">4dp</dimen>
 
+	<dimen name="cardElevation">2dp</dimen>
+
 </resources>

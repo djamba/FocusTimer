@@ -34,7 +34,7 @@
 
 	<!-- CardView -->
 	<style name="Widget.CardView" parent="Widget.MaterialComponents.CardView">
-		<item name="cardElevation">@dimen/space_tiny</item>
+		<item name="cardElevation">@dimen/cardElevation</item>
 		<item name="rippleColor">@color/colorPrimary</item>
 		<item name="shapeAppearance">@style/ShapeAppearance.CardView</item>
 	</style>
@@ -47,7 +47,7 @@
 
 	<!-- TextInputLayout -->
 	<style name="Widget.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-		<item name="boxBackgroundColor">@color/backgroundColor</item>
+		<item name="boxBackgroundColor">@color/colorBackground</item>
 		<item name="shapeAppearance">@style/ShapeAppearance.TextInputLayout</item>
 	</style>
 

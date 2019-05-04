@@ -89,24 +89,22 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         notification.notify(title, message, false, actions)
     }
 
-    fun handleStartTimer() {
-        uiState.value = UiState.STARTED
-        startTimerEvent.value = Event(POMODORE_TIME)
-        focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
-                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+    fun handleStartStopTimer() {
+        if (uiState.value == UiState.STOPPED) {
+            uiState.value = UiState.STARTED
+            startTimerEvent.value = Event(POMODORE_TIME)
+            focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
+                    goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+        } else {
+            focusTimerServiceController.resumePauseTimer()
+        }
     }
 
-    fun handleStopTimer() {
+    fun handleCancelTimer() {
         if (uiState.value != UiState.STOPPED) {
             uiState.value = UiState.STOPPED
             this.timerSecondsPassed.value = 0L
             focusTimerServiceController.stopTimer()
-        }
-    }
-
-    fun handleResumePauseTimer() {
-        if (uiState.value != UiState.STOPPED) {
-            focusTimerServiceController.resumePauseTimer()
         }
     }
 

@@ -9,12 +9,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Build
+import android.os.Vibrator
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ru.ischenko.roman.focustimer.timer.R
 import java.util.concurrent.TimeUnit
+
+
 
 /**
  * User: roman
@@ -24,6 +26,10 @@ import java.util.concurrent.TimeUnit
 class FocusTimerNotificationImpl(private val context: Context, private val contentIntent: Intent) : FocusTimerNotification, FocusTimerNotificationCreator {
 
     companion object {
+        const val LIGHT_SHOW_TIME: Int = 500
+        const val LIGHT_SHOW_OFFSET: Int = 100
+        const val VIBRATE_TIME: Long = 300L
+
         const val FOCUS_TIMER_NOTIFICATION_REQUEST_CODE: Int = 2356
         private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_ID: String = "FOCUS_TIMER_NOTIFICATION_CHANNEL"
         private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME: String = "FOCUS_TIMER"
@@ -43,6 +49,7 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
     override var focusTimerActionNotificationListener: FocusTimerNotification.FocusTimerActionNotificationListener? = null
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private var vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     private val pausePendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_PAUSE), 0)
     private val resumePendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_RESUME), 0)
@@ -95,11 +102,10 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
                 .setContentText(message)
                 .setAutoCancel(!isOngoing)
                 .setOngoing(isOngoing)
-                .setOnlyAlertOnce(true)
+                .setOnlyAlertOnce(isOngoing)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
                 .setShowWhen(true)
-                .setLights(Color.parseColor("#ef5350"), 500, 500)
 
         for (action in actions) {
             when (action) {
@@ -117,8 +123,17 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(FOCUS_TIMER_NOTIFICATION_CHANNEL_ID,
                     FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT)
+                    NotificationManager.IMPORTANCE_HIGH).apply {
+                enableVibration(false)
+                enableLights(true)
+                lightColor = ContextCompat.getColor(context, R.color.colorPrimary)
+            }
             notificationManager.createNotificationChannel(channel)
+        } else {
+            notificationBuilder
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_SOUND and Notification.FLAG_SHOW_LIGHTS)
+                .setLights(ContextCompat.getColor(context, R.color.colorPrimary), LIGHT_SHOW_TIME, LIGHT_SHOW_OFFSET)
         }
 
         return notificationBuilder.build()
@@ -133,6 +148,7 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
                         actions: List<NotificationAction>) {
         val notification = createNotification(title, message, isOngoing, actions)
         notificationManager.notify(FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
+        vibrator.vibrate(VIBRATE_TIME)
     }
 
     override fun cancel() {

@@ -16,7 +16,7 @@
 	<color name="colorOnError">#FFFBFA</color>
 	<color name="colorOnBackground">#442B2D</color>
 
-	<color name="statusBarColor">#DFDFDF</color>
-	<color name="backgroundColor">#FAFAFA</color>
+	<color name="colorStatusBar">#DADADA</color>
+	<color name="colorBackground">#F0F0F0</color>
 
 </resources>

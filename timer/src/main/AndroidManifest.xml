@@ -1,2 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="ru.ischenko.roman.focustimer.timer"/>
+	package="ru.ischenko.roman.focustimer.timer">
+
+	<uses-permission android:name="android.permission.VIBRATE"/>
+
+</manifest>

@@ -9,4 +9,8 @@
 
 	<dimen name="fragment_focus_timer_dialog_bottom_padding">370dp</dimen>
 
+	<color name="button_start_color">#64dd17</color>
+	<color name="button_pause_color">#fdd835</color>
+	<color name="button_cancel_color">#b61827</color>
+
 </resources>
