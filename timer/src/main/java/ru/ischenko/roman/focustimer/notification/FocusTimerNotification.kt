@@ -10,7 +10,7 @@ import android.app.Notification
 
 interface FocusTimerNotificationCreator {
 
-    fun createNotification(title: String, message: String, isOngoing: Boolean,
+    fun createNotification(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                            actions: List<NotificationAction>): Notification
 }
 
@@ -26,7 +26,7 @@ interface FocusTimerNotification {
 
     fun updateProgress(workTimeSec: Long)
 
-    fun notify(title: String, message: String, isOngoing: Boolean,
+    fun notify(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                actions: List<NotificationAction>)
 
     fun cancel()

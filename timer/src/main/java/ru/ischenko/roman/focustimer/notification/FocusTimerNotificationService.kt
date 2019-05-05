@@ -78,7 +78,8 @@ class FocusTimerNotificationService : DaggerService() {
 
                 initProgressHandler()
 
-                val notification = focusTimerNotification?.createNotification(title, message, true, actions)
+                val notification = focusTimerNotification?.createNotification(title, message,
+                        isOngoing = true, shouldNotify = false, actions = actions)
                 startForeground(FocusTimerNotificationImpl.FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
 
                 timerStarted = true

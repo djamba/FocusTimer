@@ -1,6 +1,7 @@
 package ru.ischenko.roman.focustimer.notification
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,13 +11,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import ru.ischenko.roman.focustimer.timer.R
 import java.util.concurrent.TimeUnit
-
-
 
 /**
  * User: roman
@@ -31,8 +31,10 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
         const val VIBRATE_TIME: Long = 300L
 
         const val FOCUS_TIMER_NOTIFICATION_REQUEST_CODE: Int = 2356
-        private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_ID: String = "FOCUS_TIMER_NOTIFICATION_CHANNEL"
-        private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME: String = "FOCUS_TIMER"
+        private const val FOCUS_TIMER_CHANNEL_ID: String = "FOCUS_TIMER_CHANNEL_ID"
+        private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_ID: String = "FOCUS_TIMER_NOTIFICATION_CHANNEL_ID"
+        private const val FOCUS_TIMER_CHANNEL_NAME: String = "Timer channel"
+        private const val FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME: String = "Timer finish notification"
 
         private const val ACTION_RESUME: String = "FocusTimerNotification.ACTION_RESUME"
         private const val ACTION_PAUSE: String = "FocusTimerNotification.ACTION_PAUSE"
@@ -88,15 +90,40 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
         context.unregisterReceiver(actionReceiver)
     }
 
-    override fun createNotification(title: String, message: String, isOngoing: Boolean,
+    override fun createNotification(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                                     actions: List<NotificationAction>): Notification {
 
         this.title = title
 
+        val notificationChannelId = if (shouldNotify) { FOCUS_TIMER_NOTIFICATION_CHANNEL_ID }
+                                    else { FOCUS_TIMER_CHANNEL_ID }
+
+        val notificationBuilder = createNotificationBuilder(notificationChannelId, title, message, isOngoing)
+
+        createNotificationActions(actions, notificationBuilder)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(shouldNotify, notificationChannelId)
+        } else {
+            notificationBuilder.priority = Notification.PRIORITY_HIGH
+
+            if (shouldNotify) {
+                notificationBuilder
+                    .setDefaults(Notification.DEFAULT_SOUND and Notification.FLAG_SHOW_LIGHTS)
+                    .setLights(ContextCompat.getColor(context, R.color.colorPrimary), LIGHT_SHOW_TIME, LIGHT_SHOW_OFFSET)
+            }
+        }
+
+        return notificationBuilder.build()
+    }
+
+    private fun createNotificationBuilder(notificationChannelId: String, title: String,
+                                          message: String, isOngoing: Boolean) : NotificationCompat.Builder {
+
         pendingIntent = PendingIntent.getActivity(context, FOCUS_TIMER_NOTIFICATION_REQUEST_CODE,
                 contentIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        notificationBuilder = NotificationCompat.Builder(context, FOCUS_TIMER_NOTIFICATION_CHANNEL_ID)
+        notificationBuilder = NotificationCompat.Builder(context, notificationChannelId)
                 .setSmallIcon(R.drawable.ic_focus_notification_icon)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -107,6 +134,10 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
                 .setContentIntent(pendingIntent)
                 .setShowWhen(true)
 
+        return notificationBuilder
+    }
+
+    private fun createNotificationActions(actions: List<NotificationAction>, notificationBuilder: NotificationCompat.Builder) {
         for (action in actions) {
             when (action) {
                 is ResumePauseAction -> notificationBuilder.addAction(pauseAction)
@@ -119,24 +150,25 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
                 }
             }
         }
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(FOCUS_TIMER_NOTIFICATION_CHANNEL_ID,
-                    FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH).apply {
-                enableVibration(false)
-                enableLights(true)
-                lightColor = ContextCompat.getColor(context, R.color.colorPrimary)
-            }
-            notificationManager.createNotificationChannel(channel)
+    @TargetApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(shouldNotify: Boolean, notificationChannelId: String) {
+
+        val notificationChannelName = if (shouldNotify) { FOCUS_TIMER_NOTIFICATION_CHANNEL_NAME }
+                                      else { FOCUS_TIMER_CHANNEL_NAME }
+        val channel = NotificationChannel(notificationChannelId, notificationChannelName,
+                NotificationManager.IMPORTANCE_HIGH)
+        channel.enableVibration(false)
+
+        if (shouldNotify) {
+            channel.enableLights(true)
+            channel.lightColor = ContextCompat.getColor(context, R.color.colorPrimary)
         } else {
-            notificationBuilder
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_SOUND and Notification.FLAG_SHOW_LIGHTS)
-                .setLights(ContextCompat.getColor(context, R.color.colorPrimary), LIGHT_SHOW_TIME, LIGHT_SHOW_OFFSET)
+            channel.enableLights(false)
         }
 
-        return notificationBuilder.build()
+        notificationManager.createNotificationChannel(channel)
     }
 
     override fun updateProgress(workTimeSec: Long) {
@@ -144,11 +176,19 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
         showNotification()
     }
 
-    override fun notify(title: String, message: String, isOngoing: Boolean,
+    override fun notify(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                         actions: List<NotificationAction>) {
-        val notification = createNotification(title, message, isOngoing, actions)
+        val notification = createNotification(title, message, isOngoing, shouldNotify, actions)
         notificationManager.notify(FOCUS_TIMER_NOTIFICATION_REQUEST_CODE, notification)
-        vibrator.vibrate(VIBRATE_TIME)
+        forceVibrate()
+    }
+
+    private fun forceVibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_TIME, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(VIBRATE_TIME)
+        }
     }
 
     override fun cancel() {

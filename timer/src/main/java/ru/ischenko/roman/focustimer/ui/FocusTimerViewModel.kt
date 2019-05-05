@@ -86,7 +86,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
 
         isWorkTime = !isWorkTime
 
-        notification.notify(title, message, false, actions)
+        notification.notify(title, message, isOngoing = false, shouldNotify = true, actions = actions)
     }
 
     fun handleStartStopTimer() {
