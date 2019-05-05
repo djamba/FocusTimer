@@ -125,6 +125,7 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
 
         notificationBuilder = NotificationCompat.Builder(context, notificationChannelId)
                 .setSmallIcon(R.drawable.ic_focus_notification_icon)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(!isOngoing)
