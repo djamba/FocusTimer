@@ -23,4 +23,10 @@ object TimerViewBindingAdapters {
             timerView.stopTimer()
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("pauseTimer")
+    fun pauseTimeBindingAdapter(timerView: TimerView, isTimerPaused: Boolean) {
+        timerView.pauseTimer(isTimerPaused)
+    }
 }

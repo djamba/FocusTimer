@@ -19,4 +19,6 @@
 	<color name="colorStatusBar">#DADADA</color>
 	<color name="colorBackground">#F0F0F0</color>
 
+	<color name="colorHeadline6">#616161</color>
+
 </resources>

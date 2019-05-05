@@ -23,7 +23,7 @@
 		<item name="textInputStyle">@style/Widget.TextInputLayout</item>
 
 		<item name="textAppearanceSubtitle1">@style/TextAppearance.Typography.Subtitle1</item>
-		<item name="textAppearanceHeadline5">@style/TextAppearance.Typography.Headline5</item>
+		<item name="textAppearanceHeadline6">@style/TextAppearance.Typography.Headline6</item>
 
 	</style>
 

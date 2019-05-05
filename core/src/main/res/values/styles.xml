@@ -41,7 +41,7 @@
 
 	<style name="ShapeAppearance.CardView" parent="ShapeAppearance.MaterialComponents.MediumComponent">
 		<item name="cornerFamily">rounded</item>
-		<item name="cornerSize">@dimen/space_large</item>
+		<item name="cornerSize">@dimen/space_medium</item>
 	</style>
 
 
@@ -58,8 +58,8 @@
 
 
 	<!-- TextAppearance -->
-	<style name="TextAppearance.Typography.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
-		<item name="android:textColor">@color/colorPrimaryDark</item>
+	<style name="TextAppearance.Typography.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+		<item name="android:textColor">@color/colorHeadline6</item>
 	</style>
 
 	<style name="TextAppearance.Typography.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">

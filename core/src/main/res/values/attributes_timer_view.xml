@@ -5,11 +5,18 @@
 
 		<attr name="activeColor" format="color"/>
 		<attr name="inactiveColor" format="color"/>
+		<attr name="backgroundColor" format="color"/>
 		<attr name="markerColor" format="color"/>
 		<attr name="textColor" format="color"/>
+		<attr name="statusColor" format="color"/>
 		<attr name="lineWidth" format="dimension"/>
+		<attr name="backgroundPadding" format="dimension"/>
 		<attr name="markerDiameter" format="dimension"/>
 		<attr name="timerFontSize" format="dimension"/>
+		<attr name="statusFontSize" format="dimension"/>
+		<attr name="statusStarted" format="string"/>
+		<attr name="statusPaused" format="string"/>
+		<attr name="statusStopped" format="string"/>
 
 	</declare-styleable>
 

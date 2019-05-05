@@ -21,8 +21,8 @@
 		<com.google.android.material.card.MaterialCardView
 			android:id="@+id/goal_text"
 			android:layout_marginTop="@dimen/fragment_focus_timer_margin_top"
-			android:layout_marginLeft="@dimen/space_large"
-			android:layout_marginRight="@dimen/space_large"
+			android:layout_marginLeft="@dimen/space_medium"
+			android:layout_marginRight="@dimen/space_medium"
 			android:paddingLeft="@dimen/space_small"
 			android:paddingRight="@dimen/space_small"
 			android:layout_width="match_parent"
@@ -34,32 +34,21 @@
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent">
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:orientation="horizontal">
-
-				<ImageView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_marginLeft="@dimen/space_medium"
-					android:layout_gravity="center_vertical"
-					app:srcCompat="@drawable/ic_tomato"/>
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="center_vertical"
-					android:paddingTop="@dimen/space_medium"
-					android:paddingBottom="@dimen/space_medium"
-					android:paddingLeft="@dimen/space_medium"
-					android:paddingRight="@dimen/space_medium"
-					android:gravity="center"
-					android:text="@{viewModel.goal}"
-					android:textAppearance="?textAppearanceHeadline5"
-					tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
-
-			</LinearLayout>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:paddingTop="@dimen/space_medium"
+				android:paddingBottom="@dimen/space_medium"
+				android:paddingLeft="@dimen/space_medium"
+				android:drawableLeft="@drawable/ic_tomato"
+				android:drawableStart="@drawable/ic_tomato"
+				android:drawablePadding="@dimen/space_small"
+				android:paddingRight="@dimen/space_medium"
+				android:gravity="center"
+				android:text="@{viewModel.goal}"
+				android:textAppearance="?textAppearanceHeadline6"
+				tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
 
 		</com.google.android.material.card.MaterialCardView>
 
@@ -67,9 +56,9 @@
 			android:id="@+id/timer_card_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="@dimen/space_large"
-			android:layout_marginLeft="@dimen/space_large"
-			android:layout_marginRight="@dimen/space_large"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginLeft="@dimen/space_medium"
+			android:layout_marginRight="@dimen/space_medium"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/goal_text">
@@ -78,33 +67,39 @@
 				android:id="@+id/timer_view"
 				android:layout_width="wrap_content"
 				android:layout_height="@dimen/fragment_focus_timer_size"
-				android:paddingStart="@dimen/fragment_focus_timer_padding"
-				android:paddingLeft="@dimen/fragment_focus_timer_padding"
-				android:paddingEnd="@dimen/fragment_focus_timer_padding"
-				android:paddingRight="@dimen/fragment_focus_timer_padding"
+				android:layout_marginTop="@dimen/space_medium"
+				android:layout_marginBottom="@dimen/space_medium"
 				app:activeColor="@color/colorAccent"
 				app:inactiveColor="@color/colorPrimary"
+				app:backgroundColor="@color/focus_timer_background_color"
 				app:markerColor="@color/colorAccent"
 				app:textColor="@color/colorAccent"
-				app:timerFontSize="@dimen/fragment_focus_timer_font_size"
-				app:lineWidth="@dimen/space_small"
-				app:markerDiameter="@dimen/space_small"
+				app:statusColor="@color/focus_timer_status_color"
+				app:timerFontSize="@dimen/focus_timer_font_size"
+				app:statusFontSize="@dimen/focus_timer_status_font_size"
+				app:lineWidth="@dimen/focus_timer_line_width"
+				app:markerDiameter="@dimen/focus_timer_marker_width"
+				app:backgroundPadding="@dimen/focus_timer_background_padding"
+				app:statusStarted="@string/focus_timer_started_status"
+				app:statusPaused="@string/focus_timer_paused_status"
+				app:statusStopped="@string/focus_timer_stopped_status"
 				bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
-				bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"/>
+				bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
+				bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
 
 		</com.google.android.material.card.MaterialCardView>
 
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/start_button"
 			android:layout_width="0dp"
-			android:layout_height="@dimen/space_extra_huge"
-			android:layout_marginTop="@dimen/space_medium"
-			android:layout_marginLeft="@dimen/space_large"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_small"
+			android:layout_marginLeft="@dimen/space_medium"
 			android:layout_marginRight="@dimen/space_small"
 			android:text="@{viewModel.uiState != UiState.STARTED ? @string/focus_timer_start : @string/focus_timer_pause}"
 			android:onClick="@{v -> viewModel.handleStartStopTimer()}"
 			app:backgroundTint="@{viewModel.uiState != UiState.STARTED ? R.color.button_start_color : R.color.button_pause_color}"
-			app:layout_constraintVertical_bias="0.2"
+			app:layout_constraintVertical_bias="0.1"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toLeftOf="@+id/stop_button"
@@ -114,14 +109,14 @@
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/stop_button"
 			android:layout_width="0dp"
-			android:layout_height="@dimen/space_extra_huge"
-			android:layout_marginTop="@dimen/space_medium"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_small"
 			android:layout_marginLeft="@dimen/space_small"
-			android:layout_marginRight="@dimen/space_large"
+			android:layout_marginRight="@dimen/space_medium"
 			android:text="@string/focus_timer_cancel"
 			android:onClick="@{v -> viewModel.handleCancelTimer()}"
 			app:backgroundTint="@color/button_cancel_color"
-			app:layout_constraintVertical_bias="0.2"
+			app:layout_constraintVertical_bias="0.1"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toRightOf="@+id/start_button"
 			app:layout_constraintRight_toRightOf="parent"

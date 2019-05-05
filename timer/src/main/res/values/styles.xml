@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<dimen name="fragment_focus_timer_margin_top">40dp</dimen>
-	<dimen name="fragment_focus_timer_padding">40dp</dimen>
-	<dimen name="fragment_focus_timer_size">370dp</dimen>
+	<dimen name="fragment_focus_timer_margin_top">32dp</dimen>
+	<dimen name="fragment_focus_timer_padding">24dp</dimen>
+	<dimen name="fragment_focus_timer_size">300dp</dimen>
 
-	<dimen name="fragment_focus_timer_font_size">64sp</dimen>
+	<dimen name="focus_timer_line_width">12dp</dimen>
+	<dimen name="focus_timer_marker_width">14dp</dimen>
+	<dimen name="focus_timer_background_padding">18dp</dimen>
+
+	<dimen name="focus_timer_font_size">64sp</dimen>
+	<dimen name="focus_timer_status_font_size">18sp</dimen>
+
+	<color name="focus_timer_status_color">#616161</color>
+	<color name="focus_timer_background_color">#FAFAFA</color>
 
 	<dimen name="fragment_focus_timer_dialog_bottom_padding">370dp</dimen>
 

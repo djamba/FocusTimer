@@ -27,17 +27,29 @@ class TimerView: View {
         const val SHADOW_OFFSET: Float = 3f
         const val SHADOW_RADIUS_MEDIUM: Float = 3f
         const val SHADOW_RADIUS_LARGE: Float = 5f
+        const val DEFAULT_STATUS_STARTED = "Started"
+        const val DEFAULT_STATUS_PAUSED = "Paused"
+        const val DEFAULT_STATUS_STOPPED = "Stopped"
     }
 
     var onTimeViewListener: OnTimeViewListener? = null
 
     private val activePaint: Paint
 	private val inactivePaint: Paint
+	private val backgroundPaint: Paint
 	private val markerPaint: Paint
 	private val textPaint: Paint
+	private val hintTextPaint: Paint
+
+    private val backgroundPadding: Float
 
 	private val lineWidth: Int
 	private val markerDiameter: Int
+
+    private var isPaused: Boolean = false
+    private val statusStarted: String
+    private val statusPaused: String
+    private val statusStopped: String
 
     private val drawRect = RectF()
 
@@ -59,10 +71,24 @@ class TimerView: View {
 			inactivePaint = createPaint(typedArray.getColor(R.styleable.TimerView_inactiveColor, 0))
             markerPaint = createPaint(typedArray.getColor(R.styleable.TimerView_markerColor, 0))
             markerPaint.style = Paint.Style.FILL
+            backgroundPaint = createPaint(typedArray.getColor(R.styleable.TimerView_backgroundColor, 0))
+            backgroundPaint.style = Paint.Style.FILL
+
+            backgroundPadding = typedArray.getDimension(R.styleable.TimerView_backgroundPadding, 0F)
 
             textPaint = createPaint(typedArray.getColor(R.styleable.TimerView_textColor, 0))
             textPaint.textSize = typedArray.getDimension(R.styleable.TimerView_timerFontSize, 0F)
             textPaint.style = Paint.Style.FILL
+            textPaint.isFakeBoldText = true
+
+            hintTextPaint = createPaint(typedArray.getColor(R.styleable.TimerView_statusColor, 0))
+            hintTextPaint.textSize = typedArray.getDimension(R.styleable.TimerView_statusFontSize, 0F)
+            hintTextPaint.style = Paint.Style.FILL
+            hintTextPaint.isFakeBoldText = true
+
+            statusStarted = typedArray.getString(R.styleable.TimerView_statusStarted) ?: DEFAULT_STATUS_STARTED
+            statusPaused = typedArray.getString(R.styleable.TimerView_statusPaused) ?: DEFAULT_STATUS_PAUSED
+            statusStopped = typedArray.getString(R.styleable.TimerView_statusStopped) ?: DEFAULT_STATUS_STOPPED
 
 			lineWidth = typedArray.getDimensionPixelSize(R.styleable.TimerView_lineWidth, 0)
             activePaint.strokeWidth = lineWidth.toFloat()
@@ -104,6 +130,7 @@ class TimerView: View {
     }
 
     private fun reset() {
+        isPaused = false
         timerSecondsPassed = 0L
         timerTotalSecondCount = 0L
         progressAngle = 0f
@@ -112,12 +139,18 @@ class TimerView: View {
 
     fun updateTime(timerSecondsPassed: Long) {
         if (progressAngle < CIRCLE_ANGLE) {
+            isPaused = false
             progressAngle += stepAngle * (timerSecondsPassed - this.timerSecondsPassed)
             this.timerSecondsPassed = timerSecondsPassed
             postInvalidate()
         } else {
             onTimeViewListener?.onComplete()
         }
+    }
+
+    fun pauseTimer(paused: Boolean) {
+        isPaused = paused
+        postInvalidate()
     }
 
     override fun onSaveInstanceState(): Parcelable? {
@@ -152,30 +185,58 @@ class TimerView: View {
         val height = height - (paddingTop + paddingBottom)
         val width = width - (paddingLeft + paddingRight)
 
-        val cx = width / 2F + paddingLeft
-        val cy = height / 2F + paddingTop
+        val centerX = width / 2F + paddingLeft
+        val centerY = height / 2F + paddingTop
 
         var radius = if (height > width) width / 2 else height / 2
         radius -= markerDiameter
 
         val progressAngleInRad = (START_ANGLE + progressAngle) / 180.0 * PI
-        val markerX = cx + radius * cos(progressAngleInRad)
-        val markerY = cy + radius * sin(progressAngleInRad)
+        val markerX = centerX + radius * cos(progressAngleInRad)
+        val markerY = centerY + radius * sin(progressAngleInRad)
 
-        canvas.drawCircle(cx, cy, radius.toFloat(), inactivePaint)
+        drawTimer(canvas, centerX, centerY, radius, markerX, markerY)
 
-        drawRect.set(cx - radius, cy - radius, cx + radius, cy + radius)
+        drawTimerClock(canvas, centerX, centerY)
+
+        drawStatus(canvas, centerX, centerY)
+    }
+
+    private fun drawTimer(canvas: Canvas, centerX: Float, centerY: Float, radius: Int, markerX: Double, markerY: Double) {
+
+        // draw dial and background
+        canvas.drawCircle(centerX, centerY, radius.toFloat(), inactivePaint)
+        canvas.drawCircle(centerX, centerY, radius - backgroundPadding, backgroundPaint)
+
+        // draw progress
+        drawRect.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius)
         canvas.drawArc(drawRect, START_ANGLE, progressAngle, false, activePaint)
 
+        // draw marker
         canvas.drawCircle(markerX.toFloat(), markerY.toFloat(), markerDiameter.toFloat(), markerPaint)
+    }
+
+    private fun drawTimerClock(canvas: Canvas, centerX: Float, centerY: Float) {
 
         val secondsLeft = timerTotalSecondCount - timerSecondsPassed
         val min = secondsLeft / 60
         val sec = secondsLeft % 60
+
         val time = (if (min > 9) min.toString() else "0$min") + ":" +
                    (if (sec > 9) sec.toString() else "0$sec")
         val textSize = textPaint.measureText(time)
-        canvas.drawText(time, cx - textSize / 2, cy, textPaint)
+
+        canvas.drawText(time, centerX - textSize / 2, centerY, textPaint)
+    }
+
+    private fun drawStatus(canvas: Canvas, centerX: Float, centerY: Float) {
+
+        val hintText = if (timerTotalSecondCount == 0L) { statusStopped }
+                       else if (timerTotalSecondCount != 0L && !isPaused) { statusStarted }
+                       else { statusPaused }
+
+        val hintSize = hintTextPaint.measureText(hintText)
+        canvas.drawText(hintText, centerX - hintSize / 2, centerY + textPaint.textSize / 2, hintTextPaint)
     }
 
     interface OnTimeViewListener {

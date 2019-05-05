@@ -15,6 +15,10 @@
 	<string name="focus_timer_cancel">Отмена</string>
 	<string name="focus_timer_ok_button">OK</string>
 
+	<string name="focus_timer_started_status">Запущен</string>
+	<string name="focus_timer_paused_status">Приостановлен</string>
+	<string name="focus_timer_stopped_status">Остановлен</string>
+
 	<string name="focus_timer_dialog_title">Укажите цель помидора</string>
 
 </resources>
