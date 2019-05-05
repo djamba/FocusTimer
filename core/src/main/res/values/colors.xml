@@ -16,8 +16,8 @@
 	<color name="colorOnError">#FFFBFA</color>
 	<color name="colorOnBackground">#442B2D</color>
 
-	<color name="colorStatusBar">#DADADA</color>
-	<color name="colorBackground">#F0F0F0</color>
+	<color name="colorStatusBar">#D5D5D5</color>
+	<color name="colorBackground">#EFEFEF</color>
 
 	<color name="colorHeadline6">#616161</color>
 

@@ -13,7 +13,7 @@
 	<dimen name="focus_timer_status_font_size">18sp</dimen>
 
 	<color name="focus_timer_status_color">#616161</color>
-	<color name="focus_timer_background_color">#FAFAFA</color>
+	<color name="focus_timer_background_color">#F5F5F5</color>
 
 	<dimen name="fragment_focus_timer_dialog_bottom_padding">370dp</dimen>
 
