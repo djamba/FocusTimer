@@ -58,7 +58,7 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
     private val pauseAction =
             NotificationCompat.Action(R.drawable.ic_pause, context.getText(R.string.focus_timer_pause), pausePendingIntent)
     private val resumeAction =
-            NotificationCompat.Action(R.drawable.ic_resume, context.getText(R.string.focus_timer_resume), resumePendingIntent)
+            NotificationCompat.Action(R.drawable.ic_play, context.getText(R.string.focus_timer_resume), resumePendingIntent)
     private val cancelAction =
             NotificationCompat.Action(R.drawable.ic_stop, context.getText(R.string.focus_timer_cancel), cancelPendingIntent)
 
