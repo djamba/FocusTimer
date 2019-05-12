@@ -34,18 +34,26 @@
 
 		</com.google.android.material.textfield.TextInputLayout>
 
+		<Space
+			android:id="@+id/spacer"
+			android:layout_width="match_parent"
+			android:layout_height="@dimen/fragment_focus_timer_dialog_bottom_padding"
+			app:layout_constraintTop_toBottomOf="@+id/goal_text"/>
+
 		<com.google.android.material.button.MaterialButton
 			android:id="@+id/start_button"
-			android:layout_width="wrap_content"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
+			android:layout_marginBottom="@dimen/space_medium"
 			android:text="@string/focus_timer_ok_button"
-			app:layout_constraintTop_toBottomOf="@+id/goal_text"
+			app:layout_constraintTop_toBottomOf="@+id/spacer"
+			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
-			style="@style/Widget.MaterialComponents.Button.TextButton"/>
+			style="@style/Widget.Button"/>
 
 		<Space
 			android:layout_width="match_parent"
-			android:layout_height="@dimen/fragment_focus_timer_dialog_bottom_padding"
+			android:layout_height="@dimen/space_large"
 			app:layout_constraintTop_toBottomOf="@+id/start_button"/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

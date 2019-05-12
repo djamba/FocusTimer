@@ -2,17 +2,17 @@ package ru.ischenko.roman.focustimer.ui.common
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-import ru.ischenko.roman.focustimer.core.R
 import java.lang.Math.*
+
+
+
+
 
 /**
  * User: roman
@@ -27,6 +27,8 @@ class TimerView: View {
         const val SHADOW_OFFSET: Float = 3f
         const val SHADOW_RADIUS_MEDIUM: Float = 3f
         const val SHADOW_RADIUS_LARGE: Float = 5f
+        const val TIMER_PULSE_FACTOR: Float = 12f
+        const val STATUS_DRAWABLE_FACTOR: Float = 20f
         const val DEFAULT_STATUS_STARTED = "Started"
         const val DEFAULT_STATUS_PAUSED = "Paused"
         const val DEFAULT_STATUS_STOPPED = "Stopped"
@@ -40,6 +42,7 @@ class TimerView: View {
 	private val markerPaint: Paint
 	private val textPaint: Paint
 	private val hintTextPaint: Paint
+	private val statusPaint: Paint
 
     private val backgroundPadding: Float
 
@@ -50,6 +53,7 @@ class TimerView: View {
     private val statusStarted: String
     private val statusPaused: String
     private val statusStopped: String
+    private val statusDrawablePath = Path()
 
     private val drawRect = RectF()
 
@@ -58,43 +62,49 @@ class TimerView: View {
 	private var progressAngle: Float = 0f
     private var stepAngle: Float = 0f
 
+    private var centerX = 0F
+    private var centerY = 0F
+    private var radius = 0F
+
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attrSet: AttributeSet?) : this(context, attrSet, 0)
 
     constructor(context: Context, attrSet: AttributeSet?, defStyleAttr: Int) : super(context, attrSet, defStyleAttr) {
 
-        val typedArray : TypedArray = context.theme.obtainStyledAttributes(attrSet, R.styleable.TimerView, 0, 0)
+        val typedArray : TypedArray = context.theme.obtainStyledAttributes(attrSet, ru.ischenko.roman.focustimer.core.R.styleable.TimerView, 0, 0)
 
 		try {
-			activePaint = createPaint(typedArray.getColor(R.styleable.TimerView_activeColor, 0))
-			inactivePaint = createPaint(typedArray.getColor(R.styleable.TimerView_inactiveColor, 0))
-            markerPaint = createPaint(typedArray.getColor(R.styleable.TimerView_markerColor, 0))
+			activePaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_activeColor, 0))
+            statusPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_activeColor, 0))
+			inactivePaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_inactiveColor, 0))
+            markerPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_markerColor, 0))
             markerPaint.style = Paint.Style.FILL
-            backgroundPaint = createPaint(typedArray.getColor(R.styleable.TimerView_backgroundColor, 0))
+            backgroundPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_backgroundColor, 0))
             backgroundPaint.style = Paint.Style.FILL
 
-            backgroundPadding = typedArray.getDimension(R.styleable.TimerView_backgroundPadding, 0F)
+            backgroundPadding = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_backgroundPadding, 0F)
 
-            textPaint = createPaint(typedArray.getColor(R.styleable.TimerView_textColor, 0))
-            textPaint.textSize = typedArray.getDimension(R.styleable.TimerView_timerFontSize, 0F)
+            textPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_textColor, 0))
+            textPaint.textSize = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_timerFontSize, 0F)
             textPaint.style = Paint.Style.FILL
             textPaint.isFakeBoldText = true
 
-            hintTextPaint = createPaint(typedArray.getColor(R.styleable.TimerView_statusColor, 0))
-            hintTextPaint.textSize = typedArray.getDimension(R.styleable.TimerView_statusFontSize, 0F)
+            hintTextPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusColor, 0))
+            hintTextPaint.textSize = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusFontSize, 0F)
             hintTextPaint.style = Paint.Style.FILL
             hintTextPaint.isFakeBoldText = true
 
-            statusStarted = typedArray.getString(R.styleable.TimerView_statusStarted) ?: DEFAULT_STATUS_STARTED
-            statusPaused = typedArray.getString(R.styleable.TimerView_statusPaused) ?: DEFAULT_STATUS_PAUSED
-            statusStopped = typedArray.getString(R.styleable.TimerView_statusStopped) ?: DEFAULT_STATUS_STOPPED
+            statusStarted = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusStarted) ?: DEFAULT_STATUS_STARTED
+            statusPaused = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusPaused) ?: DEFAULT_STATUS_PAUSED
+            statusStopped = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusStopped) ?: DEFAULT_STATUS_STOPPED
 
-			lineWidth = typedArray.getDimensionPixelSize(R.styleable.TimerView_lineWidth, 0)
+			lineWidth = typedArray.getDimensionPixelSize(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_lineWidth, 0)
             activePaint.strokeWidth = lineWidth.toFloat()
             inactivePaint.strokeWidth = lineWidth.toFloat()
+            statusPaint.strokeWidth = lineWidth.toFloat()
 
-			markerDiameter = typedArray.getDimensionPixelSize(R.styleable.TimerView_markerDiameter, 0)
+			markerDiameter = typedArray.getDimensionPixelSize(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_markerDiameter, 0)
 		} finally {
 			typedArray.recycle()
 		}
@@ -139,7 +149,6 @@ class TimerView: View {
 
     fun updateTime(timerSecondsPassed: Long) {
         if (progressAngle < CIRCLE_ANGLE) {
-            isPaused = false
             progressAngle += stepAngle * (timerSecondsPassed - this.timerSecondsPassed)
             this.timerSecondsPassed = timerSecondsPassed
             postInvalidate()
@@ -161,6 +170,7 @@ class TimerView: View {
         savedState.progressAngle = progressAngle
         savedState.timerTotalSecondCount = timerTotalSecondCount
         savedState.timerSecondsPassed = timerSecondsPassed
+        savedState.isPaused = isPaused
 
         return savedState
     }
@@ -177,19 +187,24 @@ class TimerView: View {
         progressAngle = parcelable.progressAngle
         timerTotalSecondCount = parcelable.timerTotalSecondCount
         timerSecondsPassed = parcelable.timerSecondsPassed
+        isPaused = parcelable.isPaused
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+
+        centerX = parentWidth / 2F
+        centerY = parentHeight / 2F
+
+        radius = if (parentHeight > parentWidth) parentWidth / 2F else parentHeight / 2F
+        radius -= markerDiameter
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
-        val height = height - (paddingTop + paddingBottom)
-        val width = width - (paddingLeft + paddingRight)
-
-        val centerX = width / 2F + paddingLeft
-        val centerY = height / 2F + paddingTop
-
-        var radius = if (height > width) width / 2 else height / 2
-        radius -= markerDiameter
 
         val progressAngleInRad = (START_ANGLE + progressAngle) / 180.0 * PI
         val markerX = centerX + radius * cos(progressAngleInRad)
@@ -202,11 +217,13 @@ class TimerView: View {
         drawStatus(canvas, centerX, centerY)
     }
 
-    private fun drawTimer(canvas: Canvas, centerX: Float, centerY: Float, radius: Int, markerX: Double, markerY: Double) {
+    private fun drawTimer(canvas: Canvas, centerX: Float, centerY: Float, radius: Float, markerX: Double, markerY: Double) {
 
         // draw dial and background
-        canvas.drawCircle(centerX, centerY, radius.toFloat(), inactivePaint)
-        canvas.drawCircle(centerX, centerY, radius - backgroundPadding, backgroundPaint)
+        canvas.drawCircle(centerX, centerY, radius, inactivePaint)
+        val padding = if (timerSecondsPassed % 2 == 0L) backgroundPadding
+                      else backgroundPadding + backgroundPadding / TIMER_PULSE_FACTOR
+        canvas.drawCircle(centerX, centerY, radius - padding, backgroundPaint)
 
         // draw progress
         drawRect.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius)
@@ -237,6 +254,31 @@ class TimerView: View {
 
         val hintSize = hintTextPaint.measureText(hintText)
         canvas.drawText(hintText, centerX - hintSize / 2, centerY + textPaint.textSize / 2, hintTextPaint)
+
+        drawStatusDrawable(canvas)
+    }
+
+    private fun drawStatusDrawable(canvas: Canvas) {
+        val step = radius / STATUS_DRAWABLE_FACTOR
+        val startX = centerX - step
+        val startY = centerY + radius / 2
+
+        statusDrawablePath.reset()
+        statusDrawablePath.moveTo(startX, startY)
+
+        if (isPaused || timerSecondsPassed == 0L) {
+            val doubleStep = step * 2
+            statusDrawablePath.lineTo(startX, startY + doubleStep)
+            statusDrawablePath.lineTo(startX + doubleStep, startY + step)
+            statusDrawablePath.close()
+        } else {
+            val tripleStep = step * 3
+            statusDrawablePath.lineTo(startX, startY + tripleStep)
+            statusDrawablePath.moveTo(startX + tripleStep, startY)
+            statusDrawablePath.lineTo(startX + tripleStep, startY + tripleStep)
+        }
+
+        canvas.drawPath(statusDrawablePath, statusPaint)
     }
 
     interface OnTimeViewListener {
@@ -250,6 +292,7 @@ class TimerView: View {
         var progressAngle: Float = 0f
         var timerTotalSecondCount: Long = 0L
         var timerSecondsPassed: Long = 0L
+        var isPaused: Boolean = false
 
         constructor(superState: Parcelable?) : super(superState) {}
 
@@ -258,6 +301,7 @@ class TimerView: View {
             progressAngle = inParcel.readFloat()
             timerTotalSecondCount = inParcel.readLong()
             timerSecondsPassed = inParcel.readLong()
+            isPaused = inParcel.readInt() != 0
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {
@@ -266,6 +310,7 @@ class TimerView: View {
             out.writeFloat(progressAngle)
             out.writeLong(timerTotalSecondCount)
             out.writeLong(timerSecondsPassed)
+            out.writeInt( if (isPaused) 1 else 0 )
         }
 
         companion object {

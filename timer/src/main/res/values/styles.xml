@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<dimen name="fragment_focus_timer_margin_top">32dp</dimen>
 	<dimen name="fragment_focus_timer_padding">24dp</dimen>
 	<dimen name="fragment_focus_timer_size">300dp</dimen>
 
@@ -15,7 +14,7 @@
 	<color name="focus_timer_status_color">#616161</color>
 	<color name="focus_timer_background_color">#F5F5F5</color>
 
-	<dimen name="fragment_focus_timer_dialog_bottom_padding">370dp</dimen>
+	<dimen name="fragment_focus_timer_dialog_bottom_padding">270dp</dimen>
 
 	<color name="button_start_color">#64dd17</color>
 	<color name="button_pause_color">#fdd835</color>
