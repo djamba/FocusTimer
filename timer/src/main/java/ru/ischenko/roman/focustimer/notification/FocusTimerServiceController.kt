@@ -7,6 +7,8 @@ interface FocusTimerServiceController {
 
     fun startTimer(time: Long, title: String, message: String)
 
+    fun updateTimer(title: String, message: String)
+
     fun stopTimer()
 
     fun resumePauseTimer()
@@ -18,6 +20,9 @@ class FocusTimerServiceControllerIml(private val context: Context) : FocusTimerS
         FocusTimerNotificationService.startTimer(
                 context, title, message, System.currentTimeMillis(), time,
                 arrayOf(CancelAction, ResumePauseAction))
+
+    override fun updateTimer(title: String, message: String) =
+        FocusTimerNotificationService.updateTimer(context, title, message)
 
     override fun stopTimer() =
          FocusTimerNotificationService.cancelNotification(context)

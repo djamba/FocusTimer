@@ -177,6 +177,14 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
         showNotification()
     }
 
+    override fun updateContent(title: String, message: String) {
+        this.title = title
+        notificationBuilder.setContentTitle(title)
+        notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+        notificationBuilder.setContentText(message)
+        showNotification()
+    }
+
     override fun notify(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                         actions: List<NotificationAction>) {
         val notification = createNotification(title, message, isOngoing, shouldNotify, actions)

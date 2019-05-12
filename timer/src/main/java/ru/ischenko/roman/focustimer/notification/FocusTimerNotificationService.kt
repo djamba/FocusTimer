@@ -12,6 +12,7 @@ class FocusTimerNotificationService : DaggerService() {
     companion object {
         private const val EXTRA_ACTION = "EXTRA_ACTION"
         private const val EXTRA_ACTION_START = "EXTRA_ACTION_START"
+        private const val EXTRA_ACTION_UPDATE = "EXTRA_ACTION_UPDATE"
         private const val EXTRA_ACTION_CANCEL = "EXTRA_ACTION_CANCEL"
         private const val EXTRA_ACTION_PAUSE_RESUME_WORK = "EXTRA_ACTION_PAUSE_RESUME_WORK"
         private const val EXTRA_START_TIME = "EXTRA_START_TIME"
@@ -30,6 +31,14 @@ class FocusTimerNotificationService : DaggerService() {
             intent.putExtra(EXTRA_START_TIME, startTime)
             intent.putExtra(EXTRA_TOTAL_TIME, totalSeconds)
             intent.putExtra(EXTRA_ACTIONS, actions)
+            context.startService(intent)
+        }
+
+        fun updateTimer(context: Context, title: String, message: String) {
+            val intent = Intent(context, FocusTimerNotificationService::class.java)
+            intent.putExtra(EXTRA_ACTION, EXTRA_ACTION_UPDATE)
+            intent.putExtra(EXTRA_TITLE, title)
+            intent.putExtra(EXTRA_MESSAGE, message)
             context.startService(intent)
         }
 
@@ -84,6 +93,11 @@ class FocusTimerNotificationService : DaggerService() {
 
                 timerStarted = true
                 progressHandler?.startTimer()
+            }
+            EXTRA_ACTION_UPDATE -> {
+                val title = intent.getStringExtra(EXTRA_TITLE)
+                val message = intent.getStringExtra(EXTRA_MESSAGE)
+                focusTimerNotification?.updateContent(title, message)
             }
             EXTRA_ACTION_CANCEL -> {
                 cancelTimer()

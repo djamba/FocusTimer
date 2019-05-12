@@ -26,6 +26,8 @@ interface FocusTimerNotification {
 
     fun updateProgress(workTimeSec: Long)
 
+    fun updateContent(title: String, message: String)
+
     fun notify(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                actions: List<NotificationAction>)
 

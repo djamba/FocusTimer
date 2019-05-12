@@ -32,9 +32,16 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
     val editGoalTextEvent: MutableLiveData<Event<Unit>> = MutableLiveData()
 
     private var isWorkTime = true
+    private lateinit var slogan: String
 
     init {
         goal.value = resourceProvider.getText(R.string.focus_timer_notification_no_goal)
+
+        goal.observeForever { goal ->
+            if (uiState.value == UiState.STARTED) {
+                focusTimerServiceController.updateTimer(slogan, goal)
+            }
+        }
 
         uiState.value = UiState.STOPPED
 
@@ -50,16 +57,17 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
                         uiState.value = UiState.STARTED
                         timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(REST_TIME)
-                        focusTimerServiceController.startTimer(REST_TIME,
-                                resourceProvider.getText(R.string.focus_timer_notification_rest),
+                        slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
+                        focusTimerServiceController.startTimer(REST_TIME, slogan,
                                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
                     }
                     ACTION_WORK -> {
                         uiState.value = UiState.STARTED
                         timerSecondsPassed.value = 0L
                         startTimerEvent.value = Event(POMODORE_TIME)
-                        focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
-                                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+                        slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
+                        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
+                                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
                     }
                 }
             }
@@ -70,30 +78,30 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
 
     private fun showNotification() {
 
-        val title: String
         val message: String
         val actions: List<NotificationAction>
 
         if (isWorkTime) {
             actions = listOf(CancelAction, CustomAction(ACTION_REST, resourceProvider.getText(R.string.focus_timer_rest)))
-            title = resourceProvider.getText(R.string.focus_timer_notification_rest)
+            slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
             message = goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal)
         } else {
             actions = listOf(CancelAction, CustomAction(ACTION_WORK, resourceProvider.getText(R.string.focus_timer_work)))
-            title = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
+            slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
             message = goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal)
         }
 
         isWorkTime = !isWorkTime
 
-        notification.notify(title, message, isOngoing = false, shouldNotify = true, actions = actions)
+        notification.notify(slogan, message, isOngoing = false, shouldNotify = true, actions = actions)
     }
 
     fun handleStartStopTimer() {
         if (uiState.value == UiState.STOPPED) {
             uiState.value = UiState.STARTED
             startTimerEvent.value = Event(POMODORE_TIME)
-            focusTimerServiceController.startTimer(POMODORE_TIME, resourceProvider.getText(R.string.focus_timer_notification_focus_on_work),
+            slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
+            focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
                     goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
         } else {
             focusTimerServiceController.resumePauseTimer()
