@@ -1,4 +1,4 @@
-package ru.ischenko.roman.focustimer.ui
+package ru.ischenko.roman.focustimer.presentation
 
 import android.os.Bundle
 import android.view.LayoutInflater

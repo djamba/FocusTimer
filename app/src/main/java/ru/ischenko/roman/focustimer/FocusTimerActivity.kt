@@ -3,7 +3,7 @@ package ru.ischenko.roman.focustimer
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
-import ru.ischenko.roman.focustimer.ui.FocusTimerFragment
+import ru.ischenko.roman.focustimer.presentation.FocusTimerFragment
 
 class FocusTimerActivity : AppCompatActivity() {
 

@@ -6,7 +6,7 @@
 	<data>
 		<variable
 			name="viewModel"
-			type="ru.ischenko.roman.focustimer.ui.FocusTimerViewModel"/>
+			type="ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel"/>
 	</data>
 
 	<androidx.constraintlayout.widget.ConstraintLayout

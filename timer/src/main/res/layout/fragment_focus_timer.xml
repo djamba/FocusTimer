@@ -6,10 +6,10 @@
 
 	<data>
 		<import type="ru.ischenko.roman.focustimer.timer.R"/>
-		<import type="ru.ischenko.roman.focustimer.ui.UiState"/>
+		<import type="ru.ischenko.roman.focustimer.presentation.UiState"/>
 		<variable
 			name="viewModel"
-			type="ru.ischenko.roman.focustimer.ui.FocusTimerViewModel"/>
+			type="ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel"/>
 	</data>
 
 	<androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -69,7 +69,7 @@
 				app:layout_constraintRight_toRightOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/goal_text">
 
-				<ru.ischenko.roman.focustimer.ui.common.TimerView
+				<ru.ischenko.roman.focustimer.presentation.common.TimerView
 					android:id="@+id/timer_view"
 					android:layout_width="wrap_content"
 					android:layout_height="@dimen/fragment_focus_timer_size"

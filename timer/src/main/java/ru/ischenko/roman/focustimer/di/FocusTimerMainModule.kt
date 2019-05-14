@@ -1,15 +1,14 @@
-package ru.ischenko.roman.focustimer.ui.di
+package ru.ischenko.roman.focustimer.di
 
 import android.content.Context
 import android.content.Intent
 import dagger.Module
 import dagger.Provides
-import ru.ischenko.roman.focustimer.di.ViewModelFactory
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
 import ru.ischenko.roman.focustimer.di.qualifier.ViewModelForFactoryInject
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
 import ru.ischenko.roman.focustimer.notification.*
-import ru.ischenko.roman.focustimer.ui.FocusTimerViewModel
+import ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
 import ru.ischenko.roman.focustimer.utils.ResourceProviderImpl
 import javax.inject.Provider

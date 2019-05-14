@@ -5,9 +5,8 @@ import dagger.android.ContributesAndroidInjector
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
 import ru.ischenko.roman.focustimer.di.scope.ServiceScope
 import ru.ischenko.roman.focustimer.notification.FocusTimerNotificationService
-import ru.ischenko.roman.focustimer.ui.FocusTimerFragment
-import ru.ischenko.roman.focustimer.ui.SetupPomodoroDialogFragment
-import ru.ischenko.roman.focustimer.ui.di.FocusTimerMainModule
+import ru.ischenko.roman.focustimer.presentation.FocusTimerFragment
+import ru.ischenko.roman.focustimer.presentation.SetupPomodoroDialogFragment
 
 @Module
 interface ContributesInjectorModule {
