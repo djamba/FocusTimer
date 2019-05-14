@@ -53,21 +53,11 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
                 Timber.d("onAction($action)")
 
                 when (action) {
-                    ACTION_REST -> {
-                        uiState.value = UiState.STARTED
-                        timerSecondsPassed.value = 0L
-                        startTimerEvent.value = Event(REST_TIME)
-                        slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
-                        focusTimerServiceController.startTimer(REST_TIME, slogan,
-                                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
-                    }
                     ACTION_WORK -> {
-                        uiState.value = UiState.STARTED
-                        timerSecondsPassed.value = 0L
-                        startTimerEvent.value = Event(POMODORE_TIME)
-                        slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
-                        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
-                                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+                        startTimerForWork()
+                    }
+                    ACTION_REST -> {
+                        startTimerForRest()
                     }
                 }
             }
@@ -96,13 +86,29 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         notification.notify(slogan, message, isOngoing = false, shouldNotify = true, actions = actions)
     }
 
+    private fun startTimerForWork() {
+        uiState.value = UiState.STARTED
+        startTimerEvent.value = Event(POMODORE_TIME)
+        slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
+        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
+                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+    }
+
+    private fun startTimerForRest() {
+        uiState.value = UiState.STARTED
+        startTimerEvent.value = Event(REST_TIME)
+        slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
+        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
+                goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+    }
+
     fun handleStartStopTimer() {
         if (uiState.value == UiState.STOPPED) {
-            uiState.value = UiState.STARTED
-            startTimerEvent.value = Event(POMODORE_TIME)
-            slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
-            focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
-                    goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
+            if (isWorkTime) {
+                startTimerForWork()
+            } else {
+                startTimerForRest()
+            }
         } else {
             focusTimerServiceController.resumePauseTimer()
         }
