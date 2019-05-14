@@ -98,7 +98,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         uiState.value = UiState.STARTED
         startTimerEvent.value = Event(REST_TIME)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
-        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
+        focusTimerServiceController.startTimer(REST_TIME, slogan,
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
