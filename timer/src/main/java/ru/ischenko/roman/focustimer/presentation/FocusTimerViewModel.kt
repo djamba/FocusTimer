@@ -2,6 +2,11 @@ package ru.ischenko.roman.focustimer.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.ischenko.roman.focustimer.data.model.Pomodoro
+import ru.ischenko.roman.focustimer.data.model.Task
+import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
+import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
+import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.timer.R
 import ru.ischenko.roman.focustimer.utils.Event
@@ -14,7 +19,10 @@ enum class UiState { STARTED, PAUSED, STOPPED }
 class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerServiceController,
                           private val notification: FocusTimerNotification,
                           private val notificationServiceDelegate: NotificationServiceDelegate,
-                          private val resourceProvider: ResourceProvider) : ViewModel(), OnTimeChangedListener {
+                          private val resourceProvider: ResourceProvider,
+                          private val createPomodoroUseCase: CreatePomodoroUseCase,
+                          private val createFreeTaskUseCase: CreateFreeTaskUseCase,
+                          private val updateTaskGoalUseCase: UpdateTaskGoalUseCase) : ViewModel(), OnTimeChangedListener {
 
     companion object {
         private val POMODORE_TIME = TimeUnit.MINUTES.toSeconds(25)
@@ -24,12 +32,16 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         private const val ACTION_WORK: String = "ACTION_WORK"
     }
 
+    private var currentTask: Task? = null
+    private var currentPomodoro: Pomodoro? = null
+
     val goal: MutableLiveData<String> = MutableLiveData()
     val uiState: MutableLiveData<UiState> = MutableLiveData()
     val timerSecondsPassed: MutableLiveData<Long> = MutableLiveData()
 
     val startTimerEvent: MutableLiveData<Event<Long>> = MutableLiveData()
     val editGoalTextEvent: MutableLiveData<Event<Unit>> = MutableLiveData()
+    val errorEvent: MutableLiveData<Event<String>> = MutableLiveData()
 
     private var isWorkTime = true
     private lateinit var slogan: String
@@ -38,8 +50,11 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         goal.value = resourceProvider.getText(R.string.focus_timer_notification_no_goal)
 
         goal.observeForever { goal ->
-            if (uiState.value == UiState.STARTED) {
+            if (uiState.value == UiState.STARTED || uiState.value == UiState.PAUSED) {
                 focusTimerServiceController.updateTimer(slogan, goal)
+                currentTask?.let {
+                    updateTaskGoalUseCase(it, goal)
+                }
             }
         }
 
@@ -102,9 +117,14 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
+    fun handleCreateTask() {
+        createTaskIfNeed()
+    }
+
     fun handleStartStopTimer() {
         if (uiState.value == UiState.STOPPED) {
             if (isWorkTime) {
+                createPomodoro()
                 startTimerForWork()
             } else {
                 startTimerForRest()
@@ -124,6 +144,26 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
 
     fun handleStartEditGoalText() {
         editGoalTextEvent.value = Event(Unit)
+    }
+
+    private fun createTaskIfNeed() {
+        val goal = goal.value
+        if (goal != null) {
+            if ((uiState.value == UiState.STOPPED && currentTask?.goal != goal) || currentTask == null) {
+                currentTask = createFreeTaskUseCase(goal)
+            }
+        } else {
+            errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_goal_error))
+        }
+    }
+
+    private fun createPomodoro() {
+        if (currentTask == null) {
+            createTaskIfNeed()
+        }
+        currentTask?.let {
+            currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
+        }
     }
 
     override fun onTimeChanged(timerSecondsPassed: Long) {

@@ -29,7 +29,10 @@ class SetupPomodoroDialogFragment : DaggerBottomSheetDialogFragment() {
             it.viewModel = viewModel
         }
 
-        binding.startButton.setOnClickListener { dismiss() }
+        binding.okButton.setOnClickListener {
+            viewModel.handleCreateTask()
+            dismiss()
+        }
 
         return binding.root
     }

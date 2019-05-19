@@ -1,5 +1,8 @@
 package ru.ischenko.roman.focustimer.data.model
 
 data class Task(
-    val taskName: String? = null
+    var project: Project?,
+    var goal: String,
+    var estimatedPomodorosCount: Int,
+    var scheduledTime: Int?
 )

@@ -7,6 +7,9 @@ import dagger.Provides
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
 import ru.ischenko.roman.focustimer.di.qualifier.ViewModelForFactoryInject
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
+import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
+import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
+import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
@@ -33,12 +36,28 @@ class FocusTimerMainModule {
             NotificationServiceDelegateImpl(context)
 
     @Provides
+    fun provideCreateFreeTaskUseCase() : CreateFreeTaskUseCase =
+            CreateFreeTaskUseCase()
+
+    @Provides
+    fun provideUpdateTaskGoalUseCase() : UpdateTaskGoalUseCase =
+            UpdateTaskGoalUseCase()
+
+    @Provides
+    fun provideCreatePomodoroUseCase() : CreatePomodoroUseCase =
+            CreatePomodoroUseCase()
+
+    @Provides
     @ViewModelForFactoryInject
     fun provideFocusTimerViewModel(focusTimerServiceController: FocusTimerServiceController,
                                    notification: FocusTimerNotification,
                                    notificationServiceDelegate: NotificationServiceDelegate,
-                                   resourceProvider: ResourceProvider): FocusTimerViewModel =
-            FocusTimerViewModel(focusTimerServiceController, notification, notificationServiceDelegate, resourceProvider)
+                                   resourceProvider: ResourceProvider,
+                                   createPomodoroUseCase: CreatePomodoroUseCase,
+                                   createFreeTaskUseCase: CreateFreeTaskUseCase,
+                                   updateTaskGoalUseCase: UpdateTaskGoalUseCase): FocusTimerViewModel =
+            FocusTimerViewModel(focusTimerServiceController, notification, notificationServiceDelegate, resourceProvider,
+                    createPomodoroUseCase, createFreeTaskUseCase, updateTaskGoalUseCase)
 
     @Provides
     @FragmentScope

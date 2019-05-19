@@ -10,11 +10,11 @@
 	</data>
 
 	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/setup_pomodoro_dialog"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:paddingLeft="@dimen/space_medium"
-		android:paddingRight="@dimen/space_medium"
-		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+		android:paddingRight="@dimen/space_medium">
 
 		<com.google.android.material.textfield.TextInputLayout
 			android:id="@+id/goal_text"
@@ -41,7 +41,7 @@
 			app:layout_constraintTop_toBottomOf="@+id/goal_text"/>
 
 		<com.google.android.material.button.MaterialButton
-			android:id="@+id/start_button"
+			android:id="@+id/ok_button"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="@dimen/space_medium"
@@ -54,7 +54,7 @@
 		<Space
 			android:layout_width="match_parent"
 			android:layout_height="@dimen/space_large"
-			app:layout_constraintTop_toBottomOf="@+id/start_button"/>
+			app:layout_constraintTop_toBottomOf="@+id/ok_button"/>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
