@@ -2,11 +2,18 @@ package ru.ischenko.roman.focustimer.presentation
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.ischenko.roman.focustimer.data.model.Pomodoro
 import ru.ischenko.roman.focustimer.data.model.Task
 import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
 import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
+import ru.ischenko.roman.focustimer.domain.IncreaseSpendPomodoroInTaskUseCase
 import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
+import ru.ischenko.roman.focustimer.domain.error.CreatePomodoroException
+import ru.ischenko.roman.focustimer.domain.error.CreateTaskException
+import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.timer.R
 import ru.ischenko.roman.focustimer.utils.Event
@@ -22,6 +29,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
                           private val resourceProvider: ResourceProvider,
                           private val createPomodoroUseCase: CreatePomodoroUseCase,
                           private val createFreeTaskUseCase: CreateFreeTaskUseCase,
+                          private val increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
                           private val updateTaskGoalUseCase: UpdateTaskGoalUseCase) : ViewModel(), OnTimeChangedListener {
 
     companion object {
@@ -52,9 +60,6 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         goal.observeForever { goal ->
             if (uiState.value == UiState.STARTED || uiState.value == UiState.PAUSED) {
                 focusTimerServiceController.updateTimer(slogan, goal)
-                currentTask?.let {
-                    updateTaskGoalUseCase(it, goal)
-                }
             }
         }
 
@@ -118,13 +123,18 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
     }
 
     fun handleCreateTask() {
-        createTaskIfNeed()
+        viewModelScope.launch {
+            if (uiState.value != UiState.STOPPED || currentTask?.spendPomodorosCount == 0) {
+                goal.value?.let {
+                    updateTaskGoal(it)
+                }
+            }
+        }
     }
 
     fun handleStartStopTimer() {
         if (uiState.value == UiState.STOPPED) {
             if (isWorkTime) {
-                createPomodoro()
                 startTimerForWork()
             } else {
                 startTimerForRest()
@@ -146,23 +156,52 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         editGoalTextEvent.value = Event(Unit)
     }
 
-    private fun createTaskIfNeed() {
-        val goal = goal.value
-        if (goal != null) {
-            if ((uiState.value == UiState.STOPPED && currentTask?.goal != goal) || currentTask == null) {
-                currentTask = createFreeTaskUseCase(goal)
-            }
-        } else {
+    private suspend fun checkGoalAndCreateTaskIfNeed() {
+        goal.value?.let {
+            createOrUpdateTask(it)
+        } ?: run {
             errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_goal_error))
         }
     }
 
-    private fun createPomodoro() {
-        if (currentTask == null) {
-            createTaskIfNeed()
+    private suspend fun createOrUpdateTask(goal: String) {
+        try {
+            currentTask?.let {
+                if (it.goal != goal) {
+                    // If task not have spend pomodoro's, then we just edit task
+                    if (it.spendPomodorosCount == 0) {
+                        Timber.d("Update task goal because spend counter is zero")
+                        updateTaskGoalUseCase(it, goal)
+                    } else {
+                        Timber.d("Crate new task")
+                        currentTask = createFreeTaskUseCase(goal)
+                    }
+                }
+            } ?: run {
+                Timber.d("Crate task")
+                currentTask = createFreeTaskUseCase(goal)
+            }
         }
-        currentTask?.let {
-            currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
+        catch (e: CreateTaskException) {
+            Timber.e(e, e.message)
+            errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_create_task_error))
+        }
+        catch (e: UpdateTaskException) {
+            Timber.e(e, e.message)
+            errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_update_task_error))
+        }
+    }
+
+    private suspend fun updateTaskGoal(goal: String) {
+        try {
+            currentTask?.let {
+                Timber.d("Update task goal")
+                updateTaskGoalUseCase(it, goal)
+            }
+        }
+        catch (e: UpdateTaskException) {
+            Timber.e(e, e.message)
+            errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_update_task_error))
         }
     }
 
@@ -181,7 +220,33 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
     override fun onTimerFinish() {
         uiState.value = UiState.STOPPED
         this.timerSecondsPassed.value = 0L
+
+        viewModelScope.launch(Dispatchers.Main.immediate) {
+            createPomodoro()
+        }
+
         showNotification()
+    }
+
+    private suspend fun createPomodoro() {
+        if (isWorkTime) {
+            try {
+                checkGoalAndCreateTaskIfNeed()
+                currentTask?.let {
+                    Timber.d("Create pomodoro and increase spend counter in task")
+                    currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
+                    increaseSpendPomodoroInTaskUseCase(it)
+                }
+            }
+            catch (e: CreatePomodoroException) {
+                Timber.e(e, e.message)
+                errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_create_pomodoro_error))
+            }
+            catch (e: UpdateTaskException) {
+                Timber.e(e, e.message)
+                errorEvent.value = Event(resourceProvider.getText(R.string.focus_timer_update_task_error))
+            }
+        }
     }
 
     override fun onTimerCancel() {

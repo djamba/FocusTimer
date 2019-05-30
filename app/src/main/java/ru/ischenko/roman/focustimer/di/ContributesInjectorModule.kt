@@ -12,11 +12,11 @@ import ru.ischenko.roman.focustimer.presentation.SetupPomodoroDialogFragment
 interface ContributesInjectorModule {
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = [FocusTimerMainModule::class])
+    @ContributesAndroidInjector(modules = [FocusTimerModule::class])
     fun contributeFocusTimerFragment(): FocusTimerFragment
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = [FocusTimerMainModule::class])
+    @ContributesAndroidInjector(modules = [FocusTimerModule::class])
     fun contributeSetupPomodoroDialogFragment(): SetupPomodoroDialogFragment
 
     @ServiceScope

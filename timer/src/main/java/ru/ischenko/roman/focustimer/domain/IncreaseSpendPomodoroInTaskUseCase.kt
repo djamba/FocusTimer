@@ -6,16 +6,16 @@ import ru.ischenko.roman.focustimer.data.model.Task
 import ru.ischenko.roman.focustimer.data.repository.TaskRepository
 import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
 
-class UpdateTaskGoalUseCase(private val taskRepository: TaskRepository) {
+class IncreaseSpendPomodoroInTaskUseCase(private val taskRepository: TaskRepository) {
 
     @Throws(UpdateTaskException::class)
-    suspend operator fun invoke(task: Task, goal: String) = withContext(Dispatchers.IO) {
+    suspend operator fun invoke(task: Task) = withContext(Dispatchers.IO) {
         try {
-            task.goal = goal
+            task.spendPomodorosCount++
             taskRepository.saveTask(task)
         }
         catch (e: Throwable) {
-            throw UpdateTaskException("Can't update task", e)
+            throw UpdateTaskException("Can't increase spend pomodoro in task", e)
         }
     }
 }

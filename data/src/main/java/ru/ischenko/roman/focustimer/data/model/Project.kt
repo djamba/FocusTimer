@@ -1,5 +1,6 @@
 package ru.ischenko.roman.focustimer.data.model
 
 data class Project(
-    val projectName: String
+        var projectName: String,
+        var id: Long
 )

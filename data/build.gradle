@@ -13,11 +13,18 @@ android {
 }
 
 dependencies {
-    //Room
-    implementation "android.arch.persistence.room:runtime:$project.archVersionRoom"
-    implementation "android.arch.persistence.room:rxjava2:$project.archVersionRoom"
-    kapt "android.arch.persistence.room:compiler:$project.archVersionRoom"
+
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+
+    // Room
+    implementation "androidx.room:room-ktx:$archRoomVersion"
+    implementation "androidx.room:room-runtime:$archRoomVersion"
+    kapt "androidx.room:room-compiler:$archRoomVersion"
 }
 repositories {
     mavenCentral()

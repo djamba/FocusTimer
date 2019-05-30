@@ -1,10 +1,14 @@
 package ru.ischenko.roman.focustimer.data.model
 
+import java.util.*
+
 data class Pomodoro(
-    val task: Task,
-    val pomodoroTime: Long = 0,
-    val goalAchieved: Boolean = false,
-    val efficiencyMark: Int = 0,
-    val retrospectiveComment: String? = null,
-    val distractionCount: Int = 0
+        val task: Task,
+        var completeDate: Date,
+        var pomodoroTime: Long = 0,
+        var goalAchieved: Boolean = false,
+        var efficiencyMark: Int = 0,
+        var retrospectiveComment: String? = null,
+        var distractionCount: Int = 0,
+        var id: Long = 0
 )

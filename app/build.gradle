@@ -46,24 +46,29 @@ dependencies {
     implementation project(":timer")
 
     // Support library
-    implementation "androidx.core:core-ktx:$project.ktxVersion"
-    implementation "androidx.appcompat:appcompat:$project.appCompatVersion"
-    implementation "androidx.cardview:cardview:$project.cardViewVersion"
-    implementation "androidx.recyclerview:recyclerview:$project.recyclerViewVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$project.constraintLayoutVersion"
-    implementation "com.google.android.material:material:$project.androidMaterialVersion"
+    implementation "androidx.core:core-ktx:$ktxCoreVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.cardview:cardview:$cardViewVersion"
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "com.google.android.material:material:$androidMaterialVersion"
 
     // Dagger2
-    implementation "com.google.dagger:dagger:$project.daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$project.daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$project.daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$project.daggerVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     // Timber
-    implementation "com.jakewharton.timber:timber:$project.timberVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
 
     //Lifecycle
-    implementation "android.arch.lifecycle:runtime:$project.archVersion"
-    implementation "android.arch.lifecycle:extensions:$project.archVersion"
-    kapt "android.arch.lifecycle:compiler:$project.archVersion"
+    implementation "android.arch.lifecycle:runtime:$archVersion"
+    implementation "android.arch.lifecycle:extensions:$archVersion"
+    kapt "android.arch.lifecycle:compiler:$archVersion"
+
+    // Room
+    implementation "androidx.room:room-ktx:$archRoomVersion"
+    implementation "androidx.room:room-runtime:$archRoomVersion"
+    kapt "androidx.room:room-compiler:$archRoomVersion"
 }

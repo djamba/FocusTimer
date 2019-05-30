@@ -17,7 +17,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.google.dagger:dagger-android-support:$project.daggerVersion"
-    implementation "android.arch.lifecycle:extensions:$project.archVersion"
-    implementation "com.google.android.material:material:$project.androidMaterialVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation "android.arch.lifecycle:extensions:$archVersion"
+    implementation "com.google.android.material:material:$androidMaterialVersion"
 }
