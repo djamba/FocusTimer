@@ -31,15 +31,21 @@ project.ext {
     appCompatVersion = "1.0.2"
     cardViewVersion = "1.0.0"
     recyclerViewVersion = "1.0.0"
-    androidMaterialVersion = "1.1.0-alpha06"
+    androidMaterialVersion = "1.1.0-alpha07"
     constraintLayoutVersion = "1.1.3"
 
     archVersion = "2.0.0"
-    archRoomVersion = "2.1.0-alpha07"
+    archRoomVersion = "2.1.0-rc01"
 
     daggerVersion = "2.22.1"
 
     timberVersion = "4.7.0"
+
+    junitVersion = "4.12"
+    archTestVersion = "1.1.1"
+    mockkVersion = "1.9.3"
+    testRunnerVersion = "1.1.1"
+    espressoVersion = "3.2.0"
 }
 
 task clean(type: Delete) {

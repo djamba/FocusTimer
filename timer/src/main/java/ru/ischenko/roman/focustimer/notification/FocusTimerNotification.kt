@@ -2,13 +2,7 @@ package ru.ischenko.roman.focustimer.notification
 
 import android.app.Notification
 
-/**
- * User: roman
- * Date: 20.02.19
- * Time: 22:36
- */
-
-interface FocusTimerNotificationCreator {
+interface NotificationCreator {
 
     fun createNotification(title: String, message: String, isOngoing: Boolean, shouldNotify: Boolean,
                            actions: List<NotificationAction>): Notification
@@ -16,9 +10,9 @@ interface FocusTimerNotificationCreator {
 
 interface FocusTimerNotification {
 
-    var focusTimerNotificationListener: FocusTimerNotificationListener?
+    var timerListener: TimerListener?
 
-    var focusTimerActionNotificationListener: FocusTimerActionNotificationListener?
+    var notificationActionListener: NotificationActionListener?
 
     fun register()
 
@@ -37,7 +31,7 @@ interface FocusTimerNotification {
 
     fun resume()
 
-    interface FocusTimerNotificationListener {
+    interface TimerListener {
 
         fun onPause()
 
@@ -46,7 +40,7 @@ interface FocusTimerNotification {
         fun onCancel()
     }
 
-    interface FocusTimerActionNotificationListener {
+    interface NotificationActionListener {
 
         fun onAction(action: String)
     }

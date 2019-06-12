@@ -62,8 +62,12 @@ dependencies {
     kapt "androidx.room:room-compiler:$archRoomVersion"
 
     // UnitTest
-    testImplementation "junit:junit:4.12"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "android.arch.core:core-testing:$archTestVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    androidTestImplementation "android.arch.core:core-testing:$archTestVersion"
+    androidTestImplementation "androidx.test:runner:$testRunnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }

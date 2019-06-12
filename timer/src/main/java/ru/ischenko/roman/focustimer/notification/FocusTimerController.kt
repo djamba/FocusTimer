@@ -2,8 +2,8 @@ package ru.ischenko.roman.focustimer.notification
 
 import android.content.Context
 
-
-interface FocusTimerServiceController {
+// TODO: move interface to domain
+interface FocusTimerController {
 
     fun startTimer(time: Long, title: String, message: String)
 
@@ -14,7 +14,7 @@ interface FocusTimerServiceController {
     fun resumePauseTimer()
 }
 
-class FocusTimerServiceControllerIml(private val context: Context) : FocusTimerServiceController {
+class FocusTimerServiceController(private val context: Context) : FocusTimerController {
 
     override fun startTimer(time: Long, title: String, message: String) =
         FocusTimerNotificationService.startTimer(

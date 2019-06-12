@@ -121,8 +121,8 @@ class FocusTimerNotificationService : DaggerService() {
 
     private fun initNotification() {
         focusTimerNotification = FocusTimerNotificationImpl(this, contentIntent)
-        focusTimerNotification?.focusTimerNotificationListener =
-                object : FocusTimerNotification.FocusTimerNotificationListener {
+        focusTimerNotification?.timerListener =
+                object : FocusTimerNotification.TimerListener {
 
             override fun onPause() {
                 resumePauseTimer()

@@ -6,14 +6,14 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 
-interface NotificationServiceDelegate {
+interface FocusTimerServiceMediator {
 
     fun startService(onTimeChangedListener: OnTimeChangedListener)
 
     fun stopService()
 }
 
-class NotificationServiceDelegateImpl(private val context: Context) : NotificationServiceDelegate {
+class FocusTimerServiceMediatorImpl(private val context: Context) : FocusTimerServiceMediator {
 
     private var serviceBound = false
     private var focusTimerNotificationService: FocusTimerNotificationService? = null

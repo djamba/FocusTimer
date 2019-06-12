@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
  * Date: 30.09.18
  * Time: 13:09
  */
-class FocusTimerNotificationImpl(private val context: Context, private val contentIntent: Intent) : FocusTimerNotification, FocusTimerNotificationCreator {
+class FocusTimerNotificationImpl(private val context: Context, private val contentIntent: Intent) : FocusTimerNotification, NotificationCreator {
 
     companion object {
         const val LIGHT_SHOW_TIME: Int = 500
@@ -47,8 +47,8 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
     private lateinit var pendingIntent: PendingIntent
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
-    override var focusTimerNotificationListener: FocusTimerNotification.FocusTimerNotificationListener? = null
-    override var focusTimerActionNotificationListener: FocusTimerNotification.FocusTimerActionNotificationListener? = null
+    override var timerListener: FocusTimerNotification.TimerListener? = null
+    override var notificationActionListener: FocusTimerNotification.NotificationActionListener? = null
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private var vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -67,10 +67,10 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
     private val actionReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
-                ACTION_PAUSE -> focusTimerNotificationListener?.onPause()
-                ACTION_RESUME -> focusTimerNotificationListener?.onResume()
-                ACTION_CANCEL -> focusTimerNotificationListener?.onCancel()
-                ACTION_CUSTOM -> focusTimerActionNotificationListener?.onAction(
+                ACTION_PAUSE -> timerListener?.onPause()
+                ACTION_RESUME -> timerListener?.onResume()
+                ACTION_CANCEL -> timerListener?.onCancel()
+                ACTION_CUSTOM -> notificationActionListener?.onAction(
                             intent.getStringExtra(EXTRA_ACTION) ?: ACTION_CUSTOM)
             }
         }

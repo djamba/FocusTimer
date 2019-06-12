@@ -23,9 +23,9 @@ import java.util.concurrent.TimeUnit
 
 enum class UiState { STARTED, PAUSED, STOPPED }
 
-class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerServiceController,
+class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val notification: FocusTimerNotification,
-                          private val notificationServiceDelegate: NotificationServiceDelegate,
+                          private val focusTimerService: FocusTimerServiceMediator,
                           private val resourceProvider: ResourceProvider,
                           private val createPomodoroUseCase: CreatePomodoroUseCase,
                           private val createFreeTaskUseCase: CreateFreeTaskUseCase,
@@ -56,18 +56,17 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
 
     init {
         goal.value = resourceProvider.getText(R.string.focus_timer_notification_no_goal)
-
         goal.observeForever { goal ->
             if (uiState.value == UiState.STARTED || uiState.value == UiState.PAUSED) {
-                focusTimerServiceController.updateTimer(slogan, goal)
+                timer.updateTimer(slogan, goal)
             }
         }
 
         uiState.value = UiState.STOPPED
 
-        notificationServiceDelegate.startService(onTimeChangedListener = this)
+        focusTimerService.startService(onTimeChangedListener = this)
 
-        notification.focusTimerActionNotificationListener = object : FocusTimerNotification.FocusTimerActionNotificationListener {
+        notification.notificationActionListener = object : FocusTimerNotification.NotificationActionListener {
 
             override fun onAction(action: String) {
                 Timber.d("onAction($action)")
@@ -110,7 +109,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         uiState.value = UiState.STARTED
         startTimerEvent.value = Event(POMODORE_TIME)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
-        focusTimerServiceController.startTimer(POMODORE_TIME, slogan,
+        timer.startTimer(POMODORE_TIME, slogan,
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
@@ -118,11 +117,11 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         uiState.value = UiState.STARTED
         startTimerEvent.value = Event(REST_TIME)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
-        focusTimerServiceController.startTimer(REST_TIME, slogan,
+        timer.startTimer(REST_TIME, slogan,
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
-    fun handleCreateTask() {
+    fun handleUpdateTaskGoal() {
         viewModelScope.launch {
             if (uiState.value != UiState.STOPPED || currentTask?.spendPomodorosCount == 0) {
                 goal.value?.let {
@@ -140,7 +139,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
                 startTimerForRest()
             }
         } else {
-            focusTimerServiceController.resumePauseTimer()
+            timer.resumePauseTimer()
         }
     }
 
@@ -148,7 +147,7 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
         if (uiState.value != UiState.STOPPED) {
             uiState.value = UiState.STOPPED
             this.timerSecondsPassed.value = 0L
-            focusTimerServiceController.stopTimer()
+            timer.stopTimer()
         }
     }
 
@@ -257,6 +256,6 @@ class FocusTimerViewModel(private val focusTimerServiceController: FocusTimerSer
     override fun onCleared() {
         super.onCleared()
         notification.unregister()
-        notificationServiceDelegate.stopService()
+        focusTimerService.stopService()
     }
 }

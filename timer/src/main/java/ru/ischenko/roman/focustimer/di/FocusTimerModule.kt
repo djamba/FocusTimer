@@ -37,12 +37,12 @@ class FocusTimerModule {
             ResourceProviderImpl(context)
 
     @Provides
-    fun provideFocusTimerServiceController(@AppContext context: Context) : FocusTimerServiceController =
-            FocusTimerServiceControllerIml(context)
+    fun provideFocusTimerController(@AppContext context: Context) : FocusTimerController =
+            FocusTimerServiceController(context)
 
     @Provides
-    fun provideNotificationServiceDelegate(@AppContext context: Context) : NotificationServiceDelegate =
-            NotificationServiceDelegateImpl(context)
+    fun provideFocusTimerServiceMediator(@AppContext context: Context) : FocusTimerServiceMediator =
+            FocusTimerServiceMediatorImpl(context)
 
     @Provides
     fun provideIncreaseSpendPomodoroInTaskUseCase(taskRepository: TaskRepository) : IncreaseSpendPomodoroInTaskUseCase =
@@ -81,15 +81,15 @@ class FocusTimerModule {
 
     @Provides
     @ViewModelForFactoryInject
-    fun provideFocusTimerViewModel(focusTimerServiceController: FocusTimerServiceController,
+    fun provideFocusTimerViewModel(focusTimerController: FocusTimerController,
                                    notification: FocusTimerNotification,
-                                   notificationServiceDelegate: NotificationServiceDelegate,
+                                   focusTimerServiceMediator: FocusTimerServiceMediator,
                                    resourceProvider: ResourceProvider,
                                    createPomodoroUseCase: CreatePomodoroUseCase,
                                    createFreeTaskUseCase: CreateFreeTaskUseCase,
                                    increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
                                    updateTaskGoalUseCase: UpdateTaskGoalUseCase): FocusTimerViewModel =
-            FocusTimerViewModel(focusTimerServiceController, notification, notificationServiceDelegate, resourceProvider,
+            FocusTimerViewModel(focusTimerController, notification, focusTimerServiceMediator, resourceProvider,
                     createPomodoroUseCase, createFreeTaskUseCase, increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
 
     @Provides

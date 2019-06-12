@@ -30,7 +30,7 @@ class SetupPomodoroDialogFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.okButton.setOnClickListener {
-            viewModel.handleCreateTask()
+            viewModel.handleUpdateTaskGoal()
             dismiss()
         }
 
