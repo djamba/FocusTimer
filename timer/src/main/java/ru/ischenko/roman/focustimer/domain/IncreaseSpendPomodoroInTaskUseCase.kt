@@ -9,7 +9,7 @@ import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
 class IncreaseSpendPomodoroInTaskUseCase(private val taskRepository: TaskRepository) {
 
     @Throws(UpdateTaskException::class)
-    suspend operator fun invoke(task: Task) = withContext(Dispatchers.IO) {
+    suspend operator fun invoke(task: Task): Int = withContext(Dispatchers.IO) {
         try {
             task.spendPomodorosCount++
             taskRepository.saveTask(task)
@@ -17,5 +17,6 @@ class IncreaseSpendPomodoroInTaskUseCase(private val taskRepository: TaskReposit
         catch (e: Throwable) {
             throw UpdateTaskException("Can't increase spend pomodoro in task", e)
         }
+        return@withContext task.spendPomodorosCount
     }
 }

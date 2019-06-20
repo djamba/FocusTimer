@@ -2,9 +2,9 @@ package ru.ischenko.roman.focustimer.timer
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.*
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
@@ -55,10 +55,10 @@ class FocusTimerViewModelTest {
         every { resourceProvider.getText(R.string.focus_timer_notification_focus_on_work) } returns WORK_NOTIFICATION
         every { resourceProvider.getText(R.string.focus_timer_notification_no_goal) } returns GOAL
 
-        coEvery { createFreeTaskUseCase.invoke(any()) } returns task
+        coEvery { createFreeTaskUseCase.invoke(any(), any()) } returns task
         coEvery { createPomodoroUseCase.invoke(any(), any()) } returns pomodoro
         coEvery { updateTaskGoalUseCase.invoke(any(), any()) } returns Unit
-        coEvery { increaseSpendPomodoroInTaskUseCase.invoke(any()) } returns Unit
+        coEvery { increaseSpendPomodoroInTaskUseCase.invoke(any()) } returns SPEND_POMODOROS
 
         focusTimerViewModel = FocusTimerViewModel(timer, notification, notificationService,
                 resourceProvider, createPomodoroUseCase, createFreeTaskUseCase, increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
@@ -71,7 +71,7 @@ class FocusTimerViewModelTest {
 
         focusTimerViewModel.handleStartStopTimer()
 
-        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED)
+        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED_WORK)
         assertEquals(focusTimerViewModel.startTimerEvent.value?.peekContent(), WORK_TIME)
 
         verify { timer.startTimer(WORK_TIME, SLAGON_WORK, focusTimerViewModel.goal.value!!) }
@@ -86,7 +86,7 @@ class FocusTimerViewModelTest {
 
         focusTimerViewModel.handleStartStopTimer()
 
-        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED)
+        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED_REST)
         assertEquals(focusTimerViewModel.startTimerEvent.value?.peekContent(), REST_TIME)
 
         verify { timer.startTimer(REST_TIME, SLAGON_REST, focusTimerViewModel.goal.value!!) }
@@ -96,7 +96,7 @@ class FocusTimerViewModelTest {
     @Test
     fun `WHEN timer is running and user start button pressed THEN pause or resume timer`() {
 
-        focusTimerViewModel.uiState.value = UiState.STARTED
+        focusTimerViewModel.uiState.value = UiState.STARTED_WORK
 
         focusTimerViewModel.handleStartStopTimer()
 
@@ -107,10 +107,11 @@ class FocusTimerViewModelTest {
     fun `WHEN timer is running and task is created and user update task goal THEN save new task goal`() {
 
         focusTimerViewModel.onTimerFinish()
-        focusTimerViewModel.uiState.value = UiState.STARTED
+        focusTimerViewModel.uiState.value = UiState.STARTED_WORK
 
         focusTimerViewModel.handleUpdateTaskGoal()
 
+        assertEquals(focusTimerViewModel.spendPomodorosCount.value, SPEND_POMODOROS)
         coVerify { updateTaskGoalUseCase.invoke(any(), focusTimerViewModel.goal.value!!) }
     }
 
@@ -118,7 +119,7 @@ class FocusTimerViewModelTest {
     fun `WHEN timer is running and task is created and user update task goal and update fail THEN show error`() {
 
         focusTimerViewModel.onTimerFinish()
-        focusTimerViewModel.uiState.value = UiState.STARTED
+        focusTimerViewModel.uiState.value = UiState.STARTED_WORK
         every { resourceProvider.getText(R.string.focus_timer_update_task_error) } returns ERROR
         coEvery { updateTaskGoalUseCase.invoke(any(), any()) } throws UpdateTaskException("", null)
 
@@ -134,13 +135,15 @@ class FocusTimerViewModelTest {
 
         focusTimerViewModel.handleUpdateTaskGoal()
 
+        assertEquals(focusTimerViewModel.spendPomodorosCount.value, 0)
+        assertEquals(focusTimerViewModel.estimatedPomodorosCount.value, DEFAULT_TASK_ESTIMATE)
         coVerify(exactly = 0) { updateTaskGoalUseCase.invoke(any(), focusTimerViewModel.goal.value!!) }
     }
 
     @Test
     fun `WHEN timer is running and user stop timer THEN cancel pomodoro`() {
 
-        focusTimerViewModel.uiState.value = UiState.STARTED
+        focusTimerViewModel.uiState.value = UiState.STARTED_WORK
 
         focusTimerViewModel.handleCancelTimer()
 
@@ -180,7 +183,7 @@ class FocusTimerViewModelTest {
 
         focusTimerViewModel.onTimerResumed()
 
-        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED)
+        assertEquals(focusTimerViewModel.uiState.value, UiState.STARTED_WORK)
     }
 
     @Test
@@ -202,8 +205,19 @@ class FocusTimerViewModelTest {
         assertEquals(focusTimerViewModel.uiState.value, UiState.STOPPED)
         assertEquals(focusTimerViewModel.timerSecondsPassed.value, 0L)
 
-        coVerify { createFreeTaskUseCase.invoke(focusTimerViewModel.goal.value!!) }
+        coVerify { createFreeTaskUseCase.invoke(focusTimerViewModel.goal.value!!, DEFAULT_TASK_ESTIMATE) }
         coVerify { createPomodoroUseCase.invoke(any(), WORK_TIME) }
+        coVerify { increaseSpendPomodoroInTaskUseCase.invoke(any()) }
+    }
+
+    @Test
+    fun `WHEN timer finished THEN spend pomodoro increased`() {
+
+        every { resourceProvider.getText(R.string.focus_timer_notification_rest) } returns SLAGON_REST
+
+        focusTimerViewModel.onTimerFinish()
+
+        assertEquals(focusTimerViewModel.spendPomodorosCount.value, SPEND_POMODOROS)
         coVerify { increaseSpendPomodoroInTaskUseCase.invoke(any()) }
     }
 
@@ -238,7 +252,7 @@ class FocusTimerViewModelTest {
 
         assertEquals(focusTimerViewModel.errorEvent.value, Event(ERROR))
 
-        coVerify(exactly = 0) { createFreeTaskUseCase.invoke(any()) }
+        coVerify(exactly = 0) { createFreeTaskUseCase.invoke(any(), DEFAULT_TASK_ESTIMATE) }
         coVerify(exactly = 0) { createPomodoroUseCase.invoke(any(), any()) }
         coVerify(exactly = 0) { increaseSpendPomodoroInTaskUseCase.invoke(any()) }
     }
@@ -247,13 +261,13 @@ class FocusTimerViewModelTest {
     fun `WHEN timer finished and occurred error until create task THEN do not save pomodoro and show error`() {
 
         every { resourceProvider.getText(R.string.focus_timer_create_task_error) } returns ERROR
-        coEvery { createFreeTaskUseCase.invoke(any()) } throws CreateTaskException("", null)
+        coEvery { createFreeTaskUseCase.invoke(any(), DEFAULT_TASK_ESTIMATE) } throws CreateTaskException("", null)
 
         focusTimerViewModel.onTimerFinish()
 
         assertEquals(focusTimerViewModel.errorEvent.value, Event(ERROR))
 
-        coVerify { createFreeTaskUseCase.invoke(focusTimerViewModel.goal.value!!) }
+        coVerify { createFreeTaskUseCase.invoke(focusTimerViewModel.goal.value!!, DEFAULT_TASK_ESTIMATE) }
         coVerify(exactly = 0) { createPomodoroUseCase.invoke(any(), any()) }
         coVerify(exactly = 0) { increaseSpendPomodoroInTaskUseCase.invoke(any()) }
     }
@@ -273,6 +287,8 @@ class FocusTimerViewModelTest {
     }
 
     companion object TestData {
+        private const val DEFAULT_TASK_ESTIMATE = 4
+        private const val SPEND_POMODOROS = 3
         private const val REST = "REST"
         private const val REST_NOTIFICATION = "REST_NOTIFICATION"
         private const val WORK = "WORK"

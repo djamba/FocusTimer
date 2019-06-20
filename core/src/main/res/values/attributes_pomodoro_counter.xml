@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<declare-styleable name="PomodoroCounter">
+
+		<attr name="passedColor" format="color"/>
+		<attr name="plannedColor" format="color"/>
+		<attr name="overPlannedColor" format="color"/>
+		<attr name="gravity" format="enum">
+			<enum name="left" value="0"/>
+			<enum name="right" value="1"/>
+		</attr>
+
+	</declare-styleable>
+
+</resources>

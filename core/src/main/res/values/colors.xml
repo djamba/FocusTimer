@@ -10,14 +10,16 @@
 	<color name="colorSecondary">#c51162</color>
 	<color name="colorSurface">#FFFFFF</color>
 	<color name="colorError">#B2002A</color>
-	<color name="colorOnPrimary">#FFEEEE</color>
-	<color name="colorOnSecondary">#FFEEEE</color>
+	<color name="colorOnPrimary">#FFE0E0</color>
+	<color name="colorOnSecondary">#FFE0E0</color>
 	<color name="colorOnSurface">#442B2D</color>
 	<color name="colorOnError">#FFFBFA</color>
 	<color name="colorOnBackground">#442B2D</color>
 
 	<color name="colorStatusBar">#D5D5D5</color>
 	<color name="colorBackground">#EFEFEF</color>
+
+	<color name="colorOverPlanned">#FFD700</color>
 
 	<color name="colorHeadline6">#616161</color>
 

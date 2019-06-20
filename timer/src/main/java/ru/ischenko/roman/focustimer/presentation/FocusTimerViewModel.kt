@@ -21,7 +21,7 @@ import ru.ischenko.roman.focustimer.utils.ResourceProvider
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-enum class UiState { STARTED, PAUSED, STOPPED }
+enum class UiState { STARTED_WORK, STARTED_REST, PAUSED, STOPPED }
 
 class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val notification: FocusTimerNotification,
@@ -33,6 +33,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val updateTaskGoalUseCase: UpdateTaskGoalUseCase) : ViewModel(), OnTimeChangedListener {
 
     companion object {
+        private val DEFAULT_TASK_ESTIMATE = 4
         private val POMODORE_TIME = TimeUnit.MINUTES.toSeconds(25)
         private val REST_TIME = TimeUnit.MINUTES.toSeconds(5)
 
@@ -44,6 +45,9 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     private var currentPomodoro: Pomodoro? = null
 
     val goal: MutableLiveData<String> = MutableLiveData()
+    val estimatedPomodorosCount: MutableLiveData<Int> = MutableLiveData()
+    val spendPomodorosCount: MutableLiveData<Int> = MutableLiveData()
+
     val uiState: MutableLiveData<UiState> = MutableLiveData()
     val timerSecondsPassed: MutableLiveData<Long> = MutableLiveData()
 
@@ -55,14 +59,17 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     private lateinit var slogan: String
 
     init {
+        uiState.value = UiState.STOPPED
+
         goal.value = resourceProvider.getText(R.string.focus_timer_notification_no_goal)
         goal.observeForever { goal ->
-            if (uiState.value == UiState.STARTED || uiState.value == UiState.PAUSED) {
+            if (uiState.value != UiState.STOPPED) {
                 timer.updateTimer(slogan, goal)
             }
         }
 
-        uiState.value = UiState.STOPPED
+        spendPomodorosCount.value = 0
+        estimatedPomodorosCount.value = DEFAULT_TASK_ESTIMATE
 
         focusTimerService.startService(onTimeChangedListener = this)
 
@@ -106,7 +113,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     }
 
     private fun startTimerForWork() {
-        uiState.value = UiState.STARTED
+        uiState.value = UiState.STARTED_WORK
         startTimerEvent.value = Event(POMODORE_TIME)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
         timer.startTimer(POMODORE_TIME, slogan,
@@ -114,7 +121,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     }
 
     private fun startTimerForRest() {
-        uiState.value = UiState.STARTED
+        uiState.value = UiState.STARTED_REST
         startTimerEvent.value = Event(REST_TIME)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
         timer.startTimer(REST_TIME, slogan,
@@ -127,6 +134,11 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                 goal.value?.let {
                     updateTaskGoal(it)
                 }
+            } else {
+                currentTask = null
+                currentPomodoro = null
+                estimatedPomodorosCount.value = DEFAULT_TASK_ESTIMATE
+                spendPomodorosCount.value = 0
             }
         }
     }
@@ -173,12 +185,14 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                         updateTaskGoalUseCase(it, goal)
                     } else {
                         Timber.d("Crate new task")
-                        currentTask = createFreeTaskUseCase(goal)
+                        spendPomodorosCount.value = 0
+                        currentTask = createFreeTaskUseCase(goal, estimatedPomodorosCount.value ?: DEFAULT_TASK_ESTIMATE)
                     }
                 }
             } ?: run {
                 Timber.d("Crate task")
-                currentTask = createFreeTaskUseCase(goal)
+                spendPomodorosCount.value = 0
+                currentTask = createFreeTaskUseCase(goal, estimatedPomodorosCount.value ?: DEFAULT_TASK_ESTIMATE)
             }
         }
         catch (e: CreateTaskException) {
@@ -213,7 +227,11 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     }
 
     override fun onTimerResumed() {
-        uiState.value = UiState.STARTED
+        uiState.value = if (isWorkTime) {
+            UiState.STARTED_WORK
+        } else {
+            UiState.STARTED_REST
+        }
     }
 
     override fun onTimerFinish() {
@@ -231,10 +249,10 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
         if (isWorkTime) {
             try {
                 checkGoalAndCreateTaskIfNeed()
-                currentTask?.let {
+                currentTask?.let { it ->
                     Timber.d("Create pomodoro and increase spend counter in task")
                     currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
-                    increaseSpendPomodoroInTaskUseCase(it)
+                    spendPomodorosCount.value = increaseSpendPomodoroInTaskUseCase(it)
                 }
             }
             catch (e: CreatePomodoroException) {

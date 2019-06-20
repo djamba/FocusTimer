@@ -8,11 +8,8 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import ru.ischenko.roman.focustimer.core.R
 import java.lang.Math.*
-
-
-
-
 
 /**
  * User: roman
@@ -72,39 +69,39 @@ class TimerView: View {
 
     constructor(context: Context, attrSet: AttributeSet?, defStyleAttr: Int) : super(context, attrSet, defStyleAttr) {
 
-        val typedArray : TypedArray = context.theme.obtainStyledAttributes(attrSet, ru.ischenko.roman.focustimer.core.R.styleable.TimerView, 0, 0)
+        val typedArray : TypedArray = context.theme.obtainStyledAttributes(attrSet, R.styleable.TimerView, 0, 0)
 
 		try {
-			activePaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_activeColor, 0))
-            statusPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_activeColor, 0))
-			inactivePaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_inactiveColor, 0))
-            markerPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_markerColor, 0))
+			activePaint = createPaint(typedArray.getColor(R.styleable.TimerView_activeColor, 0))
+            statusPaint = createPaint(typedArray.getColor(R.styleable.TimerView_activeColor, 0))
+			inactivePaint = createPaint(typedArray.getColor(R.styleable.TimerView_inactiveColor, 0))
+            markerPaint = createPaint(typedArray.getColor(R.styleable.TimerView_markerColor, 0))
             markerPaint.style = Paint.Style.FILL
-            backgroundPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_backgroundColor, 0))
+            backgroundPaint = createPaint(typedArray.getColor(R.styleable.TimerView_backgroundColor, 0))
             backgroundPaint.style = Paint.Style.FILL
 
-            backgroundPadding = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_backgroundPadding, 0F)
+            backgroundPadding = typedArray.getDimension(R.styleable.TimerView_backgroundPadding, 0F)
 
-            textPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_textColor, 0))
-            textPaint.textSize = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_timerFontSize, 0F)
+            textPaint = createPaint(typedArray.getColor(R.styleable.TimerView_textColor, 0))
+            textPaint.textSize = typedArray.getDimension(R.styleable.TimerView_timerFontSize, 0F)
             textPaint.style = Paint.Style.FILL
             textPaint.isFakeBoldText = true
 
-            hintTextPaint = createPaint(typedArray.getColor(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusColor, 0))
-            hintTextPaint.textSize = typedArray.getDimension(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusFontSize, 0F)
+            hintTextPaint = createPaint(typedArray.getColor(R.styleable.TimerView_statusColor, 0))
+            hintTextPaint.textSize = typedArray.getDimension(R.styleable.TimerView_statusFontSize, 0F)
             hintTextPaint.style = Paint.Style.FILL
             hintTextPaint.isFakeBoldText = true
 
-            statusStarted = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusStarted) ?: DEFAULT_STATUS_STARTED
-            statusPaused = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusPaused) ?: DEFAULT_STATUS_PAUSED
-            statusStopped = typedArray.getString(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_statusStopped) ?: DEFAULT_STATUS_STOPPED
+            statusStarted = typedArray.getString(R.styleable.TimerView_statusStarted) ?: DEFAULT_STATUS_STARTED
+            statusPaused = typedArray.getString(R.styleable.TimerView_statusPaused) ?: DEFAULT_STATUS_PAUSED
+            statusStopped = typedArray.getString(R.styleable.TimerView_statusStopped) ?: DEFAULT_STATUS_STOPPED
 
-			lineWidth = typedArray.getDimensionPixelSize(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_lineWidth, 0)
+			lineWidth = typedArray.getDimensionPixelSize(R.styleable.TimerView_lineWidth, 0)
             activePaint.strokeWidth = lineWidth.toFloat()
             inactivePaint.strokeWidth = lineWidth.toFloat()
             statusPaint.strokeWidth = lineWidth.toFloat()
 
-			markerDiameter = typedArray.getDimensionPixelSize(ru.ischenko.roman.focustimer.core.R.styleable.TimerView_markerDiameter, 0)
+			markerDiameter = typedArray.getDimensionPixelSize(R.styleable.TimerView_markerDiameter, 0)
 		} finally {
 			typedArray.recycle()
 		}
@@ -190,16 +187,13 @@ class TimerView: View {
         isPaused = parcelable.isPaused
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
+        super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
-        val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+        centerX = width / 2F
+        centerY = height / 2F
 
-        centerX = parentWidth / 2F
-        centerY = parentHeight / 2F
-
-        radius = if (parentHeight > parentWidth) parentWidth / 2F else parentHeight / 2F
+        radius = if (height > width) width / 2F else height / 2F
         radius -= markerDiameter
     }
 
@@ -286,7 +280,7 @@ class TimerView: View {
         fun onComplete()
     }
 
-    private class SavedState : View.BaseSavedState {
+    private class SavedState : BaseSavedState {
 
         var savedStep: Float = 0f
         var progressAngle: Float = 0f

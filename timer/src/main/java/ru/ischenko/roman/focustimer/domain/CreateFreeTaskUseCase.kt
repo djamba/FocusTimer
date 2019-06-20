@@ -9,10 +9,10 @@ import ru.ischenko.roman.focustimer.domain.error.CreateTaskException
 class CreateFreeTaskUseCase(private val taskRepository: TaskRepository) {
 
     @Throws(CreateTaskException::class)
-    suspend operator fun invoke(goal: String): Task = withContext(Dispatchers.IO) {
+    suspend operator fun invoke(goal: String, estimatedPomodorosCount: Int): Task = withContext(Dispatchers.IO) {
         try {
-            val task = Task(project = null, goal = goal, estimatedPomodorosCount = 1, spendPomodorosCount = 0,
-                            complete = false, scheduledTime = null)
+            val task = Task(project = null, goal = goal, estimatedPomodorosCount = estimatedPomodorosCount,
+                            spendPomodorosCount = 0, complete = false, scheduledTime = null)
             taskRepository.createTask(task)
             return@withContext task
         }

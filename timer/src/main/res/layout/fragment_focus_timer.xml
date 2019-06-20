@@ -69,29 +69,50 @@
 				app:layout_constraintRight_toRightOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/goal_text">
 
-				<ru.ischenko.roman.focustimer.ui.common.TimerView
-					android:id="@+id/timer_view"
-					android:layout_width="wrap_content"
-					android:layout_height="@dimen/fragment_focus_timer_size"
-					android:layout_marginTop="@dimen/space_medium"
-					android:layout_marginBottom="@dimen/space_medium"
-					app:activeColor="@color/colorAccent"
-					app:inactiveColor="@color/colorPrimary"
-					app:backgroundColor="@color/focus_timer_background_color"
-					app:markerColor="@color/colorAccent"
-					app:textColor="@color/colorAccent"
-					app:statusColor="@color/focus_timer_status_color"
-					app:timerFontSize="@dimen/focus_timer_font_size"
-					app:statusFontSize="@dimen/focus_timer_status_font_size"
-					app:lineWidth="@dimen/focus_timer_line_width"
-					app:markerDiameter="@dimen/focus_timer_marker_width"
-					app:backgroundPadding="@dimen/focus_timer_background_padding"
-					app:statusStarted="@string/focus_timer_started_status"
-					app:statusPaused="@string/focus_timer_paused_status"
-					app:statusStopped="@string/focus_timer_stopped_status"
-					bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
-					bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
-					bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical">
+
+					<ru.ischenko.roman.focustimer.ui.common.TimerView
+						android:id="@+id/timer_view"
+						android:layout_width="match_parent"
+						android:layout_height="@dimen/fragment_focus_timer_size"
+						android:layout_marginTop="@dimen/space_medium"
+						android:layout_marginBottom="@dimen/space_medium"
+						app:activeColor="@color/colorAccent"
+						app:inactiveColor="@color/colorPrimary"
+						app:backgroundColor="@color/focus_timer_background_color"
+						app:markerColor="@color/colorAccent"
+						app:textColor="@color/colorAccent"
+						app:statusColor="@color/focus_timer_status_color"
+						app:timerFontSize="@dimen/focus_timer_font_size"
+						app:statusFontSize="@dimen/focus_timer_status_font_size"
+						app:lineWidth="@dimen/focus_timer_line_width"
+						app:markerDiameter="@dimen/focus_timer_marker_width"
+						app:backgroundPadding="@dimen/focus_timer_background_padding"
+						app:statusStarted="@string/focus_timer_started_status"
+						app:statusPaused="@string/focus_timer_paused_status"
+						app:statusStopped="@string/focus_timer_stopped_status"
+						bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
+						bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
+						bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
+
+					<ru.ischenko.roman.focustimer.ui.common.PomodoroCounter
+						android:id="@+id/pomodoro_counter_view"
+						android:layout_width="match_parent"
+						android:layout_height="@dimen/space_medium"
+						android:layout_marginEnd="@dimen/space_medium"
+						android:layout_marginBottom="@dimen/space_small"
+						app:gravity="right"
+						app:passedColor="@color/colorPrimary"
+						app:plannedColor="@color/colorOnPrimary"
+						app:overPlannedColor="@color/colorOverPlanned"
+						bind:timerRunning="@{viewModel.uiState == UiState.STARTED_WORK}"
+						bind:plannedPomodoros="@{viewModel.estimatedPomodorosCount}"
+						bind:currentPomodoroPass="@{viewModel.spendPomodorosCount}"/>
+
+				</LinearLayout>
 
 			</com.google.android.material.card.MaterialCardView>
 
@@ -103,10 +124,10 @@
 				android:layout_marginBottom="@dimen/space_small"
 				android:layout_marginStart="@dimen/space_medium"
 				android:layout_marginEnd="@dimen/space_small"
-				android:text="@{viewModel.uiState != UiState.STARTED ? @string/focus_timer_start : @string/focus_timer_pause}"
+				android:text="@{viewModel.uiState != UiState.STARTED_WORK &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? @string/focus_timer_start : @string/focus_timer_pause}"
 				android:onClick="@{v -> viewModel.handleStartStopTimer()}"
-				app:backgroundTint="@{viewModel.uiState != UiState.STARTED ? R.color.button_start_color : R.color.button_pause_color}"
-				app:icon="@{viewModel.uiState == UiState.STARTED ? @drawable/ic_pause : @drawable/ic_play}"
+				app:backgroundTint="@{viewModel.uiState != UiState.STARTED_WORK  &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? R.color.button_start_color : R.color.button_pause_color}"
+				app:icon="@{viewModel.uiState == UiState.STARTED_WORK || viewModel.uiState == UiState.STARTED_REST ? @drawable/ic_pause : @drawable/ic_play}"
 				app:iconGravity="textStart"
 				app:layout_constraintVertical_bias="0.1"
 				app:layout_constraintBottom_toBottomOf="parent"
