@@ -5,10 +5,13 @@ import ru.ischenko.roman.focustimer.data.datasource.local.dao.TaskDao
 import ru.ischenko.roman.focustimer.data.model.Pomodoro
 import ru.ischenko.roman.focustimer.data.repository.converters.PomodoroConverter
 import ru.ischenko.roman.focustimer.data.repository.converters.TaskConverter
+import java.util.*
 
 interface PomodoroRepository {
 
     suspend fun getPomodoroById(id: Long): Pomodoro
+
+    suspend fun getPomodorosByPeriod(beginDate: Date, endDate: Date): Long
 
     suspend fun createPomodoro(pomodoro: Pomodoro)
 
@@ -25,6 +28,10 @@ class PomodoroRepositoryImpl(private val pomodoroDao: PomodoroDao,
     override suspend fun getPomodoroById(id: Long): Pomodoro {
         val pomodoroDto = pomodoroDao.getById(id)
         return pomodoroConverter.convert(pomodoroDto)
+    }
+
+    override suspend fun getPomodorosByPeriod(beginDate: Date, endDate: Date): Long {
+        return pomodoroDao.getCountInPeriod(beginDate, endDate)
     }
 
     override suspend fun createPomodoro(pomodoro: Pomodoro) {

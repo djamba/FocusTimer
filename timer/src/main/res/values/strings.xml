@@ -26,4 +26,6 @@
 
 	<string name="focus_timer_dialog_title">Укажите цель помидора</string>
 
+	<string name="focus_timer_total_today">Сегодня: %s</string>
+
 </resources>

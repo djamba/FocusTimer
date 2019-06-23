@@ -15,10 +15,7 @@ import ru.ischenko.roman.focustimer.data.repository.converters.TaskConverter
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
 import ru.ischenko.roman.focustimer.di.qualifier.ViewModelForFactoryInject
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
-import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
-import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
-import ru.ischenko.roman.focustimer.domain.IncreaseSpendPomodoroInTaskUseCase
-import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
+import ru.ischenko.roman.focustimer.domain.*
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
@@ -80,17 +77,23 @@ class FocusTimerModule {
             CreatePomodoroUseCase(pomodoroRepository)
 
     @Provides
+    fun provideGetTodayPomodorosCountUseCase(pomodoroRepository: PomodoroRepository) : GetTodayPomodorosCountUseCase =
+            GetTodayPomodorosCountUseCase(pomodoroRepository)
+
+    @Provides
     @ViewModelForFactoryInject
     fun provideFocusTimerViewModel(focusTimerController: FocusTimerController,
                                    notification: FocusTimerNotification,
                                    focusTimerServiceMediator: FocusTimerServiceMediator,
                                    resourceProvider: ResourceProvider,
                                    createPomodoroUseCase: CreatePomodoroUseCase,
+                                   getTodayPomodorosCountUseCase: GetTodayPomodorosCountUseCase,
                                    createFreeTaskUseCase: CreateFreeTaskUseCase,
                                    increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
                                    updateTaskGoalUseCase: UpdateTaskGoalUseCase): FocusTimerViewModel =
             FocusTimerViewModel(focusTimerController, notification, focusTimerServiceMediator, resourceProvider,
-                    createPomodoroUseCase, createFreeTaskUseCase, increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
+                    createPomodoroUseCase, getTodayPomodorosCountUseCase, createFreeTaskUseCase,
+                    increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
 
     @Provides
     @FragmentScope

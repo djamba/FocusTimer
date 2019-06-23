@@ -190,10 +190,13 @@ class TimerView: View {
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        centerX = width / 2F
-        centerY = height / 2F
+        val w = width + paddingLeft + paddingRight
+        val h = height + paddingTop + paddingBottom
 
-        radius = if (height > width) width / 2F else height / 2F
+        centerX = w / 2F
+        centerY = h / 2F
+
+        radius = if (h > w) w / 2F else h / 2F
         radius -= markerDiameter
     }
 

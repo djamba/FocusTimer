@@ -7,12 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ischenko.roman.focustimer.data.model.Pomodoro
 import ru.ischenko.roman.focustimer.data.model.Task
-import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
-import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
-import ru.ischenko.roman.focustimer.domain.IncreaseSpendPomodoroInTaskUseCase
-import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
+import ru.ischenko.roman.focustimer.domain.*
 import ru.ischenko.roman.focustimer.domain.error.CreatePomodoroException
 import ru.ischenko.roman.focustimer.domain.error.CreateTaskException
+import ru.ischenko.roman.focustimer.domain.error.GetPomodoroException
 import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.timer.R
@@ -28,6 +26,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val focusTimerService: FocusTimerServiceMediator,
                           private val resourceProvider: ResourceProvider,
                           private val createPomodoroUseCase: CreatePomodoroUseCase,
+                          private val getTodayPomodorosCountUseCase: GetTodayPomodorosCountUseCase,
                           private val createFreeTaskUseCase: CreateFreeTaskUseCase,
                           private val increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
                           private val updateTaskGoalUseCase: UpdateTaskGoalUseCase) : ViewModel(), OnTimeChangedListener {
@@ -47,6 +46,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     val goal: MutableLiveData<String> = MutableLiveData()
     val estimatedPomodorosCount: MutableLiveData<Int> = MutableLiveData()
     val spendPomodorosCount: MutableLiveData<Int> = MutableLiveData()
+    val todayPomodoroCount: MutableLiveData<Long> = MutableLiveData()
 
     val uiState: MutableLiveData<UiState> = MutableLiveData()
     val timerSecondsPassed: MutableLiveData<Long> = MutableLiveData()
@@ -72,6 +72,23 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
         estimatedPomodorosCount.value = DEFAULT_TASK_ESTIMATE
 
         focusTimerService.startService(onTimeChangedListener = this)
+
+        getTodayPomodorosCount()
+
+        setupNotification()
+    }
+
+    private fun getTodayPomodorosCount() {
+        viewModelScope.launch {
+            try {
+                todayPomodoroCount.value = getTodayPomodorosCountUseCase()
+            } catch(e: GetPomodoroException) {
+                Timber.e(e, e.message)
+            }
+        }
+    }
+
+    private fun setupNotification() {
 
         notification.notificationActionListener = object : FocusTimerNotification.NotificationActionListener {
 
@@ -253,6 +270,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                     Timber.d("Create pomodoro and increase spend counter in task")
                     currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
                     spendPomodorosCount.value = increaseSpendPomodoroInTaskUseCase(it)
+                    todayPomodoroCount.value = (todayPomodoroCount.value ?: 0) + 1
                 }
             }
             catch (e: CreatePomodoroException) {
@@ -267,6 +285,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
     }
 
     override fun onTimerCancel() {
+        isWorkTime = true
         uiState.value = UiState.STOPPED
         this.timerSecondsPassed.value = 0L
     }

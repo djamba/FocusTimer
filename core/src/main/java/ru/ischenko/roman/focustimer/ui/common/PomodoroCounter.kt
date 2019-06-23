@@ -63,7 +63,7 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
     private val gravity: Int
 
     private var totalPomodoros: Int = 0
-    private var tik: Boolean = false
+    private var tickTack: Boolean = false
 
     private lateinit var passedPomodoroPaint: Paint
     private lateinit var plannedPomodoroPaint: Paint
@@ -74,7 +74,7 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
     private val progressUpdater = object : Runnable {
         override fun run() {
             if (isTimerRunning) {
-                pendingPomodoroColor = if (tik) {
+                pendingPomodoroColor = if (tickTack) {
                     if (plannedPomodoros >= totalPomodoros) {
                         passedPomodoroPaint
                     } else {
@@ -83,7 +83,7 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
                 } else {
                     plannedPomodoroPaint
                 }
-                tik = !tik
+                tickTack = !tickTack
                 progressHandler.postDelayed(this, TIMEOUT)
             }
             postInvalidate()
@@ -115,7 +115,9 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        radius = if (height > width) width / 2F else height / 2F
+        val w = width + paddingLeft + paddingRight
+        val h = height + paddingTop + paddingBottom
+        radius = if (h > w) w / 2F else h / 2F
         padding = radius / 5
     }
 

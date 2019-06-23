@@ -12,10 +12,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import ru.ischenko.roman.focustimer.data.model.Pomodoro
 import ru.ischenko.roman.focustimer.data.model.Task
-import ru.ischenko.roman.focustimer.domain.CreateFreeTaskUseCase
-import ru.ischenko.roman.focustimer.domain.CreatePomodoroUseCase
-import ru.ischenko.roman.focustimer.domain.IncreaseSpendPomodoroInTaskUseCase
-import ru.ischenko.roman.focustimer.domain.UpdateTaskGoalUseCase
+import ru.ischenko.roman.focustimer.domain.*
 import ru.ischenko.roman.focustimer.domain.error.CreatePomodoroException
 import ru.ischenko.roman.focustimer.domain.error.CreateTaskException
 import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
@@ -42,6 +39,7 @@ class FocusTimerViewModelTest {
     private val createFreeTaskUseCase = mockk<CreateFreeTaskUseCase>()
     private val increaseSpendPomodoroInTaskUseCase = mockk<IncreaseSpendPomodoroInTaskUseCase>()
     private val updateTaskGoalUseCase = mockk<UpdateTaskGoalUseCase>()
+    private val getTodayPomodorosCountUseCase = mockk<GetTodayPomodorosCountUseCase>()
 
     private lateinit var focusTimerViewModel: FocusTimerViewModel
 
@@ -59,9 +57,11 @@ class FocusTimerViewModelTest {
         coEvery { createPomodoroUseCase.invoke(any(), any()) } returns pomodoro
         coEvery { updateTaskGoalUseCase.invoke(any(), any()) } returns Unit
         coEvery { increaseSpendPomodoroInTaskUseCase.invoke(any()) } returns SPEND_POMODOROS
+        coEvery { getTodayPomodorosCountUseCase.invoke() } returns TOTAL_POMODOROS
 
         focusTimerViewModel = FocusTimerViewModel(timer, notification, notificationService,
-                resourceProvider, createPomodoroUseCase, createFreeTaskUseCase, increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
+                resourceProvider, createPomodoroUseCase, getTodayPomodorosCountUseCase,
+                createFreeTaskUseCase, increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
     }
 
     @Test
@@ -286,9 +286,26 @@ class FocusTimerViewModelTest {
         coVerify(exactly = 0) { increaseSpendPomodoroInTaskUseCase.invoke(any()) }
     }
 
+    @Test
+    fun `WHEN user start program THEN retrieve today total pomodoros count`() {
+
+        assertEquals(focusTimerViewModel.todayPomodoroCount.value, TOTAL_POMODOROS)
+
+        coVerify { getTodayPomodorosCountUseCase.invoke() }
+    }
+
+    @Test
+    fun `WHEN timer finished THEN increase today total pomodoros count`() {
+
+        focusTimerViewModel.onTimerFinish()
+
+        assertEquals(focusTimerViewModel.todayPomodoroCount.value, TOTAL_POMODOROS + 1)
+    }
+
     companion object TestData {
         private const val DEFAULT_TASK_ESTIMATE = 4
         private const val SPEND_POMODOROS = 3
+        private const val TOTAL_POMODOROS = 7L
         private const val REST = "REST"
         private const val REST_NOTIFICATION = "REST_NOTIFICATION"
         private const val WORK = "WORK"

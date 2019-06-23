@@ -69,7 +69,7 @@
 				app:layout_constraintRight_toRightOf="parent"
 				app:layout_constraintTop_toBottomOf="@id/goal_text">
 
-				<LinearLayout
+				<androidx.constraintlayout.widget.ConstraintLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:orientation="vertical">
@@ -80,6 +80,9 @@
 						android:layout_height="@dimen/fragment_focus_timer_size"
 						android:layout_marginTop="@dimen/space_medium"
 						android:layout_marginBottom="@dimen/space_medium"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_constraintLeft_toLeftOf="parent"
+						app:layout_constraintRight_toRightOf="parent"
 						app:activeColor="@color/colorAccent"
 						app:inactiveColor="@color/colorPrimary"
 						app:backgroundColor="@color/focus_timer_background_color"
@@ -98,12 +101,29 @@
 						bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
 						bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
 
+					<TextView
+						android:id="@+id/total_today_counter"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="@dimen/space_medium"
+						android:layout_marginBottom="@dimen/space_small"
+						android:text="@{@string/focus_timer_total_today(viewModel.todayPomodoroCount)}"
+						app:layout_constraintTop_toBottomOf="@id/timer_view"
+						app:layout_constraintLeft_toLeftOf="parent"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintRight_toLeftOf="@+id/pomodoro_counter_view"
+						tools:text="Today: 4"/>
+
 					<ru.ischenko.roman.focustimer.ui.common.PomodoroCounter
 						android:id="@+id/pomodoro_counter_view"
-						android:layout_width="match_parent"
+						android:layout_width="0dp"
 						android:layout_height="@dimen/space_medium"
 						android:layout_marginEnd="@dimen/space_medium"
 						android:layout_marginBottom="@dimen/space_small"
+						app:layout_constraintTop_toBottomOf="@id/timer_view"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintRight_toRightOf="parent"
+						app:layout_constraintLeft_toRightOf="@id/total_today_counter"
 						app:gravity="right"
 						app:passedColor="@color/colorPrimary"
 						app:plannedColor="@color/colorOnPrimary"
@@ -112,7 +132,7 @@
 						bind:plannedPomodoros="@{viewModel.estimatedPomodorosCount}"
 						bind:currentPomodoroPass="@{viewModel.spendPomodorosCount}"/>
 
-				</LinearLayout>
+				</androidx.constraintlayout.widget.ConstraintLayout>
 
 			</com.google.android.material.card.MaterialCardView>
 
