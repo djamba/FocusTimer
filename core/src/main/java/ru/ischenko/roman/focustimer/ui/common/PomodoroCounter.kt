@@ -115,8 +115,8 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        val w = width + paddingLeft + paddingRight
-        val h = height + paddingTop + paddingBottom
+        val w = width
+        val h = height
         radius = if (h > w) w / 2F else h / 2F
         padding = radius / 5
     }
