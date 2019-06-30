@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_bottom_menu.view.*
+import ru.ischenko.roman.focustimer.reports.agenda.presentation.AgendaFragment
 
 class BottomMenuDialogFragment: BottomSheetDialogFragment() {
 
@@ -15,13 +15,26 @@ class BottomMenuDialogFragment: BottomSheetDialogFragment() {
 
         view.navigation_view.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                // TODO: open today agenda screen
-                R.id.agenda_menu -> Toast.makeText(requireContext(), "Agenda", Toast.LENGTH_SHORT).show()
+                R.id.agenda_menu -> openAgenda()
             }
             dismiss()
             true
         }
 
         return view
+    }
+
+    private fun openAgenda() {
+        var agendaFragment: AgendaFragment? =
+                requireActivity().supportFragmentManager.findFragmentByTag(AgendaFragment.TAG) as AgendaFragment?
+
+        if (agendaFragment == null) {
+            agendaFragment = AgendaFragment.newInstance()
+            requireActivity().supportFragmentManager.
+                    beginTransaction().
+                    replace(R.id.container, agendaFragment, AgendaFragment.TAG).
+                    addToBackStack(null).
+                    commit()
+        }
     }
 }

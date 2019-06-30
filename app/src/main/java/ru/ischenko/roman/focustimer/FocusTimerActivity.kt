@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_focus_timer.*
+import androidx.fragment.app.Fragment
+import ru.ischenko.roman.focustimer.android.OnPressKeyListener
 import ru.ischenko.roman.focustimer.presentation.FocusTimerFragment
 
 class FocusTimerActivity : AppCompatActivity() {
@@ -13,18 +14,12 @@ class FocusTimerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_focus_timer)
 
-        setSupportActionBar(bottom_app_bar)
-
         var tasksFragment: FocusTimerFragment? =
-                supportFragmentManager.findFragmentById(R.id.container) as FocusTimerFragment?
+                supportFragmentManager.findFragmentByTag(FocusTimerFragment.TAG) as FocusTimerFragment?
 
         if (tasksFragment == null) {
             tasksFragment = FocusTimerFragment.newInstance()
-            supportFragmentManager.beginTransaction().add(R.id.container, tasksFragment).commit()
-        }
-
-        add_goal_action_button.setOnClickListener {
-            tasksFragment.onFloatingActionButtonClick()
+            supportFragmentManager.beginTransaction().add(R.id.container, tasksFragment, FocusTimerFragment.TAG).commit()
         }
     }
 
@@ -43,9 +38,23 @@ class FocusTimerActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            moveTaskToBack(true)
-            return true
+            val topFragment = getTopFragmentInBackStack()
+            if (topFragment is OnPressKeyListener) {
+                if (topFragment.onKeyDown(keyCode)) {
+                    return true
+                }
+            }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun getTopFragmentInBackStack(): Fragment? {
+        val tag = if (supportFragmentManager.backStackEntryCount == 0) {
+            FocusTimerFragment.TAG
+        } else {
+            val index = supportFragmentManager.backStackEntryCount - 1
+            supportFragmentManager.getBackStackEntryAt(index).name
+        }
+        return supportFragmentManager.findFragmentByTag(tag)
     }
 }
