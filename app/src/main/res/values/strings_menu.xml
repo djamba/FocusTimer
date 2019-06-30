@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="menu_fake"/>
+	<string name="menu_agenda">Отчет за сегодня</string>
+	
+</resources>

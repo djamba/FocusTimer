@@ -12,189 +12,165 @@
 			type="ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel"/>
 	</data>
 
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@color/colorBackground">
+		tools:context=".timer.main.FocusTimerFragment">
 
-		<androidx.constraintlayout.widget.ConstraintLayout
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/goal_text"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginLeft="@dimen/space_medium"
+			android:layout_marginRight="@dimen/space_medium"
+			android:paddingLeft="@dimen/space_small"
+			android:paddingRight="@dimen/space_small"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			tools:context=".timer.main.FocusTimerFragment">
+			android:layout_height="wrap_content"
+			android:clickable="true"
+			android:focusable="true"
+			android:onClick="@{v -> viewModel.handleStartEditGoalText()}"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent">
 
-			<com.google.android.material.card.MaterialCardView
-				android:id="@+id/goal_text"
-				android:layout_marginTop="@dimen/space_medium"
-				android:layout_marginLeft="@dimen/space_medium"
-				android:layout_marginRight="@dimen/space_medium"
-				android:paddingLeft="@dimen/space_small"
-				android:paddingRight="@dimen/space_small"
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:paddingTop="@dimen/space_medium"
+				android:paddingBottom="@dimen/space_medium"
+				android:paddingLeft="@dimen/space_medium"
+				android:drawableStart="@drawable/ic_tomato"
+				android:drawablePadding="@dimen/space_small"
+				android:paddingRight="@dimen/space_medium"
+				android:gravity="center"
+				android:text="@{viewModel.goal}"
+				android:textAppearance="?textAppearanceHeadline6"
+				tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/timer_card_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginLeft="@dimen/space_medium"
+			android:layout_marginRight="@dimen/space_medium"
+			android:clickable="true"
+			android:focusable="true"
+			android:onClick="@{v -> viewModel.handleStartStopTimer()}"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/goal_text">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:clickable="true"
-				android:focusable="true"
-				android:onClick="@{v -> viewModel.handleStartEditGoalText()}"
-				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent">
+				android:orientation="vertical">
+
+				<ru.ischenko.roman.focustimer.ui.common.TimerView
+					android:id="@+id/timer_view"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/fragment_focus_timer_size"
+					android:layout_marginTop="@dimen/space_medium"
+					android:layout_marginBottom="@dimen/space_medium"
+					app:layout_constraintTop_toTopOf="parent"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:activeColor="@color/colorAccent"
+					app:inactiveColor="@color/colorPrimary"
+					app:backgroundColor="@color/focus_timer_background_color"
+					app:markerColor="@color/colorAccent"
+					app:textColor="@color/colorAccent"
+					app:statusColor="@color/focus_timer_status_color"
+					app:timerFontSize="@dimen/focus_timer_font_size"
+					app:statusFontSize="@dimen/focus_timer_status_font_size"
+					app:lineWidth="@dimen/focus_timer_line_width"
+					app:markerDiameter="@dimen/focus_timer_marker_width"
+					app:backgroundPadding="@dimen/focus_timer_background_padding"
+					app:statusStarted="@string/focus_timer_started_status"
+					app:statusPaused="@string/focus_timer_paused_status"
+					app:statusStopped="@string/focus_timer_stopped_status"
+					bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
+					bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
+					bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
 
 				<TextView
+					android:id="@+id/total_today_counter"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_gravity="center_vertical"
-					android:paddingTop="@dimen/space_medium"
-					android:paddingBottom="@dimen/space_medium"
-					android:paddingLeft="@dimen/space_medium"
-					android:drawableStart="@drawable/ic_tomato"
-					android:drawablePadding="@dimen/space_small"
-					android:paddingRight="@dimen/space_medium"
-					android:gravity="center"
-					android:text="@{viewModel.goal}"
-					android:textAppearance="?textAppearanceHeadline6"
-					tools:text="Написать пять абзацев для сатьи про новый компилятор"/>
+					android:layout_marginStart="@dimen/space_medium"
+					android:layout_marginBottom="@dimen/space_small"
+					android:text="@{@string/focus_timer_total_today(viewModel.todayPomodoroCount)}"
+					app:layout_constraintTop_toBottomOf="@id/timer_view"
+					app:layout_constraintLeft_toLeftOf="parent"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toLeftOf="@+id/pomodoro_counter_view"
+					tools:text="Today: 4"/>
 
-			</com.google.android.material.card.MaterialCardView>
+				<ru.ischenko.roman.focustimer.ui.common.PomodoroCounter
+					android:id="@+id/pomodoro_counter_view"
+					android:layout_width="0dp"
+					android:layout_height="@dimen/space_medium"
+					android:layout_marginEnd="@dimen/space_medium"
+					android:layout_marginBottom="@dimen/space_small"
+					app:layout_constraintTop_toBottomOf="@id/timer_view"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintRight_toRightOf="parent"
+					app:layout_constraintLeft_toRightOf="@id/total_today_counter"
+					app:gravity="right"
+					app:passedColor="@color/colorPrimary"
+					app:plannedColor="@color/colorOnPrimary"
+					app:overPlannedColor="@color/colorOverPlanned"
+					bind:timerRunning="@{viewModel.uiState == UiState.STARTED_WORK}"
+					bind:plannedPomodoros="@{viewModel.estimatedPomodorosCount}"
+					bind:currentPomodoroPass="@{viewModel.spendPomodorosCount}"/>
 
-			<com.google.android.material.card.MaterialCardView
-				android:id="@+id/timer_card_view"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/space_medium"
-				android:layout_marginLeft="@dimen/space_medium"
-				android:layout_marginRight="@dimen/space_medium"
-				android:clickable="true"
-				android:focusable="true"
-				android:onClick="@{v -> viewModel.handleStartStopTimer()}"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/goal_text">
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
-				<androidx.constraintlayout.widget.ConstraintLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical">
+		</com.google.android.material.card.MaterialCardView>
 
-					<ru.ischenko.roman.focustimer.ui.common.TimerView
-						android:id="@+id/timer_view"
-						android:layout_width="match_parent"
-						android:layout_height="@dimen/fragment_focus_timer_size"
-						android:layout_marginTop="@dimen/space_medium"
-						android:layout_marginBottom="@dimen/space_medium"
-						app:layout_constraintTop_toTopOf="parent"
-						app:layout_constraintLeft_toLeftOf="parent"
-						app:layout_constraintRight_toRightOf="parent"
-						app:activeColor="@color/colorAccent"
-						app:inactiveColor="@color/colorPrimary"
-						app:backgroundColor="@color/focus_timer_background_color"
-						app:markerColor="@color/colorAccent"
-						app:textColor="@color/colorAccent"
-						app:statusColor="@color/focus_timer_status_color"
-						app:timerFontSize="@dimen/focus_timer_font_size"
-						app:statusFontSize="@dimen/focus_timer_status_font_size"
-						app:lineWidth="@dimen/focus_timer_line_width"
-						app:markerDiameter="@dimen/focus_timer_marker_width"
-						app:backgroundPadding="@dimen/focus_timer_background_padding"
-						app:statusStarted="@string/focus_timer_started_status"
-						app:statusPaused="@string/focus_timer_paused_status"
-						app:statusStopped="@string/focus_timer_stopped_status"
-						bind:timerSecondsPassed="@{viewModel.timerSecondsPassed}"
-						bind:stopTimer="@{viewModel.uiState == UiState.STOPPED}"
-						bind:pauseTimer="@{viewModel.uiState == UiState.PAUSED}"/>
-
-					<TextView
-						android:id="@+id/total_today_counter"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_marginStart="@dimen/space_medium"
-						android:layout_marginBottom="@dimen/space_small"
-						android:text="@{@string/focus_timer_total_today(viewModel.todayPomodoroCount)}"
-						app:layout_constraintTop_toBottomOf="@id/timer_view"
-						app:layout_constraintLeft_toLeftOf="parent"
-						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintRight_toLeftOf="@+id/pomodoro_counter_view"
-						tools:text="Today: 4"/>
-
-					<ru.ischenko.roman.focustimer.ui.common.PomodoroCounter
-						android:id="@+id/pomodoro_counter_view"
-						android:layout_width="0dp"
-						android:layout_height="@dimen/space_medium"
-						android:layout_marginEnd="@dimen/space_medium"
-						android:layout_marginBottom="@dimen/space_small"
-						app:layout_constraintTop_toBottomOf="@id/timer_view"
-						app:layout_constraintBottom_toBottomOf="parent"
-						app:layout_constraintRight_toRightOf="parent"
-						app:layout_constraintLeft_toRightOf="@id/total_today_counter"
-						app:gravity="right"
-						app:passedColor="@color/colorPrimary"
-						app:plannedColor="@color/colorOnPrimary"
-						app:overPlannedColor="@color/colorOverPlanned"
-						bind:timerRunning="@{viewModel.uiState == UiState.STARTED_WORK}"
-						bind:plannedPomodoros="@{viewModel.estimatedPomodorosCount}"
-						bind:currentPomodoroPass="@{viewModel.spendPomodorosCount}"/>
-
-				</androidx.constraintlayout.widget.ConstraintLayout>
-
-			</com.google.android.material.card.MaterialCardView>
-
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/start_button"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/space_small"
-				android:layout_marginBottom="@dimen/space_small"
-				android:layout_marginStart="@dimen/space_medium"
-				android:layout_marginEnd="@dimen/space_small"
-				android:text="@{viewModel.uiState != UiState.STARTED_WORK &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? @string/focus_timer_start : @string/focus_timer_pause}"
-				android:onClick="@{v -> viewModel.handleStartStopTimer()}"
-				app:backgroundTint="@{viewModel.uiState != UiState.STARTED_WORK  &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? R.color.button_start_color : R.color.button_pause_color}"
-				app:icon="@{viewModel.uiState == UiState.STARTED_WORK || viewModel.uiState == UiState.STARTED_REST ? @drawable/ic_pause : @drawable/ic_play}"
-				app:iconGravity="textStart"
-				app:layout_constraintVertical_bias="0.1"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@+id/stop_button"
-				app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
-				tools:text="Start"/>
-
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/stop_button"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/space_small"
-				android:layout_marginBottom="@dimen/space_small"
-				android:layout_marginStart="@dimen/space_small"
-				android:layout_marginEnd="@dimen/space_medium"
-				android:text="@string/focus_timer_cancel"
-				android:onClick="@{v -> viewModel.handleCancelTimer()}"
-				app:backgroundTint="@color/button_cancel_color"
-				app:icon="@drawable/ic_stop"
-				app:iconGravity="textStart"
-				app:layout_constraintVertical_bias="0.1"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintLeft_toRightOf="@+id/start_button"
-				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
-				tools:text="Cancel"/>
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<com.google.android.material.bottomappbar.BottomAppBar
-			android:id="@+id/bottom_app_bar"
-			android:layout_width="match_parent"
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/start_button"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_gravity="bottom"
-			app:navigationIcon="@drawable/ic_menu"
-			app:navigationContentDescription="navigation"
-			app:hideOnScroll="false"/>
+			android:layout_marginTop="@dimen/space_small"
+			android:layout_marginBottom="@dimen/space_small"
+			android:layout_marginStart="@dimen/space_medium"
+			android:layout_marginEnd="@dimen/space_small"
+			android:text="@{viewModel.uiState != UiState.STARTED_WORK &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? @string/focus_timer_start : @string/focus_timer_pause}"
+			android:onClick="@{v -> viewModel.handleStartStopTimer()}"
+			app:backgroundTint="@{viewModel.uiState != UiState.STARTED_WORK  &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? R.color.button_start_color : R.color.button_pause_color}"
+			app:icon="@{viewModel.uiState == UiState.STARTED_WORK || viewModel.uiState == UiState.STARTED_REST ? @drawable/ic_pause : @drawable/ic_play}"
+			app:iconGravity="textStart"
+			app:layout_constraintVertical_bias="0.1"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toLeftOf="@+id/stop_button"
+			app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
+			tools:text="Start"/>
 
-		<com.google.android.material.floatingactionbutton.FloatingActionButton
-			android:id="@+id/add_goal_action_button"
-			android:layout_width="wrap_content"
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/stop_button"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:onClick="@{v -> viewModel.handleStartEditGoalText()}"
-			app:layout_anchor="@id/bottom_app_bar"
-			app:srcCompat="@drawable/ic_tomato"/>
+			android:layout_marginTop="@dimen/space_small"
+			android:layout_marginBottom="@dimen/space_small"
+			android:layout_marginStart="@dimen/space_small"
+			android:layout_marginEnd="@dimen/space_medium"
+			android:text="@string/focus_timer_cancel"
+			android:onClick="@{v -> viewModel.handleCancelTimer()}"
+			app:backgroundTint="@color/button_cancel_color"
+			app:icon="@drawable/ic_stop"
+			app:iconGravity="textStart"
+			app:layout_constraintVertical_bias="0.1"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toRightOf="@+id/start_button"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/timer_card_view"
+			tools:text="Cancel"/>
 
-	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

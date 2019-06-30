@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import dagger.android.support.DaggerFragment
 import ru.ischenko.roman.focustimer.di.ViewModelFactory
 import ru.ischenko.roman.focustimer.di.injectSharedViewModel
@@ -40,9 +39,8 @@ class FocusTimerFragment : DaggerFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val activity = (requireActivity() as AppCompatActivity)
-        activity.setSupportActionBar(binding.bottomAppBar)
+    fun onFloatingActionButtonClick() {
+        viewModel.handleStartEditGoalText()
     }
 
     private fun initHandlers() {
