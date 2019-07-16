@@ -16,7 +16,8 @@ import java.lang.Math.*
  * Date: 21.11.17
  * Time: 19:08
  */
-class TimerView: View {
+class TimerView@JvmOverloads constructor(context: Context, attrSet: AttributeSet? = null, defStyleAttr: Int = 0):
+        View(context, attrSet, defStyleAttr) {
 
     companion object {
         const val CIRCLE_ANGLE: Float = 360F
@@ -63,11 +64,7 @@ class TimerView: View {
     private var centerY = 0F
     private var radius = 0F
 
-    constructor(context: Context) : this(context, null)
-
-    constructor(context: Context, attrSet: AttributeSet?) : this(context, attrSet, 0)
-
-    constructor(context: Context, attrSet: AttributeSet?, defStyleAttr: Int) : super(context, attrSet, defStyleAttr) {
+    init {
 
         val typedArray : TypedArray = context.theme.obtainStyledAttributes(attrSet, R.styleable.TimerView, 0, 0)
 

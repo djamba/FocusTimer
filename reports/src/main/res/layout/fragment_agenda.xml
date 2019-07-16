@@ -7,13 +7,16 @@
 	<data>
 	</data>
 
-	<LinearLayout
+	<ScrollView
+		android:id="@+id/root"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:layout_height="match_parent">
 
+		<ru.ischenko.roman.focustimer.reports.agenda.presentation.agenda.AgendaView
+			android:id="@+id/agenda"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
 
-
-	</LinearLayout>
+	</ScrollView>
 
 </layout>
