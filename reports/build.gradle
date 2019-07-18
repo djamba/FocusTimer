@@ -58,6 +58,11 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$archVersion"
     kapt "android.arch.lifecycle:compiler:$archVersion"
 
+    // Room
+    implementation "androidx.room:room-ktx:$archRoomVersion"
+    implementation "androidx.room:room-runtime:$archRoomVersion"
+    kapt "androidx.room:room-compiler:$archRoomVersion"
+
     // UnitTest
     testImplementation "junit:junit:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"

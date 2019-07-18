@@ -5,6 +5,9 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
+		<variable
+			name="viewModel"
+			type="ru.ischenko.roman.focustimer.reports.agenda.presentation.AgendaViewModel"/>
 	</data>
 
 	<ScrollView
@@ -15,7 +18,8 @@
 		<ru.ischenko.roman.focustimer.reports.agenda.presentation.agenda.AgendaView
 			android:id="@+id/agenda"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"/>
+			android:layout_height="wrap_content"
+			bind:pomodoros="@{viewModel.pomodoros}"/>
 
 	</ScrollView>
 

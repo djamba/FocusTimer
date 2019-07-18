@@ -8,6 +8,8 @@ import ru.ischenko.roman.focustimer.FocusTimerActivity
 import ru.ischenko.roman.focustimer.FocusTimerApplication
 import ru.ischenko.roman.focustimer.data.datasource.local.FocusTimerDatabase
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
+import ru.ischenko.roman.focustimer.utils.ResourceProvider
+import ru.ischenko.roman.focustimer.utils.ResourceProviderImpl
 
 @Module
 class AppModule {
@@ -20,6 +22,10 @@ class AppModule {
     @Provides
     fun provideContentIntent(@AppContext context: Context): Intent =
             Intent(context, FocusTimerActivity::class.java)
+
+    @Provides
+    fun provideResourceProvider(@AppContext context: Context) : ResourceProvider =
+            ResourceProviderImpl(context)
 
     @Provides
     fun provideFocusTimerDatabase(application: FocusTimerApplication): FocusTimerDatabase =

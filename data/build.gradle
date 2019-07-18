@@ -26,6 +26,12 @@ dependencies {
     implementation "androidx.room:room-ktx:$archRoomVersion"
     implementation "androidx.room:room-runtime:$archRoomVersion"
     kapt "androidx.room:room-compiler:$archRoomVersion"
+
+    // Dagger2
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 }
 repositories {
     mavenCentral()

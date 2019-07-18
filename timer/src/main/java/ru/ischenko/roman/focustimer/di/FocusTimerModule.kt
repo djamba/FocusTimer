@@ -4,14 +4,8 @@ import android.content.Context
 import android.content.Intent
 import dagger.Module
 import dagger.Provides
-import ru.ischenko.roman.focustimer.data.datasource.local.FocusTimerDatabase
 import ru.ischenko.roman.focustimer.data.repository.PomodoroRepository
-import ru.ischenko.roman.focustimer.data.repository.PomodoroRepositoryImpl
 import ru.ischenko.roman.focustimer.data.repository.TaskRepository
-import ru.ischenko.roman.focustimer.data.repository.TaskRepositoryImpl
-import ru.ischenko.roman.focustimer.data.repository.converters.PomodoroConverter
-import ru.ischenko.roman.focustimer.data.repository.converters.ProjectConverter
-import ru.ischenko.roman.focustimer.data.repository.converters.TaskConverter
 import ru.ischenko.roman.focustimer.di.qualifier.AppContext
 import ru.ischenko.roman.focustimer.di.qualifier.ViewModelForFactoryInject
 import ru.ischenko.roman.focustimer.di.scope.FragmentScope
@@ -19,7 +13,6 @@ import ru.ischenko.roman.focustimer.domain.*
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
-import ru.ischenko.roman.focustimer.utils.ResourceProviderImpl
 import javax.inject.Provider
 
 @Module
@@ -28,10 +21,6 @@ class FocusTimerModule {
     @Provides
     fun provideFocusTimerNotification(@AppContext context: Context, contentIntent: Intent) : FocusTimerNotification =
             FocusTimerNotificationImpl(context, contentIntent)
-
-    @Provides
-    fun provideResourceProvider(@AppContext context: Context) : ResourceProvider =
-            ResourceProviderImpl(context)
 
     @Provides
     fun provideFocusTimerController(@AppContext context: Context) : FocusTimerController =
@@ -52,25 +41,6 @@ class FocusTimerModule {
     @Provides
     fun provideUpdateTaskGoalUseCase(taskRepository: TaskRepository) : UpdateTaskGoalUseCase =
             UpdateTaskGoalUseCase(taskRepository)
-
-    @Provides
-    fun provideTaskConverter() : TaskConverter =
-            TaskConverter(ProjectConverter())
-
-    @Provides
-    fun providePomodoroConverter(taskConverter: TaskConverter) : PomodoroConverter =
-            PomodoroConverter(taskConverter)
-
-    @Provides
-    fun providePomodoroRepository(database: FocusTimerDatabase,
-                                  pomodoroConverter: PomodoroConverter,
-                                  taskConverter: TaskConverter) : PomodoroRepository =
-            PomodoroRepositoryImpl(database.pomodoroDao(), pomodoroConverter, database.taskDao(), taskConverter)
-
-    @Provides
-    fun provideTaskRepository(database: FocusTimerDatabase,
-                              taskConverter: TaskConverter) : TaskRepository =
-            TaskRepositoryImpl(database.taskDao(), taskConverter)
 
     @Provides
     fun provideCreatePomodoroUseCase(pomodoroRepository: PomodoroRepository) : CreatePomodoroUseCase =

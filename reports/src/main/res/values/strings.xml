@@ -1,3 +1,5 @@
 <resources>
-	<string name="app_name">reports</string>
+
+	<string name="agenda_error_load_pomodoros">Ошибка загрузки помидоров</string>
+
 </resources>

@@ -11,7 +11,9 @@ interface PomodoroRepository {
 
     suspend fun getPomodoroById(id: Long): Pomodoro
 
-    suspend fun getPomodorosByPeriod(beginDate: Date, endDate: Date): Long
+    suspend fun getCountPomodorosInPeriod(beginDate: Date, endDate: Date): Long
+
+    suspend fun getPomodorosInPeriod(beginDate: Date, endDate: Date): List<Pomodoro>
 
     suspend fun createPomodoro(pomodoro: Pomodoro)
 
@@ -30,8 +32,13 @@ class PomodoroRepositoryImpl(private val pomodoroDao: PomodoroDao,
         return pomodoroConverter.convert(pomodoroDto)
     }
 
-    override suspend fun getPomodorosByPeriod(beginDate: Date, endDate: Date): Long {
+    override suspend fun getCountPomodorosInPeriod(beginDate: Date, endDate: Date): Long {
         return pomodoroDao.getCountInPeriod(beginDate, endDate)
+    }
+
+    override suspend fun getPomodorosInPeriod(beginDate: Date, endDate: Date): List<Pomodoro> {
+        val pomodoros = pomodoroDao.getPomodorosInPeriod(beginDate, endDate)
+        return pomodoros.map { pomodoroConverter.convert(it) }
     }
 
     override suspend fun createPomodoro(pomodoro: Pomodoro) {

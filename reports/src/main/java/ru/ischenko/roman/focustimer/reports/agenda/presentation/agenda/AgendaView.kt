@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import ru.ischenko.roman.focustimer.reports.R
+import ru.ischenko.roman.focustimer.reports.agenda.presentation.model.PomodoroItem
 import java.util.*
 
 /**
@@ -78,7 +79,8 @@ class AgendaView@JvmOverloads constructor(context: Context, attrSet: AttributeSe
         }
     }
 
-    fun setPomodoros(pomodoros: List<PomodoroItem>) {
+    fun setPomodoros(pomodoros: List<PomodoroItem>?) {
         this.pomodoroItems = pomodoros
+        requestLayout()
     }
 }

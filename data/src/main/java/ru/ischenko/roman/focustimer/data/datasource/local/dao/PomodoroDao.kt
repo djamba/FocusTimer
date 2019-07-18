@@ -8,14 +8,25 @@ import java.util.*
 @Dao
 interface PomodoroDao {
 
-    @Query("SELECT * FROM tasks, projects, pomodoros WHERE projectId = idProject AND taskId = idTask")
+    @Query("""SELECT * FROM pomodoros
+                    INNER JOIN tasks ON taskId = idTask
+                    LEFT OUTER JOIN projects ON projectId = idProject""")
     suspend fun getAll(): List<PomodoroDto>
 
-    @Query("SELECT * FROM tasks, projects, pomodoros WHERE projectId = idProject AND taskId = idTask AND idPomodoro = :id")
+    @Query("""SELECT * FROM pomodoros
+                    INNER JOIN tasks ON taskId = idTask
+                    LEFT OUTER JOIN projects ON projectId = idProject
+                    WHERE idPomodoro = :id""")
     suspend fun getById(id: Long): PomodoroDto
 
     @Query("SELECT COUNT(*) FROM pomodoros WHERE completeDate BETWEEN :beginDate AND :endDate")
     fun getCountInPeriod(beginDate: Date, endDate: Date): Long
+
+    @Query("""SELECT * FROM pomodoros
+                    INNER JOIN tasks ON taskId = idTask
+                    LEFT OUTER JOIN projects ON projectId = idProject
+                    WHERE completeDate BETWEEN :beginDate AND :endDate""")
+    fun getPomodorosInPeriod(beginDate: Date, endDate: Date): List<PomodoroDto>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(pomodoro: PomodoroEntity): Long

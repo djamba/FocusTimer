@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import dagger.android.support.DaggerFragment
-import ru.ischenko.roman.focustimer.reports.agenda.presentation.agenda.PomodoroItem
+import ru.ischenko.roman.focustimer.date.getBeginToday
+import ru.ischenko.roman.focustimer.date.getEndToday
+import ru.ischenko.roman.focustimer.di.ViewModelFactory
+import ru.ischenko.roman.focustimer.di.injectViewModel
 import ru.ischenko.roman.focustimer.reports.databinding.FragmentAgendaBinding
-import java.util.*
+import ru.ischenko.roman.focustimer.utils.EventObserver
+import javax.inject.Inject
 
 class AgendaFragment: DaggerFragment() {
 
@@ -17,6 +22,10 @@ class AgendaFragment: DaggerFragment() {
         fun newInstance() = AgendaFragment()
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory<AgendaViewModel>
+    private val viewModel by lazy { injectViewModel<AgendaViewModel>(viewModelFactory) }
+
     private lateinit var binding: FragmentAgendaBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -24,16 +33,20 @@ class AgendaFragment: DaggerFragment() {
 
         binding = FragmentAgendaBinding.inflate(inflater, container, false).also {
             it.lifecycleOwner = this
+            it.viewModel = viewModel
         }
 
-        binding.agenda.setPomodoros(
-                listOf(
-                        PomodoroItem(Date(2019, 7, 14, 15, 20), 25, "Покрасил забор"),
-                        PomodoroItem(Date(2019, 7, 14, 15, 50), 25, "Принес воды и еще сделал много разных хорошох дел для себя и других"),
-                        PomodoroItem(Date(2019, 7, 14, 17, 30), 25, "Подстриг газон")
-                ))
+        initErrorHandler()
+
+        viewModel.loadPomodorosInPeriod(getBeginToday(), getEndToday())
 
         return binding.root
+    }
+
+    private fun initErrorHandler() {
+        viewModel.errorEvent.observe(this, EventObserver { errorText ->
+            Toast.makeText(requireContext(), errorText, Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onResume() {

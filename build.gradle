@@ -26,12 +26,12 @@ project.ext {
     coroutinesVersion="1.1.1"
 
     ktxCoreVersion = "1.0.2"
-    ktxViewModelVersion = "2.2.0-alpha01"
+    ktxViewModelVersion = "2.2.0-alpha02"
 
     appCompatVersion = "1.0.2"
     cardViewVersion = "1.0.0"
     recyclerViewVersion = "1.0.0"
-    androidMaterialVersion = "1.1.0-alpha07"
+    androidMaterialVersion = "1.1.0-alpha08"
     constraintLayoutVersion = "1.1.3"
 
     archVersion = "2.0.0"
