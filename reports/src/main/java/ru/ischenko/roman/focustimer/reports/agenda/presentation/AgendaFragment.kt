@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import dagger.android.support.DaggerFragment
-import ru.ischenko.roman.focustimer.date.getBeginToday
-import ru.ischenko.roman.focustimer.date.getEndToday
 import ru.ischenko.roman.focustimer.di.ViewModelFactory
 import ru.ischenko.roman.focustimer.di.injectViewModel
 import ru.ischenko.roman.focustimer.reports.databinding.FragmentAgendaBinding
@@ -38,7 +36,7 @@ class AgendaFragment: DaggerFragment() {
 
         initErrorHandler()
 
-        viewModel.loadPomodorosInPeriod(getBeginToday(), getEndToday())
+        viewModel.loadCurrentDayReport()
 
         return binding.root
     }
@@ -55,8 +53,8 @@ class AgendaFragment: DaggerFragment() {
     }
 
     private fun scrollToDayTime() {
-        binding.root.post {
-            binding.root.scrollTo(0, (binding.root.bottom * 0.75).toInt())
+        binding.scrollContainer.post {
+            binding.scrollContainer.scrollTo(0, (binding.root.bottom * 0.75).toInt())
         }
     }
 }

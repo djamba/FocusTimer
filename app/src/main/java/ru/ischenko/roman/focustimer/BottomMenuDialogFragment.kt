@@ -30,11 +30,12 @@ class BottomMenuDialogFragment: BottomSheetDialogFragment() {
 
         if (agendaFragment == null) {
             agendaFragment = AgendaFragment.newInstance()
-            requireActivity().supportFragmentManager.
-                    beginTransaction().
-                    replace(R.id.container, agendaFragment, AgendaFragment.TAG).
-                    addToBackStack(null).
-                    commit()
         }
+
+        requireActivity().supportFragmentManager.
+                beginTransaction().
+                add(R.id.container, agendaFragment, AgendaFragment.TAG).
+                addToBackStack(null).
+                commit()
     }
 }

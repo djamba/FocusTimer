@@ -19,7 +19,7 @@
 		android:layout_height="@dimen/view_agenda_divider_size"
 		android:layout_weight="1"
 		android:layout_gravity="center"
-		android:background="@color/colorPrimary"
+		android:background="?colorPrimary"
 		android:layout_marginEnd="@dimen/space_small"/>
 
 </LinearLayout>

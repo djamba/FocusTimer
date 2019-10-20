@@ -10,17 +10,67 @@
 			type="ru.ischenko.roman.focustimer.reports.agenda.presentation.AgendaViewModel"/>
 	</data>
 
-	<ScrollView
-		android:id="@+id/root"
+	<androidx.coordinatorlayout.widget.CoordinatorLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<ru.ischenko.roman.focustimer.reports.agenda.presentation.agenda.AgendaView
-			android:id="@+id/agenda"
+		<com.google.android.material.appbar.AppBarLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			bind:pomodoros="@{viewModel.pomodoros}"/>
+			android:layout_height="wrap_content">
 
-	</ScrollView>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/space_extra_huge"
+				android:orientation="horizontal"
+				android:paddingLeft="@dimen/space_medium"
+				android:paddingRight="@dimen/space_medium"
+				android:background="?colorOnPrimary"
+				app:layout_scrollFlags="noScroll">
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/agenda_prev_day_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:onClick="@{v -> viewModel.loadPrevDayReport()}"
+					app:icon="@drawable/ic_chevron_left"
+					app:iconGravity="textStart"/>
+
+				<TextView
+					android:id="@+id/agenda_date"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:text="@{viewModel.date}"
+					android:textAppearance="?textAppearanceHeadline6"
+					tools:text="01.08.2019"/>
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/agenda_next_day_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:onClick="@{v -> viewModel.loadNextDayReport()}"
+					app:icon="@drawable/ic_chevron_right"
+					app:iconGravity="textEnd"/>
+
+			</LinearLayout>
+
+		</com.google.android.material.appbar.AppBarLayout>
+
+		<androidx.core.widget.NestedScrollView
+			android:id="@+id/scroll_container"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+			<ru.ischenko.roman.focustimer.reports.agenda.presentation.agenda.AgendaView
+				android:id="@+id/agenda"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				bind:pomodoros="@{viewModel.pomodoros}"/>
+
+		</androidx.core.widget.NestedScrollView>
+
+	</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
