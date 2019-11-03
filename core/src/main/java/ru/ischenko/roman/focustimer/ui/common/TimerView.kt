@@ -187,8 +187,8 @@ class TimerView@JvmOverloads constructor(context: Context, attrSet: AttributeSet
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        val w = width
-        val h = height
+        val w = width + paddingLeft + paddingRight
+        val h = height + paddingTop + paddingBottom
 
         centerX = w / 2F
         centerY = h / 2F

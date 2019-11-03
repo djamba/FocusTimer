@@ -59,12 +59,12 @@ class FocusTimerFragment : DaggerFragment(), OnPressKeyListener {
         }
 
         viewModel.startTimerEvent.observe(this, EventObserver {
-            binding.timerView.startTimer(it)
+            binding.componentTimerView.timerView.startTimer(it)
         })
 
         viewModel.editGoalTextEvent.observe(this, EventObserver {
             val addPhotoBottomDialogFragment = SetupPomodoroDialogFragment.newInstance()
-            addPhotoBottomDialogFragment.show(requireActivity().supportFragmentManager, null)
+            addPhotoBottomDialogFragment.show(childFragmentManager, null)
         })
 
         viewModel.errorEvent.observe(this, EventObserver { errorText ->

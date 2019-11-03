@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto"
-		xmlns:bind="http://schemas.android.com/apk/res-auto"
-		xmlns:tools="http://schemas.android.com/tools">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:bind="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
 		<import type="ru.ischenko.roman.focustimer.timer.R"/>
@@ -23,49 +23,57 @@
 			tools:context=".timer.main.FocusTimerFragment">
 
 			<include
-				android:id="@+id/component_goal_view"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+				android:id="@+id/component_timer_view"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
 				android:layout_marginTop="@dimen/space_medium"
 				android:layout_marginLeft="@dimen/space_medium"
 				android:layout_marginRight="@dimen/space_medium"
-				app:layout_constraintTop_toTopOf="parent"
+				android:layout_marginBottom="@dimen/timer_margin"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintHorizontal_weight="6"
 				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toRightOf="parent"
-				layout="@layout/component_goal_view"
+				app:layout_constraintRight_toLeftOf="@+id/component_goal_view"
+				app:layout_constraintTop_toTopOf="parent"
+				layout="@layout/component_timer_view"
 				bind:viewModel="@{viewModel}"/>
 
-			<include
-				android:id="@+id/component_timer_view"
+			<androidx.constraintlayout.widget.Barrier
+				android:id="@+id/component_timer_barrier"
 				android:layout_width="match_parent"
-				android:layout_height="@dimen/fragment_focus_timer_size"
+				android:layout_height="wrap_content"
+				app:barrierDirection="bottom"
+				app:constraint_referenced_ids="component_timer_view" />
+
+			<include
+				android:id="@+id/component_goal_view"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/space_medium"
-				android:layout_marginLeft="@dimen/space_medium"
-				android:layout_marginRight="@dimen/space_medium"
-				app:layout_constraintLeft_toLeftOf="parent"
+				android:layout_marginEnd="@dimen/space_medium"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintLeft_toRightOf="@id/component_timer_view"
 				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@id/component_goal_view"
-				layout="@layout/component_timer_view"
+				app:layout_constraintHorizontal_weight="4"
+				layout="@layout/component_goal_view"
 				bind:viewModel="@{viewModel}"/>
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/start_button"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="@dimen/space_small"
+				android:layout_marginTop="@dimen/space_extra_large"
 				android:layout_marginBottom="@dimen/space_small"
 				android:layout_marginStart="@dimen/space_medium"
-				android:layout_marginEnd="@dimen/space_small"
+				android:layout_marginEnd="@dimen/space_medium"
 				android:text="@{viewModel.uiState != UiState.STARTED_WORK &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? @string/focus_timer_start : @string/focus_timer_pause}"
 				android:onClick="@{v -> viewModel.handleStartStopTimer()}"
 				app:backgroundTint="@{viewModel.uiState != UiState.STARTED_WORK  &amp;&amp; viewModel.uiState != UiState.STARTED_REST ? R.color.button_start_color : R.color.button_pause_color}"
 				app:icon="@{viewModel.uiState == UiState.STARTED_WORK || viewModel.uiState == UiState.STARTED_REST ? @drawable/ic_pause : @drawable/ic_play}"
 				app:iconGravity="textStart"
-				app:layout_constraintVertical_bias="0.1"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintLeft_toLeftOf="parent"
-				app:layout_constraintRight_toLeftOf="@+id/stop_button"
-				app:layout_constraintTop_toBottomOf="@+id/component_timer_view"
+				app:layout_constraintLeft_toRightOf="@id/component_timer_view"
+				app:layout_constraintBottom_toTopOf="@id/stop_button"
+				app:layout_constraintRight_toRightOf="parent"
 				tools:text="Start"/>
 
 			<com.google.android.material.button.MaterialButton
@@ -73,19 +81,16 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/space_small"
-				android:layout_marginBottom="@dimen/space_small"
-				android:layout_marginStart="@dimen/space_small"
+				android:layout_marginStart="@dimen/space_medium"
 				android:layout_marginEnd="@dimen/space_medium"
 				android:text="@string/focus_timer_cancel"
 				android:onClick="@{v -> viewModel.handleCancelTimer()}"
 				app:backgroundTint="@color/button_cancel_color"
 				app:icon="@drawable/ic_stop"
 				app:iconGravity="textStart"
-				app:layout_constraintVertical_bias="0.1"
-				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintLeft_toRightOf="@+id/start_button"
+				app:layout_constraintLeft_toRightOf="@id/component_timer_view"
+				app:layout_constraintBottom_toTopOf="@id/component_timer_barrier"
 				app:layout_constraintRight_toRightOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/component_timer_view"
 				tools:text="Cancel"/>
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
