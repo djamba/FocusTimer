@@ -1,0 +1,7 @@
+<resources>
+
+	<string name="agenda_error_load_pomodoros">Ошибка загрузки отчета</string>
+	<string name="agenda_previous_day">Предыдущий день</string>
+	<string name="agenda_next_day">Следующий день</string>
+
+</resources>

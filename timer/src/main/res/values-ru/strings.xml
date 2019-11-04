@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="focus_timer_notification_focus_on_work">Сосредаточтесь на работе&#160;&#160;</string>
+	<string name="focus_timer_notification_rest">Ретроспектива и отдых&#160;&#160;</string>
+
+	<string name="focus_timer_notification_no_goal">Цель</string>
+	<string name="focus_timer_goal_hint">Введите что вы будуте делать</string>
+	<string name="focus_timer_goal_error">Введите цель помидора</string>
+
+	<string name="focus_timer_create_task_error">Не удалось записть задачу</string>
+	<string name="focus_timer_update_task_error">Не удалось обновить задачу</string>
+	<string name="focus_timer_create_pomodoro_error">Не удалось записать помидор</string>
+
+	<string name="focus_timer_rest">Отдых</string>
+	<string name="focus_timer_work">Работа</string>
+	<string name="focus_timer_start">Старт</string>
+	<string name="focus_timer_pause">Пауза</string>
+	<string name="focus_timer_resume">Продолжить</string>
+	<string name="focus_timer_cancel">Отмена</string>
+	<string name="focus_timer_ok_button">OK</string>
+
+	<string name="focus_timer_started_status">Запущен</string>
+	<string name="focus_timer_paused_status">Приостановлен</string>
+	<string name="focus_timer_stopped_status">Остановлен</string>
+
+	<string name="focus_timer_dialog_title">Укажите цель помидора</string>
+
+	<string name="focus_timer_total_today">Сегодня: %s</string>
+
+</resources>
