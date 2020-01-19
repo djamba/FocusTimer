@@ -10,6 +10,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="bottom"
-		app:menu="@menu/bottom_appbar_menu"/>
+		app:menu="@menu/bottom_drawer_menu"/>
 
 </LinearLayout>

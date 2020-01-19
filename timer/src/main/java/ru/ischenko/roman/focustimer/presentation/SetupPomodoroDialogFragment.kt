@@ -49,10 +49,12 @@ class SetupPomodoroDialogFragment : DaggerBottomSheetDialogFragment() {
             val bottomSheetDialog = dialog as BottomSheetDialog
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
 
-            val behaviour = BottomSheetBehavior.from(bottomSheet)
-            behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+            val behaviour = bottomSheet?.let {
+                BottomSheetBehavior.from(bottomSheet)
+            }
 
-            behaviour.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            behaviour?.state = BottomSheetBehavior.STATE_EXPANDED
+            behaviour?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
                 override fun onStateChanged(bottomSheet: View, newState: Int) {

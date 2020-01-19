@@ -71,7 +71,8 @@ dependencies {
     //Lifecycle
     implementation "android.arch.lifecycle:runtime:$archVersion"
     implementation "android.arch.lifecycle:extensions:$archVersion"
-    kapt "android.arch.lifecycle:compiler:$archVersion"
+    implementation "android.arch.lifecycle:common-java8:$archVersion"
+//    kapt "android.arch.lifecycle:compiler:$archVersion"
 
     // Room
     implementation "androidx.room:room-ktx:$archRoomVersion"

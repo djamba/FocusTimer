@@ -2,5 +2,6 @@
 <resources>
 
 	<string name="app_name">FocusTimer</string>
+	<string name="menu_settings">Настройки</string>
 
 </resources>

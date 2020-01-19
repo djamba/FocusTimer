@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<group android:checkableBehavior="none">
+		<item
+			android:id="@+id/agenda_menu"
+			android:icon="@drawable/ic_agenda"
+			android:title="@string/menu_agenda" />
+		<item
+			android:id="@+id/settings_menu"
+			android:icon="@drawable/ic_settings"
+			android:title="@string/menu_settings" />
+		<item
+			android:id="@+id/fake_menu"
+			android:title="@string/menu_fake"
+			android:enabled="false"/>
+	</group>
+
+</menu>

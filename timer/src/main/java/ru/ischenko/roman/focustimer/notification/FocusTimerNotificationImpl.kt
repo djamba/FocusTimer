@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import ru.ischenko.roman.focustimer.timer.R
 import java.util.concurrent.TimeUnit
@@ -50,7 +51,7 @@ class FocusTimerNotificationImpl(private val context: Context, private val conte
     override var timerListener: FocusTimerNotification.TimerListener? = null
     override var notificationActionListener: FocusTimerNotification.NotificationActionListener? = null
 
-    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager = NotificationManagerCompat.from(context)
     private var vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     private val pausePendingIntent = PendingIntent.getBroadcast(context,0, Intent(ACTION_PAUSE), 0)
