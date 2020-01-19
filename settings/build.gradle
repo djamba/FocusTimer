@@ -1,5 +1,4 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -8,28 +7,10 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "ru.ischenko.roman.focustimer"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.0.1"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
 
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        vectorDrawables.useSupportLibrary = true
     }
 
     dataBinding {
@@ -39,25 +20,31 @@ android {
     androidExtensions {
         experimental = true
     }
-
-    defaultConfig {
-        vectorDrawables.useSupportLibrary = true
-    }
 }
 
 dependencies {
     implementation project(":core")
-    implementation project(":data")
-    implementation project(":timer")
-    implementation project(":reports")
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+
+    // KTX
+    implementation "androidx.core:core-ktx:$ktxCoreVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$ktxViewModelVersion"
 
     // Support library
-    implementation "androidx.core:core-ktx:$ktxCoreVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     implementation "androidx.cardview:cardview:$cardViewVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "com.google.android.material:material:$androidMaterialVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timberVersion"
 
     // Dagger2
     implementation "com.google.dagger:dagger:$daggerVersion"
@@ -65,16 +52,18 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
 
-    // Timber
-    implementation "com.jakewharton.timber:timber:$timberVersion"
-
     //Lifecycle
     implementation "android.arch.lifecycle:runtime:$archVersion"
     implementation "android.arch.lifecycle:extensions:$archVersion"
     implementation "android.arch.lifecycle:common-java8:$archVersion"
 
-    // Room
-    implementation "androidx.room:room-ktx:$archRoomVersion"
-    implementation "androidx.room:room-runtime:$archRoomVersion"
-    kapt "androidx.room:room-compiler:$archRoomVersion"
+    // UnitTest
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "android.arch.core:core-testing:$archTestVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+
+    androidTestImplementation "android.arch.core:core-testing:$archTestVersion"
+    androidTestImplementation "androidx.test:runner:$testRunnerVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }

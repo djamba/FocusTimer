@@ -23,10 +23,10 @@ allprojects {
 
 project.ext {
 
-    coroutinesVersion="1.1.1"
+    coroutinesVersion = "1.1.1"
 
     ktxCoreVersion = "1.1.0"
-    ktxViewModelVersion = "2.2.0-alpha02"
+    ktxViewModelVersion = "2.2.0-rc03"
 
     appCompatVersion = "1.1.0"
     cardViewVersion = "1.0.0"

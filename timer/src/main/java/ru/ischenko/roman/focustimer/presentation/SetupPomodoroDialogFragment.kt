@@ -53,7 +53,6 @@ class SetupPomodoroDialogFragment : DaggerBottomSheetDialogFragment() {
                 BottomSheetBehavior.from(bottomSheet)
             }
 
-            behaviour?.state = BottomSheetBehavior.STATE_EXPANDED
             behaviour?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
 
