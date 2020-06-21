@@ -1,4 +1,4 @@
-package ru.roman.home.settings
+package ru.ischenko.roman.focustimer.settings
 
 import org.junit.Test
 

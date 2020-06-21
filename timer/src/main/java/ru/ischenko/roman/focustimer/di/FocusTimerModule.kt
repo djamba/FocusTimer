@@ -12,10 +12,14 @@ import ru.ischenko.roman.focustimer.di.scope.FragmentScope
 import ru.ischenko.roman.focustimer.domain.*
 import ru.ischenko.roman.focustimer.notification.*
 import ru.ischenko.roman.focustimer.presentation.FocusTimerViewModel
+import ru.ischenko.roman.focustimer.settings.di.SettingsModule
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreDefaultEstimateUseCase
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreRestTimeUseCase
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreTimeUseCase
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
 import javax.inject.Provider
 
-@Module
+@Module(includes = [SettingsModule::class])
 class FocusTimerModule {
 
     @Provides
@@ -60,10 +64,15 @@ class FocusTimerModule {
                                    getTodayPomodorosCountUseCase: GetTodayPomodorosCountUseCase,
                                    createFreeTaskUseCase: CreateFreeTaskUseCase,
                                    increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
-                                   updateTaskGoalUseCase: UpdateTaskGoalUseCase): FocusTimerViewModel =
+                                   updateTaskGoalUseCase: UpdateTaskGoalUseCase,
+                                   getPomodoreTimeUseCase: GetPomodoreTimeUseCase,
+                                   getPomodoreRestTimeUseCase: GetPomodoreRestTimeUseCase,
+                                   getPomodoreDefaultEstimateUseCase: GetPomodoreDefaultEstimateUseCase
+    ): FocusTimerViewModel =
             FocusTimerViewModel(focusTimerController, notification, focusTimerServiceMediator, resourceProvider,
                     createPomodoroUseCase, getTodayPomodorosCountUseCase, createFreeTaskUseCase,
-                    increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase)
+                    increaseSpendPomodoroInTaskUseCase, updateTaskGoalUseCase,
+                    getPomodoreTimeUseCase, getPomodoreRestTimeUseCase, getPomodoreDefaultEstimateUseCase)
 
     @Provides
     @FragmentScope

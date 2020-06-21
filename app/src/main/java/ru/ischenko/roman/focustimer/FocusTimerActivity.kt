@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomappbar.BottomAppBar
 import ru.ischenko.roman.focustimer.android.OnPressKeyListener
 import ru.ischenko.roman.focustimer.presentation.FocusTimerFragment
+import ru.ischenko.roman.focustimer.settings.presentation.SettingsFragment
 
 class FocusTimerActivity : AppCompatActivity() {
 
@@ -27,6 +28,8 @@ class FocusTimerActivity : AppCompatActivity() {
             tasksFragment = FocusTimerFragment.newInstance()
             supportFragmentManager.beginTransaction().add(R.id.container, tasksFragment, FocusTimerFragment.TAG).commit()
         }
+
+        supportFragmentManager.addOnBackStackChangedListener(getBackStackChangedListener())
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -44,7 +47,11 @@ class FocusTimerActivity : AppCompatActivity() {
                 bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.tag)
             }
             R.id.settings_menu -> {
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show()
+                supportFragmentManager
+                        .beginTransaction()
+                        .add(R.id.container, SettingsFragment.newInstance(), SettingsFragment.TAG)
+                        .addToBackStack(null)
+                        .commit()
             }
         }
         return true
@@ -70,5 +77,16 @@ class FocusTimerActivity : AppCompatActivity() {
             supportFragmentManager.getBackStackEntryAt(index).name
         }
         return supportFragmentManager.findFragmentByTag(tag)
+    }
+
+    private fun getBackStackChangedListener(): FragmentManager.OnBackStackChangedListener {
+        return FragmentManager.OnBackStackChangedListener {
+            val index = supportFragmentManager.backStackEntryCount
+            if (index >= 0) {
+                val fragment: Fragment = supportFragmentManager.fragments[index]
+                fragment.onResume()
+//                supportFragmentManager.beginTransaction().setMaxLifecycle(fragment, Lifecycle.State.RESUMED).commit()
+            }
+        }
     }
 }

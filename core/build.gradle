@@ -3,11 +3,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion sdkVersion
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion sdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     dataBinding {
@@ -16,8 +25,10 @@ android {
 }
 
 dependencies {
+    implementation "androidx.core:core-ktx:$ktxCoreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     implementation "android.arch.lifecycle:extensions:$archVersion"
+    implementation "android.arch.lifecycle:viewmodel:$archVersion"
     implementation "com.google.android.material:material:$androidMaterialVersion"
 }

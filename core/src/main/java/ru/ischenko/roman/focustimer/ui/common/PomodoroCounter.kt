@@ -30,6 +30,7 @@ class PomodoroCounter @JvmOverloads constructor(context: Context, attrSet: Attri
                 totalPomodoros = value
             }
             field = value
+            postInvalidate()
         }
 
     var currentPomodoroPass: Int = 1

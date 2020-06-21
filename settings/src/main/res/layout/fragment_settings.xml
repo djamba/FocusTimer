@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:bind="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data class="FragmentSettingsBinding">
+		<variable
+			name="viewModel"
+			type="ru.ischenko.roman.focustimer.settings.presentation.SettingsViewModel"/>
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clickable="true"
+		android:background="?colorSurface">
+		
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/settings_toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="56dp"
+			android:elevation="@dimen/space_tiny"
+			android:background="?colorPrimary"
+			app:title="Настройки"
+			app:navigationIcon="?attr/homeAsUpIndicator"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"/>
+
+		<TextView
+			android:id="@+id/pomodore_time_title"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_large"
+			android:layout_marginStart="@dimen/space_medium"
+			android:layout_marginEnd="@dimen/space_medium"
+			android:drawableStart="@drawable/ic_tomato"
+			android:drawablePadding="@dimen/space_small"
+			android:textAllCaps="true"
+			android:textAppearance="?textAppearanceHeadline6"
+			android:textColor="?colorPrimary"
+			android:text="@string/settings_timer_title"
+			app:layout_constraintTop_toBottomOf="@id/settings_toolbar"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"/>
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:id="@+id/pomodore_time"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginStart="@dimen/space_large"
+			android:layout_marginEnd="@dimen/space_medium"
+			android:hint="@string/settings_work_duration"
+			app:layout_constraintTop_toBottomOf="@id/pomodore_time_title"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent">
+
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:inputType="number"
+				android:text="@={viewModel.pomodoreTime}"/>
+
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:id="@+id/rest_time"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginStart="@dimen/space_large"
+			android:layout_marginEnd="@dimen/space_medium"
+			android:hint="@string/settings_rest_duration"
+			app:layout_constraintTop_toBottomOf="@id/pomodore_time"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent">
+
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:inputType="number"
+				android:text="@={viewModel.restTime}"/>
+
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<com.google.android.material.textfield.TextInputLayout
+			android:id="@+id/task_estimate"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_medium"
+			android:layout_marginStart="@dimen/space_large"
+			android:layout_marginEnd="@dimen/space_medium"
+			android:hint="@string/settings_default_task_estimate"
+			app:layout_constraintTop_toBottomOf="@id/rest_time"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent">
+
+			<com.google.android.material.textfield.TextInputEditText
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:inputType="number"
+				android:text="@={viewModel.defaultTaskEstimate}"/>
+
+		</com.google.android.material.textfield.TextInputLayout>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

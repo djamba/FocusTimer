@@ -13,6 +13,9 @@ import ru.ischenko.roman.focustimer.domain.error.CreateTaskException
 import ru.ischenko.roman.focustimer.domain.error.GetPomodoroException
 import ru.ischenko.roman.focustimer.domain.error.UpdateTaskException
 import ru.ischenko.roman.focustimer.notification.*
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreDefaultEstimateUseCase
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreRestTimeUseCase
+import ru.ischenko.roman.focustimer.settings.domain.GetPomodoreTimeUseCase
 import ru.ischenko.roman.focustimer.timer.R
 import ru.ischenko.roman.focustimer.utils.Event
 import ru.ischenko.roman.focustimer.utils.ResourceProvider
@@ -20,6 +23,10 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 enum class UiState { STARTED_WORK, STARTED_REST, PAUSED, STOPPED }
+
+private const val DEFAULT_TASK_ESTIMATE = 4
+private const val ACTION_REST: String = "ACTION_REST"
+private const val ACTION_WORK: String = "ACTION_WORK"
 
 class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val notification: FocusTimerNotification,
@@ -29,19 +36,16 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                           private val getTodayPomodorosCountUseCase: GetTodayPomodorosCountUseCase,
                           private val createFreeTaskUseCase: CreateFreeTaskUseCase,
                           private val increaseSpendPomodoroInTaskUseCase: IncreaseSpendPomodoroInTaskUseCase,
-                          private val updateTaskGoalUseCase: UpdateTaskGoalUseCase) : ViewModel(), OnTimeChangedListener {
-
-    companion object {
-        private val DEFAULT_TASK_ESTIMATE = 4
-        private val POMODORE_TIME = TimeUnit.MINUTES.toSeconds(25)
-        private val REST_TIME = TimeUnit.MINUTES.toSeconds(5)
-
-        private const val ACTION_REST: String = "ACTION_REST"
-        private const val ACTION_WORK: String = "ACTION_WORK"
-    }
+                          private val updateTaskGoalUseCase: UpdateTaskGoalUseCase,
+                          private val getPomodoreTimeUseCase: GetPomodoreTimeUseCase,
+                          private val getPomodoreRestTimeUseCase: GetPomodoreRestTimeUseCase,
+                          private val getPomodoreDefaultEstimateUseCase: GetPomodoreDefaultEstimateUseCase
+) : ViewModel(), OnTimeChangedListener {
 
     private var currentTask: Task? = null
     private var currentPomodoro: Pomodoro? = null
+    private var pomodoreTime: Long = 0
+    private var restTime: Long = 0
 
     val goal: MutableLiveData<String> = MutableLiveData()
     val estimatedPomodorosCount: MutableLiveData<Int> = MutableLiveData()
@@ -69,13 +73,19 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
         }
 
         spendPomodorosCount.value = 0
-        estimatedPomodorosCount.value = DEFAULT_TASK_ESTIMATE
+        refreshSettings()
 
         focusTimerService.startService(onTimeChangedListener = this)
 
         getTodayPomodorosCount()
 
         setupNotification()
+    }
+
+    internal fun refreshSettings() {
+        estimatedPomodorosCount.value = getPomodoreDefaultEstimateUseCase()
+        pomodoreTime = TimeUnit.MINUTES.toSeconds(getPomodoreTimeUseCase())
+        restTime = TimeUnit.MINUTES.toSeconds(getPomodoreRestTimeUseCase())
     }
 
     private fun getTodayPomodorosCount() {
@@ -131,17 +141,17 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
 
     private fun startTimerForWork() {
         uiState.value = UiState.STARTED_WORK
-        startTimerEvent.value = Event(POMODORE_TIME)
+        startTimerEvent.value = Event(pomodoreTime)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_focus_on_work)
-        timer.startTimer(POMODORE_TIME, slogan,
+        timer.startTimer(pomodoreTime, slogan,
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
     private fun startTimerForRest() {
         uiState.value = UiState.STARTED_REST
-        startTimerEvent.value = Event(REST_TIME)
+        startTimerEvent.value = Event(restTime)
         slogan = resourceProvider.getText(R.string.focus_timer_notification_rest)
-        timer.startTimer(REST_TIME, slogan,
+        timer.startTimer(restTime, slogan,
                 goal.value ?: resourceProvider.getText(R.string.focus_timer_notification_no_goal))
     }
 
@@ -268,7 +278,7 @@ class FocusTimerViewModel(private val timer: FocusTimerController,
                 checkGoalAndCreateTaskIfNeed()
                 currentTask?.let { it ->
                     Timber.d("Create pomodoro and increase spend counter in task")
-                    currentPomodoro = createPomodoroUseCase(it, POMODORE_TIME)
+                    currentPomodoro = createPomodoroUseCase(it, pomodoreTime)
                     spendPomodorosCount.value = increaseSpendPomodoroInTaskUseCase(it)
                     todayPomodoroCount.value = (todayPomodoroCount.value ?: 0) + 1
                 }

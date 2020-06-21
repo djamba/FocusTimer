@@ -9,6 +9,8 @@ import ru.ischenko.roman.focustimer.presentation.FocusTimerFragment
 import ru.ischenko.roman.focustimer.presentation.SetupPomodoroDialogFragment
 import ru.ischenko.roman.focustimer.reports.agenda.di.AgendaModule
 import ru.ischenko.roman.focustimer.reports.agenda.presentation.AgendaFragment
+import ru.ischenko.roman.focustimer.settings.di.SettingsModule
+import ru.ischenko.roman.focustimer.settings.presentation.SettingsFragment
 
 @Module
 interface ContributesInjectorModule {
@@ -28,4 +30,8 @@ interface ContributesInjectorModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = [AgendaModule::class])
     fun contributeAgendaFragment(): AgendaFragment
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = [SettingsModule::class])
+    fun contributeSettingsFragment(): SettingsFragment
 }

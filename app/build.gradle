@@ -5,14 +5,14 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion sdkVersion
 
     defaultConfig {
         applicationId "ru.ischenko.roman.focustimer"
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion sdkVersion
         versionCode 2
-        versionName "1.0.1"
+        versionName "1.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -30,6 +30,10 @@ android {
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     dataBinding {
@@ -50,10 +54,13 @@ dependencies {
     implementation project(":data")
     implementation project(":timer")
     implementation project(":reports")
+    implementation project(":settings")
 
     // Support library
     implementation "androidx.core:core-ktx:$ktxCoreVersion"
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.fragment:fragment:$fragmentVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
     implementation "androidx.cardview:cardview:$cardViewVersion"
     implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"

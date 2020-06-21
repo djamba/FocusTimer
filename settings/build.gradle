@@ -4,13 +4,22 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion sdkVersion
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion sdkVersion
 
         vectorDrawables.useSupportLibrary = true
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     dataBinding {
@@ -35,11 +44,13 @@ dependencies {
     // KTX
     implementation "androidx.core:core-ktx:$ktxCoreVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$ktxViewModelVersion"
+//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$ktxViewModelVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$ktxViewModelVersion"
 
     // Support library
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation "androidx.cardview:cardview:$cardViewVersion"
-    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "androidx.fragment:fragment:$fragmentVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "com.google.android.material:material:$androidMaterialVersion"
 

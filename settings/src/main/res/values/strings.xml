@@ -1,3 +1,8 @@
 <resources>
-	<string name="app_name">Settings</string>
+
+	<string name="settings_timer_title">Настройки таймера</string>
+	<string name="settings_work_duration">Продолжительность помидора (мин.)</string>
+	<string name="settings_rest_duration">Продолжительность отдыха (мин.)</string>
+	<string name="settings_default_task_estimate">Колличество помидоров на всю задачу по умолчанию</string>
+
 </resources>

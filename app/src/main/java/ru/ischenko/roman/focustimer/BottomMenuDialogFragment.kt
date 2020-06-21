@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_bottom_menu.view.*
 import ru.ischenko.roman.focustimer.reports.agenda.presentation.AgendaFragment
+import ru.ischenko.roman.focustimer.settings.presentation.SettingsFragment
 
 class BottomMenuDialogFragment: BottomSheetDialogFragment() {
 
@@ -16,6 +17,7 @@ class BottomMenuDialogFragment: BottomSheetDialogFragment() {
         view.navigation_view.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.agenda_menu -> openAgenda()
+                R.id.settings_menu -> openSettingsMenu()
             }
             dismiss()
             true
@@ -25,17 +27,18 @@ class BottomMenuDialogFragment: BottomSheetDialogFragment() {
     }
 
     private fun openAgenda() {
-        var agendaFragment: AgendaFragment? =
-                requireActivity().supportFragmentManager.findFragmentByTag(AgendaFragment.TAG) as AgendaFragment?
+        requireActivity().supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, AgendaFragment.newInstance(), AgendaFragment.TAG)
+                .addToBackStack(null)
+                .commit()
+    }
 
-        if (agendaFragment == null) {
-            agendaFragment = AgendaFragment.newInstance()
-        }
-
-        requireActivity().supportFragmentManager.
-                beginTransaction().
-                add(R.id.container, agendaFragment, AgendaFragment.TAG).
-                addToBackStack(null).
-                commit()
+    private fun openSettingsMenu() {
+        requireActivity().supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, SettingsFragment.newInstance(), SettingsFragment.TAG)
+                .addToBackStack(null)
+                .commit()
     }
 }

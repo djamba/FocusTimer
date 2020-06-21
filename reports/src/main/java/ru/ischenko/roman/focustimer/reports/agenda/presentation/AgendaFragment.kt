@@ -12,7 +12,7 @@ import ru.ischenko.roman.focustimer.reports.databinding.FragmentAgendaBinding
 import ru.ischenko.roman.focustimer.utils.EventObserver
 import javax.inject.Inject
 
-class AgendaFragment: DaggerFragment() {
+class AgendaFragment : DaggerFragment() {
 
     companion object {
         const val TAG = "TAG_AGENDA_FRAGMENT"
